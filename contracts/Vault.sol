@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: TODO
 pragma solidity >=0.8.4;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./IVault.sol";
 
 /// @title Vault
 /// @author Hifi
-contract Vault is IVault {
+contract Vault is IVault, ERC20 {
     /// PUBLIC STORAGE ///
 
     /// @inheritdoc IVault
@@ -15,6 +16,14 @@ contract Vault is IVault {
 
     /// @dev Todo.
     uint256[] internal holdings;
+
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        address asset_
+    ) ERC20(name_, symbol_) {
+        asset = asset_;
+    }
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 

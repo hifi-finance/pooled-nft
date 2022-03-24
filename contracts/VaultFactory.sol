@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: TODO
 pragma solidity >=0.8.4;
 
+import "./Vault.sol";
 import "./IVaultFactory.sol";
 
 /// @title VaultFactory
@@ -9,6 +10,10 @@ contract VaultFactory is IVaultFactory {
     /// PUBLIC STORAGE ///
 
     /// INTERNAL STORAGE ///
+
+    constructor() {
+        // solhint-disable-previous-line no-empty-blocks
+    }
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
@@ -20,7 +25,7 @@ contract VaultFactory is IVaultFactory {
         string calldata symbol,
         address asset
     ) external override {
-        // TODO: implement
-        emit CreateVault(name, symbol, asset);
+        IVault vault = new Vault(name, symbol, asset);
+        emit CreateVault(name, symbol, asset, address(vault));
     }
 }
