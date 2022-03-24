@@ -9,6 +9,12 @@ interface IVaultFactory {
 
     /// EVENTS ///
 
+    /// @notice Todo.
+    /// @param name Todo.
+    /// @param symbol Todo.
+    /// @param asset Todo.
+    event CreateVault(string name, string symbol, address indexed asset);
+
     /// CONSTANT FUNCTIONS ///
 
     /// NON-CONSTANT FUNCTIONS ///

@@ -9,15 +9,28 @@ interface IVault {
 
     /// EVENTS ///
 
+    /// @notice Todo.
+    /// @param inIds Todo.
+    /// @param to Todo.
+    event Mint(uint256[] inIds, address indexed to);
+
+    /// @notice Todo.
+    /// @param inAmount Todo.
+    /// @param outIds Todo.
+    /// @param to Todo.
+    event Redeem(uint256 inAmount, uint256[] outIds, address indexed to);
+
+    /// @notice Todo.
+    /// @param inIds Todo.
+    /// @param outIds Todo.
+    /// @param to Todo.
+    event Swap(uint256[] inIds, uint256[] outIds, address indexed to);
+
     /// CONSTANT FUNCTIONS ///
 
     /// @notice Todo.
     /// @return Todo.
     function asset() external view returns (address);
-
-    /// @notice Todo.
-    /// @return Todo.
-    function holdings() external view returns (uint256[] memory);
 
     /// NON-CONSTANT FUNCTIONS ///
 

@@ -1,6 +1,6 @@
 # wNFT
 
-TODO.
+Todo.
 
 ## Development
 
