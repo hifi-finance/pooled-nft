@@ -2,11 +2,15 @@
 pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./IVault.sol";
 
 /// @title Vault
 /// @author Hifi
 contract Vault is IVault, ERC20 {
+    using EnumerableSet for EnumerableSet.UintSet;
+
     /// PUBLIC STORAGE ///
 
     /// @inheritdoc IVault
@@ -15,7 +19,7 @@ contract Vault is IVault, ERC20 {
     /// INTERNAL STORAGE ///
 
     /// @dev Todo.
-    uint256[] internal holdings;
+    EnumerableSet.UintSet internal holdings;
 
     constructor(
         string memory name_,
@@ -31,7 +35,22 @@ contract Vault is IVault, ERC20 {
 
     /// @inheritdoc IVault
     function mint(uint256[] calldata inIds, address to) external override {
-        // TODO: implement
+        uint256 inIdsLength = inIds.length;
+        if (inIdsLength == 0) {
+            revert Vault__InsufficientIn();
+        }
+        if (to == address(0)) {
+            revert Vault__InvalidTo();
+        }
+        for (uint256 i; i < inIdsLength; ) {
+            uint256 inId = inIds[i];
+            holdings.add(inId);
+            IERC721(asset).transferFrom(msg.sender, address(this), inId);
+            unchecked {
+                ++i;
+            }
+        }
+        _mint(to, inIdsLength * 10**18);
         // TODO: check gas cost of including uint256[] in event.
         emit Mint(inIds, to);
     }
@@ -42,7 +61,25 @@ contract Vault is IVault, ERC20 {
         uint256[] calldata outIds,
         address to
     ) external override {
-        // TODO: implement
+        uint256 outIdsLength = outIds.length;
+        if (inAmount == 0) {
+            revert Vault__InsufficientIn();
+        }
+        if (inAmount != outIdsLength * 10**18) {
+            revert Vault__InOutMismatch();
+        }
+        if (to == address(0)) {
+            revert Vault__InvalidTo();
+        }
+        _burn(msg.sender, inAmount);
+        for (uint256 i; i < outIdsLength; ) {
+            uint256 outId = outIds[i];
+            holdings.remove(outId);
+            IERC721(asset).transferFrom(address(this), to, outId);
+            unchecked {
+                ++i;
+            }
+        }
         // TODO: check gas cost of including uint256[] in event.
         emit Redeem(inAmount, outIds, to);
     }
@@ -53,7 +90,24 @@ contract Vault is IVault, ERC20 {
         uint256[] calldata outIds,
         address to
     ) external override {
-        // TODO: implement
+        uint256 inIdsLength = inIds.length;
+        uint256 outIdsLength = outIds.length;
+        if (inIdsLength == 0) {
+            revert Vault__InsufficientIn();
+        }
+        if (inIdsLength != outIdsLength) {
+            revert Vault__InOutMismatch();
+        }
+        if (to == address(0)) {
+            revert Vault__InvalidTo();
+        }
+        for (uint256 i; i < inIdsLength; ) {
+            IERC721(asset).transferFrom(msg.sender, address(this), inIds[i]);
+            IERC721(asset).transferFrom(address(this), to, outIds[i]);
+            unchecked {
+                ++i;
+            }
+        }
         // TODO: check gas cost of including uint256[] in event.
         emit Swap(inIds, outIds, to);
     }

@@ -7,6 +7,10 @@ pragma solidity >=0.8.4;
 interface IVault {
     /// CUSTOM ERRORS ///
 
+    error Vault__InOutMismatch();
+    error Vault__InsufficientIn();
+    error Vault__InvalidTo();
+
     /// EVENTS ///
 
     /// @notice Todo.
