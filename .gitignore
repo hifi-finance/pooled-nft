@@ -27,9 +27,11 @@ yarn-error.log*
 # types
 src/types/*
 !src/types/common.ts
-!src/types/Greeter.ts
+!src/types/Vault.ts
+!src/types/VaultFactory.ts
 
 # factories
 !src/types/factories
 src/types/factories/*
-!src/types/factories/Greeter__factory.ts
+!src/types/factories/Vault__factory.ts
+!src/types/factories/VaultFactory__factory.ts
