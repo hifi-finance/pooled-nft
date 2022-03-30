@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import type { Fixture, MockContract } from "ethereum-waffle";
 
+import type { GodModeVault } from "../src/types/GodModeVault";
 import type { VaultFactory } from "../src/types/VaultFactory";
 
 declare module "mocha" {
@@ -13,6 +14,7 @@ declare module "mocha" {
 }
 
 export interface Contracts {
+  vault: GodModeVault;
   vaultFactory: VaultFactory;
 }
 

@@ -10,7 +10,7 @@ export function shouldBehaveLikeVaultFactory(): void {
             "WNFT",
             this.mocks.erc721.address,
           );
-          expect(contractCall).to.emit(this.contracts.vaultFactory, "CreateVault");
+          await expect(contractCall).to.emit(this.contracts.vaultFactory, "CreateVault");
         });
       });
     });
