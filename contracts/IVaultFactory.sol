@@ -3,34 +3,29 @@ pragma solidity >=0.8.4;
 
 /// @title IVaultFactory
 /// @author Hifi
-/// @notice Todo.
 interface IVaultFactory {
     /// CUSTOM ERRORS ///
 
     /// EVENTS ///
 
-    /// @notice Todo.
-    /// @param name Todo.
-    /// @param symbol Todo.
-    /// @param asset Todo.
-    /// @param vault Todo.
+    /// @notice Emitted when a new vault is created.
+    /// @param name The ERC-20 name of the vault.
+    /// @param symbol The ERC-20 symbol of the vault.
+    /// @param asset The underlying ERC-721 asset contract address.
+    /// @param vault The created vault contract address.
     event CreateVault(string name, string symbol, address indexed asset, address indexed vault);
 
     /// CONSTANT FUNCTIONS ///
 
     /// NON-CONSTANT FUNCTIONS ///
 
-    /// @notice Todo.
+    /// @notice Create a new vault.
     ///
     /// @dev Emits a {CreateVault} event.
     ///
-    /// Requirements:
-    ///
-    /// - Todo.
-    ///
-    /// @param name Todo.
-    /// @param symbol Todo.
-    /// @param asset Todo.
+    /// @param name The ERC-20 name of the vault.
+    /// @param symbol The ERC-20 symbol of the vault.
+    /// @param asset The underlying ERC-721 asset contract address.
     function createVault(
         string calldata name,
         string calldata symbol,

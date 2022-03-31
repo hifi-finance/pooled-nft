@@ -1,6 +1,6 @@
 # wNFT
 
-Todo.
+wNFT is a protocol that enables fractionalizing NFTs into fungible ERC-20 tokens.
 
 ## Development
 

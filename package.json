@@ -1,6 +1,6 @@
 {
   "name": "@hifi-finance/wnft",
-  "description": "Todo",
+  "description": "wNFT is a protocol that enables fractionalizing NFTs into fungible ERC-20 tokens",
   "version": "1.0.0",
   "author": {
     "name": "Hifi",
