@@ -30,4 +30,4 @@ For security concerns, please email [security@hifi.finance](mailto:security@hifi
 
 ## License
 
-TODO
+[GPLv3](./LICENSE.md) © Mainframe Group Inc.
