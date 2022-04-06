@@ -31,6 +31,16 @@ contract Vault is IVault, ERC20 {
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
+    /// @inheritdoc IVault
+    function holdingAt(uint256 index) external view override returns (uint256) {
+        return holdings.at(index);
+    }
+
+    /// @inheritdoc IVault
+    function holdingsLength() external view override returns (uint256) {
+        return holdings.length();
+    }
+
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IVault
@@ -102,7 +112,9 @@ contract Vault is IVault, ERC20 {
             revert Vault__InvalidTo();
         }
         for (uint256 i; i < inIdsLength; ) {
+            holdings.add(inIds[i]);
             IERC721(asset).transferFrom(msg.sender, address(this), inIds[i]);
+            holdings.remove(outIds[i]);
             IERC721(asset).transferFrom(address(this), to, outIds[i]);
             unchecked {
                 ++i;

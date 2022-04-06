@@ -7,6 +7,8 @@ import "../Vault.sol";
 /// @author Hifi
 /// @dev Strictly for test purposes.
 contract GodModeVault is Vault {
+    using EnumerableSet for EnumerableSet.UintSet;
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -17,5 +19,14 @@ contract GodModeVault is Vault {
 
     function __godMode_mint(address beneficiary, uint256 mintAmount) external {
         _mint(beneficiary, mintAmount);
+    }
+
+    function __godMode_setHoldings(uint256[] calldata newHoldings) external {
+        for (uint256 i; i < holdings.length(); i++) {
+            holdings.remove(holdings.at(i));
+        }
+        for (uint256 i; i < newHoldings.length; i++) {
+            holdings.add(newHoldings[i]);
+        }
     }
 }

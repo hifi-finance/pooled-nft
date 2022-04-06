@@ -26,6 +26,8 @@ export interface VaultInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "holdingAt(uint256)": FunctionFragment;
+    "holdingsLength()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "mint(uint256[],address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -51,6 +53,14 @@ export interface VaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "holdingAt",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "holdingsLength",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
@@ -90,6 +100,11 @@ export interface VaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "holdingAt", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "holdingsLength",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -213,6 +228,13 @@ export interface Vault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    holdingAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -283,6 +305,10 @@ export interface Vault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
   increaseAllowance(
     spender: string,
     addedValue: BigNumberish,
@@ -352,6 +378,13 @@ export interface Vault extends BaseContract {
       subtractedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    holdingAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -472,6 +505,13 @@ export interface Vault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    holdingAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -545,6 +585,13 @@ export interface Vault extends BaseContract {
       subtractedValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    holdingAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    holdingsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: string,

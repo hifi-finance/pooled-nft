@@ -34,6 +34,13 @@ interface IVault {
     /// @notice The address of the underlying ERC-721 asset.
     function asset() external view returns (address);
 
+    /// @notice Returns the asset token id held at index.
+    /// @param index The index to check.
+    function holdingAt(uint256 index) external view returns (uint256);
+
+    /// @notice Returns the total number of asset token ids held.
+    function holdingsLength() external view returns (uint256);
+
     /// NON-CONSTANT FUNCTIONS ///
 
     /// @notice Mint an amount of vault tokens in exchange for an equivalent amount of asset token ids.

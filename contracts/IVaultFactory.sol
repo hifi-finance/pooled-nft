@@ -4,8 +4,6 @@ pragma solidity >=0.8.4;
 /// @title IVaultFactory
 /// @author Hifi
 interface IVaultFactory {
-    /// CUSTOM ERRORS ///
-
     /// EVENTS ///
 
     /// @notice Emitted when a new vault is created.
@@ -14,8 +12,6 @@ interface IVaultFactory {
     /// @param asset The underlying ERC-721 asset contract address.
     /// @param vault The created vault contract address.
     event CreateVault(string name, string symbol, address indexed asset, address indexed vault);
-
-    /// CONSTANT FUNCTIONS ///
 
     /// NON-CONSTANT FUNCTIONS ///
 
