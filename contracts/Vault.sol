@@ -14,7 +14,7 @@ contract Vault is IVault, ERC20 {
     /// PUBLIC STORAGE ///
 
     /// @inheritdoc IVault
-    address public override asset;
+    address public immutable override asset;
 
     /// INTERNAL STORAGE ///
 
