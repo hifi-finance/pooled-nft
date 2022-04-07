@@ -18,8 +18,10 @@ contract Vault is IVault, ERC20 {
 
     /// INTERNAL STORAGE ///
 
-    /// @dev The asset token ids held in the vault.
+    /// @dev The asset token IDs held in the vault.
     EnumerableSet.UintSet internal holdings;
+
+    /// CONSTRUCTOR ///
 
     constructor(
         string memory name_,

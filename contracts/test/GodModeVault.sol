@@ -9,6 +9,8 @@ import "../Vault.sol";
 contract GodModeVault is Vault {
     using EnumerableSet for EnumerableSet.UintSet;
 
+    /// CONSTRUCTOR ///
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -16,6 +18,8 @@ contract GodModeVault is Vault {
     ) Vault(name_, symbol_, asset_) {
         // solhint-disable-previous-line no-empty-blocks
     }
+
+    /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     function __godMode_mint(address beneficiary, uint256 mintAmount) external {
         _mint(beneficiary, mintAmount);
