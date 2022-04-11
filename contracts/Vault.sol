@@ -63,7 +63,6 @@ contract Vault is IVault, ERC20 {
             }
         }
         _mint(to, inIdsLength * 10**18);
-        // TODO: check gas cost of including uint256[] in event.
         emit Mint(inIds, to);
     }
 
@@ -92,7 +91,6 @@ contract Vault is IVault, ERC20 {
                 ++i;
             }
         }
-        // TODO: check gas cost of including uint256[] in event.
         emit Redeem(inAmount, outIds, to);
     }
 
@@ -122,7 +120,6 @@ contract Vault is IVault, ERC20 {
                 ++i;
             }
         }
-        // TODO: check gas cost of including uint256[] in event.
         emit Swap(inIds, outIds, to);
     }
 }
