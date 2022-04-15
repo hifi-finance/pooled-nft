@@ -29,7 +29,7 @@ export interface VaultInterface extends utils.Interface {
     "holdingAt(uint256)": FunctionFragment;
     "holdingsLength()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "mint(uint256[],address)": FunctionFragment;
+    "mint(uint256[],uint256,address)": FunctionFragment;
     "name()": FunctionFragment;
     "redeem(uint256,uint256[],address)": FunctionFragment;
     "swap(uint256[],uint256[],address)": FunctionFragment;
@@ -68,7 +68,7 @@ export interface VaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [BigNumberish[], string]
+    values: [BigNumberish[], BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -128,7 +128,7 @@ export interface VaultInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "Mint(uint256[],address)": EventFragment;
+    "Mint(uint256[],uint256,address)": EventFragment;
     "Redeem(uint256,uint256[],address)": EventFragment;
     "Swap(uint256[],uint256[],address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -149,8 +149,8 @@ export type ApprovalEvent = TypedEvent<
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
 export type MintEvent = TypedEvent<
-  [BigNumber[], string],
-  { inIds: BigNumber[]; to: string }
+  [BigNumber[], BigNumber, string],
+  { inIds: BigNumber[]; outAmount: BigNumber; to: string }
 >;
 
 export type MintEventFilter = TypedEventFilter<MintEvent>;
@@ -243,6 +243,7 @@ export interface Vault extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
+      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -317,6 +318,7 @@ export interface Vault extends BaseContract {
 
   mint(
     inIds: BigNumberish[],
+    outAmount: BigNumberish,
     to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -394,6 +396,7 @@ export interface Vault extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
+      outAmount: BigNumberish,
       to: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -444,11 +447,12 @@ export interface Vault extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    "Mint(uint256[],address)"(
+    "Mint(uint256[],uint256,address)"(
       inIds?: null,
+      outAmount?: null,
       to?: string | null
     ): MintEventFilter;
-    Mint(inIds?: null, to?: string | null): MintEventFilter;
+    Mint(inIds?: null, outAmount?: null, to?: string | null): MintEventFilter;
 
     "Redeem(uint256,uint256[],address)"(
       inAmount?: null,
@@ -520,6 +524,7 @@ export interface Vault extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
+      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -601,6 +606,7 @@ export interface Vault extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
+      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

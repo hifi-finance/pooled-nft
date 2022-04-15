@@ -62,9 +62,9 @@ export function shouldBehaveLikeVault(): void {
         });
 
         it("reverts", async function () {
-          await expect(this.contracts.vault.connect(this.signers.alice).mint(this.inIds, this.to)).to.be.revertedWith(
-            VaultErrors.INSUFFICIENT_IN,
-          );
+          await expect(
+            this.contracts.vault.connect(this.signers.alice).mint(this.inIds, "0", this.to),
+          ).to.be.revertedWith(VaultErrors.INSUFFICIENT_IN);
         });
       });
 
@@ -77,23 +77,45 @@ export function shouldBehaveLikeVault(): void {
           await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.vault.address, "2").returns();
         });
 
-        context("when `to` is the zero address", function () {
+        context("when length of `inIds` does not match `outAmount`", function () {
+          beforeEach(async function () {
+            this.outAmount = parseEther("4");
+          });
+
           it("reverts", async function () {
             await expect(
-              this.contracts.vault.connect(this.signers.alice).mint(this.inIds, AddressZero),
-            ).to.be.revertedWith(VaultErrors.INVALID_TO);
+              this.contracts.vault.connect(this.signers.alice).mint(this.inIds, this.outAmount, this.to),
+            ).to.be.revertedWith(VaultErrors.IN_OUT_MISMATCH);
           });
         });
 
-        context("when `to` is not the zero address", function () {
-          it("succeeds", async function () {
-            const contractCall = this.contracts.vault.connect(this.signers.alice).mint(this.inIds, this.to);
-            await expect(contractCall).to.emit(this.contracts.vault, "Mint").withArgs(this.inIds, this.to);
-            expect(await this.contracts.vault.balanceOf(this.to)).to.be.eq(parseEther("3"));
-            expect(await this.contracts.vault.holdingsLength()).to.be.equal("3");
-            expect(await this.contracts.vault.holdingAt("0")).to.be.equal(this.inIds["0"]);
-            expect(await this.contracts.vault.holdingAt("1")).to.be.equal(this.inIds["1"]);
-            expect(await this.contracts.vault.holdingAt("2")).to.be.equal(this.inIds["2"]);
+        context("when length of `inIds` matches `outAmount`", function () {
+          beforeEach(async function () {
+            this.outAmount = parseEther("3");
+          });
+
+          context("when `to` is the zero address", function () {
+            it("reverts", async function () {
+              await expect(
+                this.contracts.vault.connect(this.signers.alice).mint(this.inIds, this.outAmount, AddressZero),
+              ).to.be.revertedWith(VaultErrors.INVALID_TO);
+            });
+          });
+
+          context("when `to` is not the zero address", function () {
+            it("succeeds", async function () {
+              const contractCall = this.contracts.vault
+                .connect(this.signers.alice)
+                .mint(this.inIds, this.outAmount, this.to);
+              await expect(contractCall)
+                .to.emit(this.contracts.vault, "Mint")
+                .withArgs(this.inIds, this.outAmount, this.to);
+              expect(await this.contracts.vault.balanceOf(this.to)).to.be.eq(this.outAmount);
+              expect(await this.contracts.vault.holdingsLength()).to.be.equal("3");
+              expect(await this.contracts.vault.holdingAt("0")).to.be.equal(this.inIds["0"]);
+              expect(await this.contracts.vault.holdingAt("1")).to.be.equal(this.inIds["1"]);
+              expect(await this.contracts.vault.holdingAt("2")).to.be.equal(this.inIds["2"]);
+            });
           });
         });
       });
@@ -190,7 +212,6 @@ export function shouldBehaveLikeVault(): void {
         context("when length of `inIds` does not match length of `outIds`", function () {
           beforeEach(async function () {
             this.outIds = ["3", "4", "5", "6"];
-            this.to = this.signers.alice.address;
           });
 
           it("reverts", async function () {
@@ -203,7 +224,6 @@ export function shouldBehaveLikeVault(): void {
         context("when length of `inIds` matches length of `outIds`", function () {
           beforeEach(async function () {
             this.outIds = ["3", "4", "5"];
-            this.to = this.signers.alice.address;
             await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.vault.address, this.to, "3").returns();
             await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.vault.address, this.to, "4").returns();
             await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.vault.address, this.to, "5").returns();

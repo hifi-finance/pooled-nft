@@ -14,8 +14,9 @@ interface IVault {
 
     /// @notice Emitted when vault tokens are minted in exchange for an equivalent amount of asset token IDs.
     /// @param inIds The asset token IDs sent from the user's account to the vault.
+    /// @param outAmount The amount of vault tokens minted by the vault.
     /// @param to The account that received the minted vault tokens.
-    event Mint(uint256[] inIds, address indexed to);
+    event Mint(uint256[] inIds, uint256 outAmount, address indexed to);
 
     /// @notice Emitted when an amount of vault tokens are redeemed in exchange for an equivalent amount of asset token IDs.
     /// @param inAmount The amount of vault tokens sent from the user's account to the vault.
@@ -53,8 +54,13 @@ interface IVault {
     /// - The address `to` must not be the zero address.
     ///
     /// @param inIds The asset token IDs sent from the user's account to the vault.
+    /// @param outAmount The amount of vault tokens to be minted by the vault.
     /// @param to The account that receives the minted vault tokens.
-    function mint(uint256[] calldata inIds, address to) external;
+    function mint(
+        uint256[] calldata inIds,
+        uint256 outAmount,
+        address to
+    ) external;
 
     /// @notice Redeem an amount of vault tokens in exchange for an equivalent amount of asset token IDs.
     ///
