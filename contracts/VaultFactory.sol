@@ -7,12 +7,6 @@ import "./IVaultFactory.sol";
 /// @title VaultFactory
 /// @author Hifi
 contract VaultFactory is IVaultFactory {
-    /// CONSTRUCTOR ///
-
-    constructor() {
-        // solhint-disable-previous-line no-empty-blocks
-    }
-
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IVaultFactory

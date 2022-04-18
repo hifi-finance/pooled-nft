@@ -69,7 +69,6 @@ contract Vault is IVault, ERC20 {
             }
         }
         _mint(to, outAmount);
-        // TODO: check gas cost of including uint256[] in event.
         emit Mint(inIds, outAmount, to);
     }
 
@@ -117,9 +116,9 @@ contract Vault is IVault, ERC20 {
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
-            uint256 outId = outIds[i];
             holdings.add(inId);
             IERC721(asset).transferFrom(msg.sender, address(this), inId);
+            uint256 outId = outIds[i];
             holdings.remove(outId);
             IERC721(asset).transferFrom(address(this), to, outId);
             unchecked {
