@@ -2,22 +2,22 @@ import type { Signer } from "@ethersproject/abstract-signer";
 import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import { GodModeVault } from "../src/types/GodModeVault";
-import { VaultFactory } from "../src/types/VaultFactory";
+import { GodModePool } from "../src/types/GodModePool";
+import { PoolFactory } from "../src/types/PoolFactory";
 
-export async function deployGodModeVault(
+export async function deployGodModePool(
   deployer: Signer,
   name: string,
   symbol: string,
   asset: string,
-): Promise<GodModeVault> {
-  const vaultArtifact: Artifact = await artifacts.readArtifact("GodModeVault");
-  const vault: GodModeVault = <GodModeVault>await waffle.deployContract(deployer, vaultArtifact, [name, symbol, asset]);
-  return vault;
+): Promise<GodModePool> {
+  const poolArtifact: Artifact = await artifacts.readArtifact("GodModePool");
+  const pool: GodModePool = <GodModePool>await waffle.deployContract(deployer, poolArtifact, [name, symbol, asset]);
+  return pool;
 }
 
-export async function deployVaultFactory(deployer: Signer): Promise<VaultFactory> {
-  const vaultFactoryArtifact: Artifact = await artifacts.readArtifact("VaultFactory");
-  const vaultFactory: VaultFactory = <VaultFactory>await waffle.deployContract(deployer, vaultFactoryArtifact, []);
-  return vaultFactory;
+export async function deployPoolFactory(deployer: Signer): Promise<PoolFactory> {
+  const poolFactoryArtifact: Artifact = await artifacts.readArtifact("PoolFactory");
+  const poolFactory: PoolFactory = <PoolFactory>await waffle.deployContract(deployer, poolFactoryArtifact, []);
+  return poolFactory;
 }

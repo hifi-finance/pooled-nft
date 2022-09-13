@@ -16,43 +16,40 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface VaultFactoryInterface extends utils.Interface {
-  contractName: "VaultFactory";
+export interface PoolFactoryInterface extends utils.Interface {
+  contractName: "PoolFactory";
   functions: {
-    "createVault(string,string,address)": FunctionFragment;
+    "createPool(string,string,address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "createVault",
+    functionFragment: "createPool",
     values: [string, string, string]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "createVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
 
   events: {
-    "CreateVault(string,string,address,address)": EventFragment;
+    "CreatePool(string,string,address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CreateVault"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CreatePool"): EventFragment;
 }
 
-export type CreateVaultEvent = TypedEvent<
+export type CreatePoolEvent = TypedEvent<
   [string, string, string, string],
-  { name: string; symbol: string; asset: string; vault: string }
+  { name: string; symbol: string; asset: string; pool: string }
 >;
 
-export type CreateVaultEventFilter = TypedEventFilter<CreateVaultEvent>;
+export type CreatePoolEventFilter = TypedEventFilter<CreatePoolEvent>;
 
-export interface VaultFactory extends BaseContract {
-  contractName: "VaultFactory";
+export interface PoolFactory extends BaseContract {
+  contractName: "PoolFactory";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: VaultFactoryInterface;
+  interface: PoolFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -74,7 +71,7 @@ export interface VaultFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    createVault(
+    createPool(
       name: string,
       symbol: string,
       asset: string,
@@ -82,7 +79,7 @@ export interface VaultFactory extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  createVault(
+  createPool(
     name: string,
     symbol: string,
     asset: string,
@@ -90,7 +87,7 @@ export interface VaultFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    createVault(
+    createPool(
       name: string,
       symbol: string,
       asset: string,
@@ -99,22 +96,22 @@ export interface VaultFactory extends BaseContract {
   };
 
   filters: {
-    "CreateVault(string,string,address,address)"(
+    "CreatePool(string,string,address,address)"(
       name?: null,
       symbol?: null,
       asset?: string | null,
-      vault?: string | null
-    ): CreateVaultEventFilter;
-    CreateVault(
+      pool?: string | null
+    ): CreatePoolEventFilter;
+    CreatePool(
       name?: null,
       symbol?: null,
       asset?: string | null,
-      vault?: string | null
-    ): CreateVaultEventFilter;
+      pool?: string | null
+    ): CreatePoolEventFilter;
   };
 
   estimateGas: {
-    createVault(
+    createPool(
       name: string,
       symbol: string,
       asset: string,
@@ -123,7 +120,7 @@ export interface VaultFactory extends BaseContract {
   };
 
   populateTransaction: {
-    createVault(
+    createPool(
       name: string,
       symbol: string,
       asset: string,

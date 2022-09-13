@@ -4,21 +4,21 @@ pragma solidity >=0.8.4;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "./IVault.sol";
+import "./IPool.sol";
 
-/// @title Vault
+/// @title Pool
 /// @author Hifi
-contract Vault is IVault, ERC20 {
+contract Pool is IPool, ERC20 {
     using EnumerableSet for EnumerableSet.UintSet;
 
     /// PUBLIC STORAGE ///
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     address public immutable override asset;
 
     /// INTERNAL STORAGE ///
 
-    /// @dev The asset token IDs held in the vault.
+    /// @dev The asset token IDs held in the pool.
     EnumerableSet.UintSet internal holdings;
 
     /// CONSTRUCTOR ///
@@ -33,32 +33,32 @@ contract Vault is IVault, ERC20 {
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     function holdingAt(uint256 index) external view override returns (uint256) {
         return holdings.at(index);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     function holdingsLength() external view override returns (uint256) {
         return holdings.length();
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     function mint(
         uint256[] calldata inIds,
         uint256 outAmount,
         address to
     ) external override {
         if (inIds.length == 0) {
-            revert Vault__InsufficientIn();
+            revert Pool__InsufficientIn();
         }
         if (inIds.length * 10**18 != outAmount) {
-            revert Vault__InOutMismatch();
+            revert Pool__InOutMismatch();
         }
         if (to == address(0)) {
-            revert Vault__InvalidTo();
+            revert Pool__InvalidTo();
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
@@ -72,20 +72,20 @@ contract Vault is IVault, ERC20 {
         emit Mint(inIds, outAmount, to);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     function redeem(
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
     ) external override {
         if (inAmount == 0) {
-            revert Vault__InsufficientIn();
+            revert Pool__InsufficientIn();
         }
         if (inAmount != outIds.length * 10**18) {
-            revert Vault__InOutMismatch();
+            revert Pool__InOutMismatch();
         }
         if (to == address(0)) {
-            revert Vault__InvalidTo();
+            revert Pool__InvalidTo();
         }
         _burn(msg.sender, inAmount);
         for (uint256 i; i < outIds.length; ) {
@@ -99,20 +99,20 @@ contract Vault is IVault, ERC20 {
         emit Redeem(inAmount, outIds, to);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IPool
     function swap(
         uint256[] calldata inIds,
         uint256[] calldata outIds,
         address to
     ) external override {
         if (inIds.length == 0) {
-            revert Vault__InsufficientIn();
+            revert Pool__InsufficientIn();
         }
         if (inIds.length != outIds.length) {
-            revert Vault__InOutMismatch();
+            revert Pool__InOutMismatch();
         }
         if (to == address(0)) {
-            revert Vault__InvalidTo();
+            revert Pool__InvalidTo();
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];

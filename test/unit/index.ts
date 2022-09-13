@@ -1,8 +1,8 @@
 import { baseContext } from "../contexts";
-import { unitTestVault } from "./vault/Vault";
-import { unitTestVaultFactory } from "./vaultFactory/VaultFactory";
+import { unitTestPool } from "./pool/Pool";
+import { unitTestPoolFactory } from "./poolFactory/PoolFactory";
 
 baseContext("Unit Tests", function () {
-  unitTestVault();
-  unitTestVaultFactory();
+  unitTestPool();
+  unitTestPoolFactory();
 });

@@ -1,31 +1,31 @@
 import type { Signer } from "@ethersproject/abstract-signer";
 import type { MockContract } from "ethereum-waffle";
 
-import { GodModeVault } from "../src/types/GodModeVault";
-import { VaultFactory } from "../src/types/VaultFactory";
-import { deployGodModeVault, deployVaultFactory } from "./deployers";
+import { GodModePool } from "../src/types/GodModePool";
+import { PoolFactory } from "../src/types/PoolFactory";
+import { deployGodModePool, deployPoolFactory } from "./deployers";
 import { deployMockERC721 } from "./mocks";
 
-type UnitFixtureVaulteturnType = {
+type UnitFixturePooleturnType = {
   erc721: MockContract;
-  vault: GodModeVault;
+  pool: GodModePool;
 };
 
-type UnitFixtureVaultFactoryReturnType = {
+type UnitFixturePoolFactoryReturnType = {
   erc721: MockContract;
-  vaultFactory: VaultFactory;
+  poolFactory: PoolFactory;
 };
 
-export async function unitFixtureVault(signers: Signer[]): Promise<UnitFixtureVaulteturnType> {
+export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePooleturnType> {
   const deployer: Signer = signers[0];
   const erc721 = await deployMockERC721(deployer);
-  const vault = await deployGodModeVault(deployer, "JPEG Vault", "wJPEG", erc721.address);
-  return { erc721, vault };
+  const pool = await deployGodModePool(deployer, "JPEG Pool", "wJPEG", erc721.address);
+  return { erc721, pool };
 }
 
-export async function unitFixtureVaultFactory(signers: Signer[]): Promise<UnitFixtureVaultFactoryReturnType> {
+export async function unitFixturePoolFactory(signers: Signer[]): Promise<UnitFixturePoolFactoryReturnType> {
   const deployer: Signer = signers[0];
   const erc721 = await deployMockERC721(deployer);
-  const vaultFactory = await deployVaultFactory(deployer);
-  return { erc721, vaultFactory };
+  const poolFactory = await deployPoolFactory(deployer);
+  return { erc721, poolFactory };
 }

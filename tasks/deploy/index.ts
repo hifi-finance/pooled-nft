@@ -1,2 +1,2 @@
-import "./vaultFactory";
+import "./poolFactory";
 import "./waitForConfirmations";

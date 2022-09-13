@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
 
-import "../Vault.sol";
+import "../Pool.sol";
 
-/// @title GodModeVault
+/// @title GodModePool
 /// @author Hifi
 /// @dev Strictly for test purposes.
-contract GodModeVault is Vault {
+contract GodModePool is Pool {
     using EnumerableSet for EnumerableSet.UintSet;
 
     /// CONSTRUCTOR ///
@@ -15,7 +15,7 @@ contract GodModeVault is Vault {
         string memory name_,
         string memory symbol_,
         address asset_
-    ) Vault(name_, symbol_, asset_) {
+    ) Pool(name_, symbol_, asset_) {
         // solhint-disable-previous-line no-empty-blocks
     }
 
