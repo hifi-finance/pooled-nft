@@ -6,7 +6,7 @@ import { PoolFactory } from "../src/types/PoolFactory";
 import { deployGodModePool, deployPoolFactory } from "./deployers";
 import { deployMockERC721 } from "./mocks";
 
-type UnitFixturePooleturnType = {
+type UnitFixturePoolReturnType = {
   erc721: MockContract;
   pool: GodModePool;
 };
@@ -16,10 +16,10 @@ type UnitFixturePoolFactoryReturnType = {
   poolFactory: PoolFactory;
 };
 
-export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePooleturnType> {
+export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePoolReturnType> {
   const deployer: Signer = signers[0];
   const erc721 = await deployMockERC721(deployer);
-  const pool = await deployGodModePool(deployer, "JPEG Pool", "wJPEG", erc721.address);
+  const pool = await deployGodModePool(deployer, "JPEG Pool", "pJPEG", erc721.address);
   return { erc721, pool };
 }
 

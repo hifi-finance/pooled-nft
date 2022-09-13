@@ -8,7 +8,7 @@ export function shouldBehaveLikePool(): void {
   describe("Deployment", function () {
     it("should be deployed with the correct values", async function () {
       expect(await this.contracts.pool.name()).to.equal("JPEG Pool");
-      expect(await this.contracts.pool.symbol()).to.equal("wJPEG");
+      expect(await this.contracts.pool.symbol()).to.equal("pJPEG");
       expect(await this.contracts.pool.asset()).to.equal(this.mocks.erc721.address);
     });
   });
