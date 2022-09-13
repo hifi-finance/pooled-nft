@@ -19,7 +19,7 @@ export interface Contracts {
 }
 
 export interface Mocks {
-  erc721: MockContract;
+  nft: MockContract;
 }
 
 export interface Signers {

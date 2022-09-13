@@ -4,28 +4,28 @@ import type { MockContract } from "ethereum-waffle";
 import { GodModePool } from "../src/types/GodModePool";
 import { PoolFactory } from "../src/types/PoolFactory";
 import { deployGodModePool, deployPoolFactory } from "./deployers";
-import { deployMockERC721 } from "./mocks";
+import { deployMockNft } from "./mocks";
 
 type UnitFixturePoolReturnType = {
-  erc721: MockContract;
+  nft: MockContract;
   pool: GodModePool;
 };
 
 type UnitFixturePoolFactoryReturnType = {
-  erc721: MockContract;
+  nft: MockContract;
   poolFactory: PoolFactory;
 };
 
 export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePoolReturnType> {
   const deployer: Signer = signers[0];
-  const erc721 = await deployMockERC721(deployer);
-  const pool = await deployGodModePool(deployer, "JPEG Pool", "pJPEG", erc721.address);
-  return { erc721, pool };
+  const nft = await deployMockNft(deployer);
+  const pool = await deployGodModePool(deployer, "JPEG Pool", "pJPEG", nft.address);
+  return { nft, pool };
 }
 
 export async function unitFixturePoolFactory(signers: Signer[]): Promise<UnitFixturePoolFactoryReturnType> {
   const deployer: Signer = signers[0];
-  const erc721 = await deployMockERC721(deployer);
+  const nft = await deployMockNft(deployer);
   const poolFactory = await deployPoolFactory(deployer);
-  return { erc721, poolFactory };
+  return { nft, poolFactory };
 }

@@ -4,8 +4,8 @@ import { shouldBehaveLikePool } from "./Pool.behavior";
 export function unitTestPool(): void {
   describe("Pool", function () {
     beforeEach(async function () {
-      const { erc721, pool } = await this.loadFixture(unitFixturePool);
-      this.mocks.erc721 = erc721;
+      const { nft, pool } = await this.loadFixture(unitFixturePool);
+      this.mocks.nft = nft;
       this.contracts.pool = pool;
     });
 
