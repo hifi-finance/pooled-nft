@@ -51,6 +51,7 @@ interface IPool {
     /// Requirements:
     ///
     /// - The length of `inIds` must be greater than zero.
+    /// - The length of `inIds` scaled to 18 decimals must match the value of `outAmount`.
     /// - The address `to` must not be the zero address.
     ///
     /// @param inIds The asset token IDs sent from the user's account to the pool.
