@@ -4,6 +4,10 @@ pragma solidity >=0.8.4;
 /// @title IVaultFactory
 /// @author Hifi
 interface IVaultFactory {
+    /// CUSTOM ERRORS ///
+
+    error Vault__VaultAlreadyExists();
+
     /// EVENTS ///
 
     /// @notice Emitted when a new vault is created.
@@ -12,6 +16,14 @@ interface IVaultFactory {
     /// @param asset The underlying ERC-721 asset contract address.
     /// @param vault The created vault contract address.
     event CreateVault(string name, string symbol, address indexed asset, address indexed vault);
+
+    /// CONSTANT FUNCTIONS ///
+
+    /// @notice Cheacks if the vault already exists or not.
+    ///
+    /// @param asset The underlying ERC-721 asset contract address.
+    /// @return bool true = vault exists, otherwise not.
+    function vaults(address asset) external view returns (bool);
 
     /// NON-CONSTANT FUNCTIONS ///
 

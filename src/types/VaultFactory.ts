@@ -20,17 +20,20 @@ export interface VaultFactoryInterface extends utils.Interface {
   contractName: "VaultFactory";
   functions: {
     "createVault(string,string,address)": FunctionFragment;
+    "vaults(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "createVault",
     values: [string, string, string]
   ): string;
+  encodeFunctionData(functionFragment: "vaults", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "createVault",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "vaults", data: BytesLike): Result;
 
   events: {
     "CreateVault(string,string,address,address)": EventFragment;
@@ -80,6 +83,8 @@ export interface VaultFactory extends BaseContract {
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vaults(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
   };
 
   createVault(
@@ -89,6 +94,8 @@ export interface VaultFactory extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  vaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
   callStatic: {
     createVault(
       name: string,
@@ -96,6 +103,8 @@ export interface VaultFactory extends BaseContract {
       asset: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    vaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {
@@ -120,6 +129,8 @@ export interface VaultFactory extends BaseContract {
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    vaults(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -128,6 +139,11 @@ export interface VaultFactory extends BaseContract {
       symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    vaults(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

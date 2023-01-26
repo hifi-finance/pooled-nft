@@ -20,14 +20,17 @@ export interface PoolFactoryInterface extends utils.Interface {
   contractName: "PoolFactory";
   functions: {
     "createPool(string,string,address)": FunctionFragment;
+    "pools(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "createPool",
     values: [string, string, string]
   ): string;
+  encodeFunctionData(functionFragment: "pools", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pools", data: BytesLike): Result;
 
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
@@ -77,6 +80,8 @@ export interface PoolFactory extends BaseContract {
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    pools(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
   };
 
   createPool(
@@ -86,6 +91,8 @@ export interface PoolFactory extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  pools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
   callStatic: {
     createPool(
       name: string,
@@ -93,6 +100,8 @@ export interface PoolFactory extends BaseContract {
       asset: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    pools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {
@@ -117,6 +126,8 @@ export interface PoolFactory extends BaseContract {
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    pools(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -125,6 +136,11 @@ export interface PoolFactory extends BaseContract {
       symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    pools(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

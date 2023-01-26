@@ -7,6 +7,9 @@ import "./IVaultFactory.sol";
 /// @title VaultFactory
 /// @author Hifi
 contract VaultFactory is IVaultFactory {
+    /// @inheritdoc IVaultFactory
+    mapping(address => bool) public override vaults;
+
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IVaultFactory
@@ -15,7 +18,11 @@ contract VaultFactory is IVaultFactory {
         string calldata symbol,
         address asset
     ) external override {
+        if (vaults[asset]) {
+            revert Vault__VaultAlreadyExists();
+        }
         IVault vault = new Vault(name, symbol, asset);
+        vaults[asset] = true;
         emit CreateVault(name, symbol, asset, address(vault));
     }
 }
