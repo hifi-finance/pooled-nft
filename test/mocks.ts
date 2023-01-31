@@ -8,5 +8,7 @@ export async function deployMockNft(deployer: Signer): Promise<MockContract> {
   const nft: MockContract = await waffle.deployMockContract(deployer, nftArtifact.abi);
   await nft.mock.name.returns("Mock NFT");
   await nft.mock.symbol.returns("MOCK");
+  // 0x5b5e139f is the ERC-165 identifier for ERC721Metadata interface
+  await nft.mock.supportsInterface.withArgs("0x5b5e139f").returns(true);
   return nft;
 }

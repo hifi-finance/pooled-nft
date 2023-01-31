@@ -4,6 +4,10 @@ pragma solidity >=0.8.4;
 /// @title IVaultFactory
 /// @author Hifi
 interface IVaultFactory {
+    /// CUSTOM ERRORS ///
+
+    error VaultFactory__DoesNotImplementIERC721Metadata();
+
     /// EVENTS ///
 
     /// @notice Emitted when a new vault is created.
@@ -19,12 +23,6 @@ interface IVaultFactory {
     ///
     /// @dev Emits a {CreateVault} event.
     ///
-    /// @param name The ERC-20 name of the vault.
-    /// @param symbol The ERC-20 symbol of the vault.
     /// @param asset The underlying ERC-721 asset contract address.
-    function createVault(
-        string calldata name,
-        string calldata symbol,
-        address asset
-    ) external;
+    function createVault(address asset) external;
 }

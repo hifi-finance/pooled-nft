@@ -19,13 +19,10 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface PoolFactoryInterface extends utils.Interface {
   contractName: "PoolFactory";
   functions: {
-    "createPool(string,string,address)": FunctionFragment;
+    "createPool(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "createPool",
-    values: [string, string, string]
-  ): string;
+  encodeFunctionData(functionFragment: "createPool", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
 
@@ -72,27 +69,18 @@ export interface PoolFactory extends BaseContract {
 
   functions: {
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
   createPool(
-    name: string,
-    symbol: string,
     asset: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    createPool(
-      name: string,
-      symbol: string,
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    createPool(asset: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -112,8 +100,6 @@ export interface PoolFactory extends BaseContract {
 
   estimateGas: {
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -121,8 +107,6 @@ export interface PoolFactory extends BaseContract {
 
   populateTransaction: {
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

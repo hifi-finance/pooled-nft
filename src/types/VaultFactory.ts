@@ -19,13 +19,10 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface VaultFactoryInterface extends utils.Interface {
   contractName: "VaultFactory";
   functions: {
-    "createVault(string,string,address)": FunctionFragment;
+    "createVault(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "createVault",
-    values: [string, string, string]
-  ): string;
+  encodeFunctionData(functionFragment: "createVault", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "createVault",
@@ -75,27 +72,18 @@ export interface VaultFactory extends BaseContract {
 
   functions: {
     createVault(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
   createVault(
-    name: string,
-    symbol: string,
     asset: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    createVault(
-      name: string,
-      symbol: string,
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    createVault(asset: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -115,8 +103,6 @@ export interface VaultFactory extends BaseContract {
 
   estimateGas: {
     createVault(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -124,8 +110,6 @@ export interface VaultFactory extends BaseContract {
 
   populateTransaction: {
     createVault(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
