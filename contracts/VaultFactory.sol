@@ -10,6 +10,21 @@ import "./IVaultFactory.sol";
 /// @title VaultFactory
 /// @author Hifi
 contract VaultFactory is IVaultFactory {
+    /// PUBLIC STORAGE ///
+
+    /// @inheritdoc IVaultFactory
+    mapping(address => address) public override getVault;
+
+    /// @inheritdoc IVaultFactory
+    address[] public allVaults;
+
+    /// PUBLIC CONSTANT FUNCTIONS ///
+
+    /// @inheritdoc IVaultFactory
+    function allVaultsLength() external view override returns (uint256) {
+        return allVaults.length;
+    }
+
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IVaultFactory
@@ -17,10 +32,16 @@ contract VaultFactory is IVaultFactory {
         if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
             revert VaultFactory__DoesNotImplementIERC721Metadata();
         }
+        if (getVault[asset] != address(0)) {
+            revert VaultFactory__VaultAlreadyExists();
+        }
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Vaulted");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "v");
         IVault vault = new Vault(name, symbol, asset);
+
+        getVault[asset] = address(vault);
+        allVaults.push(asset);
 
         emit CreateVault(name, symbol, asset, address(vault));
     }

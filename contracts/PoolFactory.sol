@@ -10,6 +10,21 @@ import "./IPoolFactory.sol";
 /// @title PoolFactory
 /// @author Hifi
 contract PoolFactory is IPoolFactory {
+    /// PUBLIC STORAGE ///
+
+    /// @inheritdoc IPoolFactory
+    mapping(address => address) public override getPool;
+
+    /// @inheritdoc IPoolFactory
+    address[] public allPools;
+
+    /// PUBLIC CONSTANT FUNCTIONS ///
+
+    /// @inheritdoc IPoolFactory
+    function allPoolsLength() external view override returns (uint256) {
+        return allPools.length;
+    }
+
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IPoolFactory
@@ -17,10 +32,16 @@ contract PoolFactory is IPoolFactory {
         if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
             revert PoolFactory__DoesNotImplementIERC721Metadata();
         }
+        if (getPool[asset] != address(0)) {
+            revert PoolFactory__PoolAlreadyExists();
+        }
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pooled");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
         IPool pool = new Pool(name, symbol, asset);
+
+        getPool[asset] = address(pool);
+        allPools.push(asset);
 
         emit CreatePool(name, symbol, asset, address(pool));
     }
