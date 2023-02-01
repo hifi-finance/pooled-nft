@@ -38,7 +38,10 @@ contract VaultFactory is IVaultFactory {
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Vaulted");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "v");
-        IVault vault = new Vault(name, symbol, asset);
+
+        bytes32 salt = keccak256(abi.encodePacked(asset));
+        Vault vault = new Vault{ salt: salt }();
+        vault.initialize(name, symbol, asset);
 
         getVault[asset] = address(vault);
         allVaults.push(asset);

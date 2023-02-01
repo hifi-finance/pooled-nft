@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable
 pragma solidity >=0.8.4;
 
 import "../Pool.sol";
@@ -15,8 +16,8 @@ contract GodModePool is Pool {
         string memory name_,
         string memory symbol_,
         address asset_
-    ) Pool(name_, symbol_, asset_) {
-        // solhint-disable-previous-line no-empty-blocks
+    ) Pool() {
+        initialize(name_, symbol_, asset_);
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///

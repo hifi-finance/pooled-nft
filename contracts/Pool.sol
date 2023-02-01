@@ -1,21 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./IPool.sol";
 
+import "./ERC20Wnft.sol";
+
 /// @title Pool
 /// @author Hifi
-contract Pool is IPool, ERC20 {
+contract Pool is IPool, ERC20Wnft {
     using EnumerableSet for EnumerableSet.UintSet;
-
-    /// PUBLIC STORAGE ///
-
-    /// @inheritdoc IPool
-    address public immutable override asset;
-
     /// INTERNAL STORAGE ///
 
     /// @dev The asset token IDs held in the pool.
@@ -23,12 +18,8 @@ contract Pool is IPool, ERC20 {
 
     /// CONSTRUCTOR ///
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        address asset_
-    ) ERC20(name_, symbol_) {
-        asset = asset_;
+    constructor() ERC20Wnft() {
+        // solhint-disable-previous-line no-empty-blocks
     }
 
     /// PUBLIC CONSTANT FUNCTIONS ///

@@ -18,22 +18,21 @@ interface IPool {
     /// @param to The account that received the minted pool tokens.
     event Mint(uint256[] inIds, uint256 outAmount, address indexed to);
 
-    /// @notice Emitted when an amount of pool tokens are redeemed in exchange for an equivalent amount of asset token IDs.
+    /// @notice Emitted when an amount of pool tokens are redeemed in exchange for an equivalent amount
+    /// of asset token IDs.
     /// @param inAmount The amount of pool tokens sent from the user's account to the pool.
     /// @param outIds The asset token IDs released from the pool.
     /// @param to The account that received the released asset token IDs.
     event Redeem(uint256 inAmount, uint256[] outIds, address indexed to);
 
-    /// @notice Emitted when an amount of asset token IDs are swapped in exchange for an equivalent amount of asset token IDs.
+    /// @notice Emitted when an amount of asset token IDs are swapped in exchange for an equivalent amount
+    /// of asset token IDs.
     /// @param inIds The asset token IDs sent from the user's account to the pool.
     /// @param outIds The asset token IDs released from the pool.
     /// @param to The account that received the released asset token IDs.
     event Swap(uint256[] inIds, uint256[] outIds, address indexed to);
 
     /// CONSTANT FUNCTIONS ///
-
-    /// @notice The address of the underlying ERC-721 asset.
-    function asset() external view returns (address);
 
     /// @notice Returns the asset token ID held at index.
     /// @param index The index to check.

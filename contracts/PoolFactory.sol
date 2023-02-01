@@ -38,7 +38,10 @@ contract PoolFactory is IPoolFactory {
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pooled");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
-        IPool pool = new Pool(name, symbol, asset);
+
+        bytes32 salt = keccak256(abi.encodePacked(asset));
+        Pool pool = new Pool{ salt: salt }();
+        pool.initialize(name, symbol, asset);
 
         getPool[asset] = address(pool);
         allPools.push(asset);

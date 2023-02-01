@@ -26,9 +26,6 @@ interface IVault {
 
     /// CONSTANT FUNCTIONS ///
 
-    /// @notice The address of the underlying ERC-721 asset.
-    function asset() external view returns (address);
-
     /// @notice Returns the asset token ID held for account at index.
     /// @param account The account to check.
     /// @param index The index to check.

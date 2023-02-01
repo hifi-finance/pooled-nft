@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable
 pragma solidity >=0.8.4;
 
 import "../Vault.sol";
@@ -15,8 +16,8 @@ contract GodModeVault is Vault {
         string memory name_,
         string memory symbol_,
         address asset_
-    ) Vault(name_, symbol_, asset_) {
-        // solhint-disable-previous-line no-empty-blocks
+    ) Vault() {
+        initialize(name_, symbol_, asset_);
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
