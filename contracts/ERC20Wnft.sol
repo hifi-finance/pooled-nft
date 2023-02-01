@@ -3,6 +3,8 @@ pragma solidity >=0.8.4;
 
 import "./IERC20Wnft.sol";
 
+/// @title ERC20Wnft
+/// @author Hifi
 contract ERC20Wnft is IERC20Wnft {
     /// PUBLIC STORAGE ///
 
