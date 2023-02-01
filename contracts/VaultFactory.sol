@@ -44,7 +44,7 @@ contract VaultFactory is IVaultFactory {
         vault.initialize(name, symbol, asset);
 
         getVault[asset] = address(vault);
-        allVaults.push(asset);
+        allVaults.push(address(vault));
 
         emit CreateVault(name, symbol, asset, address(vault));
     }

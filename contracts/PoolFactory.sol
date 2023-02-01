@@ -44,7 +44,7 @@ contract PoolFactory is IPoolFactory {
         pool.initialize(name, symbol, asset);
 
         getPool[asset] = address(pool);
-        allPools.push(asset);
+        allPools.push(address(pool));
 
         emit CreatePool(name, symbol, asset, address(pool));
     }
