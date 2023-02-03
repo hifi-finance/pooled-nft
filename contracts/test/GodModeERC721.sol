@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 /// @title GodModeERC721
 /// @author Hifi
 /// @dev Strictly for test purposes.
-contract GodModeERC721 is ERC721 {
+contract GodModeERC721 is ERC721Enumerable {
     /// CONSTRUCTOR ///
 
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
