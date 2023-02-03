@@ -26,6 +26,9 @@ contract ERC20Wnft is IERC20Wnft {
     /// @inheritdoc IERC20Metadata
     uint8 public constant override decimals = 18;
 
+    /// @dev version
+    string public constant version = "1";
+
     /// @inheritdoc IERC20Permit
     bytes32 public override DOMAIN_SEPARATOR;
     // solhint-disable-previous-line var-name-mixedcase
@@ -72,7 +75,7 @@ contract ERC20Wnft is IERC20Wnft {
             abi.encode(
                 keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
                 keccak256(bytes(name)),
-                keccak256(bytes("1")),
+                keccak256(bytes(version)),
                 chainId,
                 address(this)
             )
@@ -114,7 +117,7 @@ contract ERC20Wnft is IERC20Wnft {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external override {
+    ) public override {
         if (deadline < block.timestamp) {
             revert ERC20Wnft__PermitExpired();
         }
@@ -144,6 +147,27 @@ contract ERC20Wnft is IERC20Wnft {
         balanceOf[from] = balanceOf[from] - value;
         totalSupply = totalSupply - value;
         emit Transfer(from, address(0), value);
+    }
+
+    /// @dev See the documentation for the public functions that call this internal function.
+    function permitInternal(
+        uint256 amount,
+        uint256 deadline,
+        bytes memory signature
+    ) internal {
+        if (signature.length > 0) {
+            bytes32 r;
+            bytes32 s;
+            uint8 v;
+
+            // solhint-disable-next-line no-inline-assembly
+            assembly {
+                r := mload(add(signature, 0x20))
+                s := mload(add(signature, 0x40))
+                v := byte(0, mload(add(signature, 0x60)))
+            }
+            permit(msg.sender, address(this), amount, deadline, v, r, s);
+        }
     }
 
     function _approve(

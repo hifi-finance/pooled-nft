@@ -69,7 +69,7 @@ contract Vault is IVault, ERC20Wnft {
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
-    ) external override {
+    ) public override {
         if (inAmount == 0) {
             revert Vault__InsufficientIn();
         }
@@ -89,5 +89,17 @@ contract Vault is IVault, ERC20Wnft {
             }
         }
         emit Withdraw(inAmount, outIds, to);
+    }
+
+    /// @inheritdoc IVault
+    function withdrawWithSignature(
+        uint256 inAmount,
+        uint256[] calldata outIds,
+        address to,
+        uint256 deadline,
+        bytes memory signature
+    ) external override {
+        permitInternal(inAmount, deadline, signature);
+        withdraw(inAmount, outIds, to);
     }
 }

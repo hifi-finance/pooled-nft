@@ -36,11 +36,13 @@ export interface PoolInterface extends utils.Interface {
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "redeem(uint256,uint256[],address)": FunctionFragment;
+    "redeemWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
     "swap(uint256[],uint256[],address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -98,6 +100,10 @@ export interface PoolInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish[], string]
   ): string;
   encodeFunctionData(
+    functionFragment: "redeemWithSignature",
+    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "swap",
     values: [BigNumberish[], BigNumberish[], string]
   ): string;
@@ -114,6 +120,7 @@ export interface PoolInterface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
@@ -140,6 +147,10 @@ export interface PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "redeemWithSignature",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
@@ -151,6 +162,7 @@ export interface PoolInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -306,6 +318,15 @@ export interface Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     swap(
       inIds: BigNumberish[],
       outIds: BigNumberish[],
@@ -329,6 +350,8 @@ export interface Pool extends BaseContract {
       value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    version(overrides?: CallOverrides): Promise<[string]>;
   };
 
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
@@ -395,6 +418,15 @@ export interface Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  redeemWithSignature(
+    inAmount: BigNumberish,
+    outIds: BigNumberish[],
+    to: string,
+    deadline: BigNumberish,
+    signature: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   swap(
     inIds: BigNumberish[],
     outIds: BigNumberish[],
@@ -418,6 +450,8 @@ export interface Pool extends BaseContract {
     value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  version(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
@@ -487,6 +521,15 @@ export interface Pool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     swap(
       inIds: BigNumberish[],
       outIds: BigNumberish[],
@@ -510,6 +553,8 @@ export interface Pool extends BaseContract {
       value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -640,6 +685,15 @@ export interface Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     swap(
       inIds: BigNumberish[],
       outIds: BigNumberish[],
@@ -663,6 +717,8 @@ export interface Pool extends BaseContract {
       value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -739,6 +795,15 @@ export interface Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     swap(
       inIds: BigNumberish[],
       outIds: BigNumberish[],
@@ -762,5 +827,7 @@ export interface Pool extends BaseContract {
       value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

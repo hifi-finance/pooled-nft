@@ -68,7 +68,7 @@ contract Pool is IPool, ERC20Wnft {
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
-    ) external override {
+    ) public override {
         if (inAmount == 0) {
             revert Pool__InsufficientIn();
         }
@@ -88,6 +88,18 @@ contract Pool is IPool, ERC20Wnft {
             }
         }
         emit Redeem(inAmount, outIds, to);
+    }
+
+    /// @inheritdoc IPool
+    function redeemWithSignature(
+        uint256 inAmount,
+        uint256[] calldata outIds,
+        address to,
+        uint256 deadline,
+        bytes memory signature
+    ) external override {
+        permitInternal(inAmount, deadline, signature);
+        redeem(inAmount, outIds, to);
     }
 
     /// @inheritdoc IPool

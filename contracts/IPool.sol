@@ -47,7 +47,7 @@ interface IPool {
     ///
     /// @dev Emits a {Mint} event.
     ///
-    /// Requirements:
+    /// @dev Requirements:
     ///
     /// - The length of `inIds` must be greater than zero.
     /// - The length of `inIds` scaled to 18 decimals must match the value of `outAmount`.
@@ -66,7 +66,7 @@ interface IPool {
     ///
     /// @dev Emits a {Redeem} event.
     ///
-    /// Requirements:
+    /// @dev Requirements:
     ///
     /// - The value of `inAmount` must be greater than zero.
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
@@ -81,11 +81,35 @@ interface IPool {
         address to
     ) external;
 
+    /// @notice Redeem an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
+    ///
+    /// @dev Emits a {Redeem} event.
+    ///
+    /// @dev Requirements:
+    /// - The `signature` must be a valid signed approval given by the caller to the Pool to spend `inAmount`
+    ///  pool tokens for the given `deadline` and the caller's current nonce.
+    /// - The value of `inAmount` must be greater than zero.
+    /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
+    /// - The address `to` must not be the zero address.
+    ///
+    /// @param inAmount The amount of pool tokens sent from the user's account to the pool.
+    /// @param outIds The asset token IDs to be released from the pool.
+    /// @param to The account that receives the released asset token IDs.
+    /// @param deadline The deadline beyond which the signature is not valid anymore.
+    /// @param signature The packed signature for Pool.
+    function redeemWithSignature(
+        uint256 inAmount,
+        uint256[] calldata outIds,
+        address to,
+        uint256 deadline,
+        bytes memory signature
+    ) external;
+
     /// @notice Swap asset token IDs in user's account in exchange for asset token IDs in the pool.
     ///
     /// @dev Emits a {Swap} event.
     ///
-    /// Requirements:
+    /// @dev Requirements:
     ///
     /// - The length of `inIds` must be greater than zero.
     /// - The length of `inIds` must match the length of `outIds`.

@@ -39,7 +39,9 @@ export interface VaultInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "version()": FunctionFragment;
     "withdraw(uint256,uint256[],address)": FunctionFragment;
+    "withdrawWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -105,9 +107,14 @@ export interface VaultInterface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
     values: [BigNumberish, BigNumberish[], string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawWithSignature",
+    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -144,7 +151,12 @@ export interface VaultInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawWithSignature",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -305,10 +317,21 @@ export interface Vault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    version(overrides?: CallOverrides): Promise<[string]>;
+
     withdraw(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -394,10 +417,21 @@ export interface Vault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  version(overrides?: CallOverrides): Promise<string>;
+
   withdraw(
     inAmount: BigNumberish,
     outIds: BigNumberish[],
     to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawWithSignature(
+    inAmount: BigNumberish,
+    outIds: BigNumberish[],
+    to: string,
+    deadline: BigNumberish,
+    signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -483,10 +517,21 @@ export interface Vault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    version(overrides?: CallOverrides): Promise<string>;
+
     withdraw(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -630,10 +675,21 @@ export interface Vault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    version(overrides?: CallOverrides): Promise<BigNumber>;
+
     withdraw(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -726,10 +782,21 @@ export interface Vault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     withdraw(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
