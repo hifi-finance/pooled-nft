@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity >=0.8.4 <0.9.0;
+import "forge-std/Test.sol";
+import { GodModeERC721 } from "../../contracts/test/GodModeERC721.sol";
+
+/// @title BaseTest
+/// @author Hifi
+/// @notice Common contract members needed across test contracts.
+abstract contract BaseTest is Test {
+    /// STRUCTS ///
+    struct Users {
+        address payable alice;
+        address payable admin;
+        address payable bob;
+    }
+
+    /// TESTING CONTRACTS ///
+    GodModeERC721 internal nft = new GodModeERC721("God Mode NFT", "GMNFT");
+    Users internal users;
+
+    /// SETUP FUNCTION ///
+    /// @dev A setup function invoked before each test case.
+    function setUp() public virtual {
+        // Create users for testing.
+        users = Users({ alice: createUser("Alice"), admin: createUser("Admin"), bob: createUser("Bob") });
+
+        // Make the admin the default caller in all subsequent tests.
+        changePrank(users.admin);
+    }
+
+    /// INTERNAL NON-CONSTANT FUNCTIONS ///
+
+    /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH and 1 nft.
+    function createUser(string memory name) internal returns (address payable addr) {
+        addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
+        vm.label({ account: addr, newLabel: name });
+        vm.deal({ account: addr, newBalance: 100 ether });
+    }
+}
