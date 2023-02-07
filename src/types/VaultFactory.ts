@@ -20,15 +20,10 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface VaultFactoryInterface extends utils.Interface {
   contractName: "VaultFactory";
   functions: {
-<<<<<<< HEAD
-    "createVault(string,string,address)": FunctionFragment;
-    "vaults(address)": FunctionFragment;
-=======
     "allVaults(uint256)": FunctionFragment;
     "allVaultsLength()": FunctionFragment;
     "createVault(address)": FunctionFragment;
     "getVault(address)": FunctionFragment;
->>>>>>> origin/main
   };
 
   encodeFunctionData(
@@ -39,12 +34,8 @@ export interface VaultFactoryInterface extends utils.Interface {
     functionFragment: "allVaultsLength",
     values?: undefined
   ): string;
-<<<<<<< HEAD
-  encodeFunctionData(functionFragment: "vaults", values: [string]): string;
-=======
   encodeFunctionData(functionFragment: "createVault", values: [string]): string;
   encodeFunctionData(functionFragment: "getVault", values: [string]): string;
->>>>>>> origin/main
 
   decodeFunctionResult(functionFragment: "allVaults", data: BytesLike): Result;
   decodeFunctionResult(
@@ -55,11 +46,7 @@ export interface VaultFactoryInterface extends utils.Interface {
     functionFragment: "createVault",
     data: BytesLike
   ): Result;
-<<<<<<< HEAD
-  decodeFunctionResult(functionFragment: "vaults", data: BytesLike): Result;
-=======
   decodeFunctionResult(functionFragment: "getVault", data: BytesLike): Result;
->>>>>>> origin/main
 
   events: {
     "CreateVault(string,string,address,address)": EventFragment;
@@ -112,11 +99,7 @@ export interface VaultFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-<<<<<<< HEAD
-    vaults(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
-=======
     getVault(arg0: string, overrides?: CallOverrides): Promise<[string]>;
->>>>>>> origin/main
   };
 
   allVaults(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
@@ -128,19 +111,6 @@ export interface VaultFactory extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-<<<<<<< HEAD
-  vaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  callStatic: {
-    createVault(
-      name: string,
-      symbol: string,
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    vaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-=======
   getVault(arg0: string, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -151,7 +121,6 @@ export interface VaultFactory extends BaseContract {
     createVault(asset: string, overrides?: CallOverrides): Promise<void>;
 
     getVault(arg0: string, overrides?: CallOverrides): Promise<string>;
->>>>>>> origin/main
   };
 
   filters: {
@@ -182,11 +151,7 @@ export interface VaultFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-<<<<<<< HEAD
-    vaults(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-=======
     getVault(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
->>>>>>> origin/main
   };
 
   populateTransaction: {
@@ -202,11 +167,7 @@ export interface VaultFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-<<<<<<< HEAD
-    vaults(
-=======
     getVault(
->>>>>>> origin/main
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
