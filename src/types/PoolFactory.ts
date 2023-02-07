@@ -4,6 +4,7 @@
 import {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -19,18 +20,42 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface PoolFactoryInterface extends utils.Interface {
   contractName: "PoolFactory";
   functions: {
+<<<<<<< HEAD
     "createPool(string,string,address)": FunctionFragment;
     "pools(address)": FunctionFragment;
+=======
+    "allPools(uint256)": FunctionFragment;
+    "allPoolsLength()": FunctionFragment;
+    "createPool(address)": FunctionFragment;
+    "getPool(address)": FunctionFragment;
+>>>>>>> origin/main
   };
 
   encodeFunctionData(
-    functionFragment: "createPool",
-    values: [string, string, string]
+    functionFragment: "allPools",
+    values: [BigNumberish]
   ): string;
+<<<<<<< HEAD
   encodeFunctionData(functionFragment: "pools", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pools", data: BytesLike): Result;
+=======
+  encodeFunctionData(
+    functionFragment: "allPoolsLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "createPool", values: [string]): string;
+  encodeFunctionData(functionFragment: "getPool", values: [string]): string;
+
+  decodeFunctionResult(functionFragment: "allPools", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "allPoolsLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPool", data: BytesLike): Result;
+>>>>>>> origin/main
 
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
@@ -74,23 +99,32 @@ export interface PoolFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    allPoolsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+<<<<<<< HEAD
     pools(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+=======
+    getPool(arg0: string, overrides?: CallOverrides): Promise<[string]>;
+>>>>>>> origin/main
   };
 
+  allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
   createPool(
-    name: string,
-    symbol: string,
     asset: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+<<<<<<< HEAD
   pools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   callStatic: {
@@ -102,6 +136,18 @@ export interface PoolFactory extends BaseContract {
     ): Promise<void>;
 
     pools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+=======
+  getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  callStatic: {
+    allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    createPool(asset: string, overrides?: CallOverrides): Promise<void>;
+
+    getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
+>>>>>>> origin/main
   };
 
   filters: {
@@ -120,25 +166,40 @@ export interface PoolFactory extends BaseContract {
   };
 
   estimateGas: {
+    allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+<<<<<<< HEAD
     pools(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+=======
+    getPool(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+>>>>>>> origin/main
   };
 
   populateTransaction: {
+    allPools(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    allPoolsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     createPool(
-      name: string,
-      symbol: string,
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+<<<<<<< HEAD
     pools(
+=======
+    getPool(
+>>>>>>> origin/main
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

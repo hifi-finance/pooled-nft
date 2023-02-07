@@ -26,9 +26,6 @@ interface IVault {
 
     /// CONSTANT FUNCTIONS ///
 
-    /// @notice The address of the underlying ERC-721 asset.
-    function asset() external view returns (address);
-
     /// @notice Returns the asset token ID held for account at index.
     /// @param account The account to check.
     /// @param index The index to check.
@@ -44,7 +41,7 @@ interface IVault {
     ///
     /// @dev Emits a {Deposit} event.
     ///
-    /// Requirements:
+    /// @dev Requirements:
     ///
     /// - The length of `inIds` must be greater than zero.
     /// - The length of `inIds` scaled to 18 decimals must match the value of `outAmount`.
@@ -63,7 +60,7 @@ interface IVault {
     ///
     /// @dev Emits a {Withdraw} event.
     ///
-    /// Requirements:
+    /// @dev Requirements:
     ///
     /// - The value of `inAmount` must be greater than zero.
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
@@ -76,5 +73,30 @@ interface IVault {
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
+    ) external;
+
+    /// @notice Withdraw asset token IDs and burn an equivalent amount of vault tokens.
+    ///
+    /// @dev Emits a {Withdraw} event.
+    ///
+    /// @dev Requirements:
+    ///
+    /// - The `signature` must be a valid signed approval given by the caller to the Vault to spend `inAmount`
+    ///  vault tokens for the given `deadline` and the caller's current nonce.
+    /// - The value of `inAmount` must be greater than zero.
+    /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
+    /// - The address `to` must not be the zero address.
+    ///
+    /// @param inAmount The amount of vault tokens sent from the user's account to the vault.
+    /// @param outIds The asset token IDs to be released from the vault.
+    /// @param to The account that receives the released asset token IDs.
+    /// @param deadline The deadline beyond which the signature is not valid anymore.
+    /// @param signature The packed signature for Pool.
+    function withdrawWithSignature(
+        uint256 inAmount,
+        uint256[] calldata outIds,
+        address to,
+        uint256 deadline,
+        bytes memory signature
     ) external;
 }

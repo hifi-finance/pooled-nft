@@ -20,25 +20,39 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface PoolInterface extends utils.Interface {
   contractName: "Pool";
   functions: {
+    "DOMAIN_SEPARATOR()": FunctionFragment;
+    "PERMIT_TYPEHASH()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
-    "decreaseAllowance(address,uint256)": FunctionFragment;
+    "factory()": FunctionFragment;
     "holdingAt(uint256)": FunctionFragment;
     "holdingsLength()": FunctionFragment;
-    "increaseAllowance(address,uint256)": FunctionFragment;
+    "initialize(string,string,address)": FunctionFragment;
     "mint(uint256[],uint256,address)": FunctionFragment;
     "name()": FunctionFragment;
+    "nonces(address)": FunctionFragment;
+    "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "redeem(uint256,uint256[],address)": FunctionFragment;
+    "redeemWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
     "swap(uint256[],uint256[],address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PERMIT_TYPEHASH",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
@@ -50,10 +64,7 @@ export interface PoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "decreaseAllowance",
-    values: [string, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "holdingAt",
     values: [BigNumberish]
@@ -63,17 +74,34 @@ export interface PoolInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "increaseAllowance",
-    values: [string, BigNumberish]
+    functionFragment: "initialize",
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
     values: [BigNumberish[], BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "nonces", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "permit",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "redeem",
     values: [BigNumberish, BigNumberish[], string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "redeemWithSignature",
+    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "swap",
@@ -92,28 +120,37 @@ export interface PoolInterface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PERMIT_TYPEHASH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "decreaseAllowance",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "holdingAt", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "holdingsLength",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "increaseAllowance",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "redeemWithSignature",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
@@ -125,9 +162,11 @@ export interface PoolInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "Initialize(string,string,address)": EventFragment;
     "Mint(uint256[],uint256,address)": EventFragment;
     "Redeem(uint256,uint256[],address)": EventFragment;
     "Swap(uint256[],uint256[],address)": EventFragment;
@@ -135,6 +174,7 @@ export interface PoolInterface extends utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Swap"): EventFragment;
@@ -147,6 +187,13 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export type InitializeEvent = TypedEvent<
+  [string, string, string],
+  { name: string; symbol: string; asset: string }
+>;
+
+export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
 
 export type MintEvent = TypedEvent<
   [BigNumber[], BigNumber, string],
@@ -204,29 +251,29 @@ export interface Pool extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
     allowance(
-      owner: string,
-      spender: string,
+      arg0: string,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     asset(overrides?: CallOverrides): Promise<[string]>;
 
-    balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    balanceOf(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    factory(overrides?: CallOverrides): Promise<[string]>;
 
     holdingAt(
       index: BigNumberish,
@@ -235,9 +282,10 @@ export interface Pool extends BaseContract {
 
     holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
+    initialize(
+      name_: string,
+      symbol_: string,
+      asset_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -250,10 +298,32 @@ export interface Pool extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
+    nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     redeem(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -270,49 +340,52 @@ export interface Pool extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    version(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+
+  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
   allowance(
-    owner: string,
-    spender: string,
+    arg0: string,
+    arg1: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   approve(
     spender: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   asset(overrides?: CallOverrides): Promise<string>;
 
-  balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+  balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
-  decreaseAllowance(
-    spender: string,
-    subtractedValue: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  factory(overrides?: CallOverrides): Promise<string>;
 
   holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
-  increaseAllowance(
-    spender: string,
-    addedValue: BigNumberish,
+  initialize(
+    name_: string,
+    symbol_: string,
+    asset_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -325,10 +398,32 @@ export interface Pool extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
+  nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  permit(
+    owner: string,
+    spender: string,
+    value: BigNumberish,
+    deadline: BigNumberish,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   redeem(
     inAmount: BigNumberish,
     outIds: BigNumberish[],
     to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  redeemWithSignature(
+    inAmount: BigNumberish,
+    outIds: BigNumberish[],
+    to: string,
+    deadline: BigNumberish,
+    signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -345,41 +440,43 @@ export interface Pool extends BaseContract {
 
   transfer(
     to: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   transferFrom(
     from: string,
     to: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  version(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
     allowance(
-      owner: string,
-      spender: string,
+      arg0: string,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     asset(overrides?: CallOverrides): Promise<string>;
 
-    balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+    balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    factory(overrides?: CallOverrides): Promise<string>;
 
     holdingAt(
       index: BigNumberish,
@@ -388,11 +485,12 @@ export interface Pool extends BaseContract {
 
     holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
+    initialize(
+      name_: string,
+      symbol_: string,
+      asset_: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     mint(
       inIds: BigNumberish[],
@@ -403,10 +501,32 @@ export interface Pool extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
+    nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     redeem(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -423,16 +543,18 @@ export interface Pool extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -446,6 +568,17 @@ export interface Pool extends BaseContract {
       spender?: string | null,
       value?: null
     ): ApprovalEventFilter;
+
+    "Initialize(string,string,address)"(
+      name?: null,
+      symbol?: null,
+      asset?: string | null
+    ): InitializeEventFilter;
+    Initialize(
+      name?: null,
+      symbol?: null,
+      asset?: string | null
+    ): InitializeEventFilter;
 
     "Mint(uint256[],uint256,address)"(
       inIds?: null,
@@ -485,29 +618,29 @@ export interface Pool extends BaseContract {
   };
 
   estimateGas: {
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
     allowance(
-      owner: string,
-      spender: string,
+      arg0: string,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     asset(overrides?: CallOverrides): Promise<BigNumber>;
 
-    balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+    balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     holdingAt(
       index: BigNumberish,
@@ -516,9 +649,10 @@ export interface Pool extends BaseContract {
 
     holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
+    initialize(
+      name_: string,
+      symbol_: string,
+      asset_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -531,10 +665,32 @@ export interface Pool extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
+    nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     redeem(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -551,45 +707,47 @@ export interface Pool extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     allowance(
-      owner: string,
-      spender: string,
+      arg0: string,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     balanceOf(
-      account: string,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     holdingAt(
       index: BigNumberish,
@@ -598,9 +756,10 @@ export interface Pool extends BaseContract {
 
     holdingsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
+    initialize(
+      name_: string,
+      symbol_: string,
+      asset_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -613,10 +772,35 @@ export interface Pool extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    nonces(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     redeem(
       inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    redeemWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -633,15 +817,17 @@ export interface Pool extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

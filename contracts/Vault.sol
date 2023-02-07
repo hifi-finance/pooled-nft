@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./IVault.sol";
 
+import "./ERC20Wnft.sol";
+
 /// @title Vault
 /// @author Hifi
-contract Vault is IVault, ERC20 {
+contract Vault is IVault, ERC20Wnft {
     using EnumerableSet for EnumerableSet.UintSet;
-
-    /// PUBLIC STORAGE ///
-
-    /// @inheritdoc IVault
-    address public immutable override asset;
 
     /// INTERNAL STORAGE ///
 
@@ -23,12 +19,8 @@ contract Vault is IVault, ERC20 {
 
     /// CONSTRUCTOR ///
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        address asset_
-    ) ERC20(name_, symbol_) {
-        asset = asset_;
+    constructor() ERC20Wnft() {
+        // solhint-disable-previous-line no-empty-blocks
     }
 
     /// PUBLIC CONSTANT FUNCTIONS ///
@@ -77,7 +69,7 @@ contract Vault is IVault, ERC20 {
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
-    ) external override {
+    ) public override {
         if (inAmount == 0) {
             revert Vault__InsufficientIn();
         }
@@ -97,5 +89,17 @@ contract Vault is IVault, ERC20 {
             }
         }
         emit Withdraw(inAmount, outIds, to);
+    }
+
+    /// @inheritdoc IVault
+    function withdrawWithSignature(
+        uint256 inAmount,
+        uint256[] calldata outIds,
+        address to,
+        uint256 deadline,
+        bytes memory signature
+    ) external override {
+        permitInternal(inAmount, deadline, signature);
+        withdraw(inAmount, outIds, to);
     }
 }

@@ -1,8 +1,10 @@
 import { AddressZero } from "@ethersproject/constants";
 import { parseEther } from "@ethersproject/units";
 import { expect } from "chai";
+import hre from "hardhat";
 
-import { PoolErrors } from "../../errors";
+import { ERC20WnftErrors, PoolErrors } from "../../errors";
+import { signERC2612Permit } from "../../shared/utils";
 
 export function shouldBehaveLikePool(): void {
   describe("Deployment", function () {
@@ -180,6 +182,123 @@ export function shouldBehaveLikePool(): void {
                 .to.emit(this.contracts.pool, "Redeem")
                 .withArgs(this.inAmount, this.outIds, this.to);
               expect(await this.contracts.pool.holdingsLength()).to.be.equal("0");
+            });
+          });
+        });
+      });
+    });
+
+    describe("redeemWithSignature", function () {
+      context("when permit is expired", function () {
+        beforeEach(async function () {
+          this.inAmount = "0";
+          this.to = this.signers.alice.address;
+          this.deadline = (await hre.ethers.provider.getBlock("latest")).timestamp;
+          this.signature = await signERC2612Permit({
+            provider: hre.ethers.provider as any,
+            verifyingContract: this.contracts.pool.address,
+            ownerAddress: this.signers.alice.address,
+            spenderAddress: this.contracts.pool.address,
+            amount: this.inAmount,
+            deadline: this.deadline,
+          });
+        });
+
+        it("reverts", async function () {
+          await expect(
+            this.contracts.pool
+              .connect(this.signers.alice)
+              .redeemWithSignature(this.inAmount, [], this.to, this.deadline, this.signature),
+          ).to.be.revertedWith(ERC20WnftErrors.PermitExpired);
+        });
+      });
+
+      context("when permit is not expired", function () {
+        context("when recovered address is invalid", function () {
+          beforeEach(async function () {
+            this.inAmount = "0";
+            this.to = this.signers.alice.address;
+            this.deadline = (await hre.ethers.provider.getBlock("latest")).timestamp + 100;
+            this.signature = await signERC2612Permit({
+              provider: hre.ethers.provider as any,
+              verifyingContract: this.contracts.pool.address,
+              ownerAddress: this.signers.bob.address,
+              spenderAddress: this.contracts.pool.address,
+              amount: this.inAmount,
+              deadline: this.deadline,
+            });
+          });
+
+          it("reverts", async function () {
+            await expect(
+              this.contracts.pool
+                .connect(this.signers.alice)
+                .redeemWithSignature(this.inAmount, [], this.to, this.deadline, this.signature),
+            ).to.be.revertedWith(ERC20WnftErrors.InvalidSignature);
+          });
+        });
+
+        context("when recovered address is valid", function () {
+          context("when `inAmount` is zero", function () {
+            beforeEach(async function () {
+              this.inAmount = "0";
+              this.to = this.signers.alice.address;
+            });
+
+            it("reverts", async function () {
+              await expect(
+                this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, [], this.to),
+              ).to.be.revertedWith(PoolErrors.INSUFFICIENT_IN);
+            });
+          });
+
+          context("when `inAmount` is not zero", function () {
+            beforeEach(async function () {
+              this.inAmount = parseEther("3");
+              this.to = this.signers.alice.address;
+              await this.contracts.pool.__godMode_mint(this.to, this.inAmount);
+            });
+
+            context("when `inAmount` does not match length of `outIds`", function () {
+              beforeEach(async function () {
+                this.outIds = ["0", "1", "2", "3"];
+              });
+
+              it("reverts", async function () {
+                await expect(
+                  this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, this.outIds, this.to),
+                ).to.be.revertedWith(PoolErrors.IN_OUT_MISMATCH);
+              });
+            });
+
+            context("when `inAmount` matches length of `outIds`", function () {
+              beforeEach(async function () {
+                this.outIds = ["0", "1", "2"];
+                this.to = this.signers.alice.address;
+                await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.pool.address, this.to, "0").returns();
+                await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.pool.address, this.to, "1").returns();
+                await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.pool.address, this.to, "2").returns();
+              });
+
+              context("when `to` is the zero address", function () {
+                it("reverts", async function () {
+                  await expect(
+                    this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, this.outIds, AddressZero),
+                  ).to.be.revertedWith(PoolErrors.INVALID_TO);
+                });
+              });
+
+              context("when `to` is not the zero address", function () {
+                it("succeeds", async function () {
+                  const contractCall = this.contracts.pool
+                    .connect(this.signers.alice)
+                    .redeem(this.inAmount, this.outIds, this.to);
+                  await expect(contractCall)
+                    .to.emit(this.contracts.pool, "Redeem")
+                    .withArgs(this.inAmount, this.outIds, this.to);
+                  expect(await this.contracts.pool.holdingsLength()).to.be.equal("0");
+                });
+              });
             });
           });
         });

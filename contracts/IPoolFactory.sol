@@ -6,6 +6,7 @@ pragma solidity >=0.8.4;
 interface IPoolFactory {
     /// CUSTOM ERRORS ///
 
+    error PoolFactory__DoesNotImplementIERC721Metadata();
     error PoolFactory__PoolAlreadyExists();
 
     /// EVENTS ///
@@ -19,11 +20,15 @@ interface IPoolFactory {
 
     /// CONSTANT FUNCTIONS ///
 
-    /// @notice Cheacks if the pool already exists or not.
-    ///
+    /// @notice Returns the pool of the given asset token.
     /// @param asset The underlying ERC-721 asset contract address.
-    /// @return bool true = pool exists, otherwise not.
-    function pools(address asset) external view returns (bool);
+    function getPool(address asset) external view returns (address pool);
+
+    /// @notice Returns the list of all pools.
+    function allPools(uint256) external view returns (address pool);
+
+    /// @notice Returns the length of the pools list.
+    function allPoolsLength() external view returns (uint256);
 
     /// NON-CONSTANT FUNCTIONS ///
 
@@ -31,12 +36,9 @@ interface IPoolFactory {
     ///
     /// @dev Emits a {CreatePool} event.
     ///
-    /// @param name The ERC-20 name of the pool.
-    /// @param symbol The ERC-20 symbol of the pool.
+    /// @dev Requirements:
+    /// - Can only create one pool per asset.
+    ///
     /// @param asset The underlying ERC-721 asset contract address.
-    function createPool(
-        string calldata name,
-        string calldata symbol,
-        address asset
-    ) external;
+    function createPool(address asset) external;
 }

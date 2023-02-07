@@ -6,7 +6,8 @@ pragma solidity >=0.8.4;
 interface IVaultFactory {
     /// CUSTOM ERRORS ///
 
-    error Vault__VaultAlreadyExists();
+    error VaultFactory__DoesNotImplementIERC721Metadata();
+    error VaultFactory__VaultAlreadyExists();
 
     /// EVENTS ///
 
@@ -19,11 +20,15 @@ interface IVaultFactory {
 
     /// CONSTANT FUNCTIONS ///
 
-    /// @notice Cheacks if the vault already exists or not.
-    ///
+    /// @notice Returns the vault of the given asset token.
     /// @param asset The underlying ERC-721 asset contract address.
-    /// @return bool true = vault exists, otherwise not.
-    function vaults(address asset) external view returns (bool);
+    function getVault(address asset) external view returns (address vault);
+
+    /// @notice Returns the list of all vaults.
+    function allVaults(uint256) external view returns (address vault);
+
+    /// @notice Returns the length of the vaults list.
+    function allVaultsLength() external view returns (uint256);
 
     /// NON-CONSTANT FUNCTIONS ///
 
@@ -31,12 +36,9 @@ interface IVaultFactory {
     ///
     /// @dev Emits a {CreateVault} event.
     ///
-    /// @param name The ERC-20 name of the vault.
-    /// @param symbol The ERC-20 symbol of the vault.
+    /// @dev Requirements:
+    /// - Can only create one vault per asset.
+    ///
     /// @param asset The underlying ERC-721 asset contract address.
-    function createVault(
-        string calldata name,
-        string calldata symbol,
-        address asset
-    ) external;
+    function createVault(address asset) external;
 }
