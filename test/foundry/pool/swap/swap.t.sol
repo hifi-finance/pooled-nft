@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
+
 import "forge-std/console2.sol";
 import { IPool } from "contracts/IPool.sol";
 import { PoolTest } from "../Pool.t.sol";
@@ -37,20 +38,30 @@ contract Swap_Test is PoolTest {
         pool.swap(inIds, outIds, beneficiary);
     }
 
-    /// @dev it should swap inIds for outIds.
-
-    function testFuzz_Swap(address beneficiary) external {
+    /// @dev Common set up for swap
+    function setUpSwap(
+        address beneficiary,
+        uint256[] memory outIds,
+        uint256[] memory inIds
+    ) internal {
         vm.assume(beneficiary != address(0));
+
+        mintNft(address(pool), outIds);
+        changePrank(beneficiary);
+
+        mintNft(beneficiary, inIds);
+        nft.setApprovalForAll(address(pool), true);
+    }
+
+    /// @dev it should swap inIds for outIds.
+    function testFuzz_Swap(address beneficiary) external {
         uint256[] memory outIds = new uint256[](2);
         outIds[0] = 1;
         outIds[1] = 2;
-        mintPoolTokens(beneficiary, outIds);
-        changePrank(beneficiary);
         uint256[] memory inIds = new uint256[](2);
         inIds[0] = 3;
         inIds[1] = 4;
-        mintNft(beneficiary, inIds);
-        nft.setApprovalForAll(address(pool), true);
+        setUpSwap(beneficiary, outIds, inIds);
         address expectedOwnerOfOutIds = beneficiary;
         address expectedOwnerOfInIds = address(pool);
         pool.swap(inIds, outIds, beneficiary);
@@ -64,18 +75,14 @@ contract Swap_Test is PoolTest {
     }
 
     /// @dev it should emit Swap event.
-
     function testFuzz_Swap_Event(address beneficiary) external {
-        vm.assume(beneficiary != address(0));
         uint256[] memory outIds = new uint256[](2);
         outIds[0] = 1;
         outIds[1] = 2;
-        mintPoolTokens(beneficiary, outIds);
-        changePrank(beneficiary);
         uint256[] memory inIds = new uint256[](2);
         inIds[0] = 3;
         inIds[1] = 4;
-        mintNft(beneficiary, inIds);
+        setUpSwap(beneficiary, outIds, inIds);
         nft.setApprovalForAll(address(pool), true);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit Swap(inIds, outIds, beneficiary);

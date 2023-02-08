@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
+
 import { IVault } from "contracts/IVault.sol";
 import { VaultTest } from "../Vault.t.sol";
 
@@ -30,12 +31,29 @@ contract Withdraw_Test is VaultTest {
         vault.withdraw(inAmount, outIds, beneficiary);
     }
 
+    /// @dev Common set up for redeem
+    function setUpRedeem(address beneficiary, uint256[] memory outIds) internal {
+        vm.assume(outIds.length != 0);
+        vm.assume(beneficiary != address(0));
+        vm.assume(beneficiary != address(vault));
+
+        //assume each inIds value is unique
+        for (uint256 i = 0; i < outIds.length; i++) {
+            for (uint256 j = i + 1; j < outIds.length; j++) {
+                vm.assume(outIds[i] != outIds[j]);
+            }
+        }
+        // mint nft to vault
+        mintNft(address(vault), outIds);
+        // Mint vault tokens so that we have what to burn.
+        uint256 inAmount = outIds.length * 10**18;
+        vault.__godMode_mint(beneficiary, inAmount);
+        changePrank(beneficiary);
+    }
+
     /// @dev it should burn vault token inAmount.
     function testFuzz_Withdraw_BurnVaultTokenInAmount(address beneficiary, uint256[] memory outIds) external {
-        checkAssumptions(beneficiary, outIds);
-        // Mint vault tokens so that we have what to burn below.
-        mintVaultTokens(beneficiary, outIds);
-
+        setUpRedeem(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         uint256 previousBalance = vault.balanceOf(beneficiary);
         vault.withdraw(inAmount, outIds, beneficiary);
@@ -46,11 +64,9 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should remove tokenIds from holdings.
     function testFuzz_Withdraw_RemoveAssetTokenIdsfromHoldings(address beneficiary, uint256[] memory outIds) external {
-        checkAssumptions(beneficiary, outIds);
-        vm.assume(beneficiary != address(vault));
-        // Mint vault tokens so that we have what to burn below.
-        mintVaultTokens(beneficiary, outIds);
+        setUpRedeem(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
+        vault.__godMode_setHoldings(beneficiary, outIds);
         uint256 previousHoldingsLength = vault.holdingsLength(beneficiary);
         vault.withdraw(inAmount, outIds, beneficiary);
         uint256 actualHoldingsLength = vault.holdingsLength(beneficiary);
@@ -60,9 +76,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should transfer nft from vault contract to beneficiary
     function testFuzz_Withdraw_TransferNftOutIdsToBeneficiary(address beneficiary, uint256[] memory outIds) external {
-        checkAssumptions(beneficiary, outIds);
-        // Mint vault tokens so that we have what to burn below.
-        mintVaultTokens(beneficiary, outIds);
+        setUpRedeem(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         uint256 previousBalance = nft.balanceOf(beneficiary);
         vault.withdraw(inAmount, outIds, beneficiary);
@@ -73,9 +87,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should emit Withdraw event.
     function testFuzz_Withdraw_Event(address beneficiary, uint256[] memory outIds) external {
-        checkAssumptions(beneficiary, outIds);
-        // Mint vault tokens so that we have what to burn below.
-        mintVaultTokens(beneficiary, outIds);
+        setUpRedeem(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit Withdraw(inAmount, outIds, beneficiary);

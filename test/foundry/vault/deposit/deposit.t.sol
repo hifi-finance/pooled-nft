@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
+
 import { IVault } from "contracts/IVault.sol";
 import { VaultTest } from "../Vault.t.sol";
 
@@ -29,10 +30,27 @@ contract Deposit_Test is VaultTest {
         vault.deposit(inIds, outAmount, beneficiary);
     }
 
+    /// @dev Common set up for deposit
+    function setUpDeposit(address beneficiary, uint256[] memory inIds) internal {
+        vm.assume(inIds.length != 0);
+        vm.assume(beneficiary != address(0));
+        vm.assume(beneficiary != address(vault));
+        //assume each inIds value is unique
+        for (uint256 i = 0; i < inIds.length; i++) {
+            for (uint256 j = i + 1; j < inIds.length; j++) {
+                vm.assume(inIds[i] != inIds[j]);
+            }
+        }
+        mintNft(beneficiary, inIds);
+        changePrank(beneficiary);
+        nft.setApprovalForAll(address(vault), true);
+    }
+
     /// @dev it should add given tokenIds to holdings.
     function testFuzz_Deposit_AddAssetTokenIdsToHoldings(address beneficiary, uint256[] memory inIds) external {
-        checkAssumptions(beneficiary, inIds);
-        mintVaultTokens(beneficiary, inIds);
+        setUpDeposit(beneficiary, inIds);
+        uint256 outAmount = inIds.length * 10**18;
+        vault.deposit(inIds, outAmount, beneficiary);
         for (uint256 i; i < inIds.length; ++i) {
             assertEq(vault.holdingAt(beneficiary, i), inIds[i], "holding at");
         }
@@ -40,9 +58,10 @@ contract Deposit_Test is VaultTest {
 
     /// @dev it should transfer nft from msg.sender to vault contract.
     function testFuzz_Deposit_TransferNftFromSender(address beneficiary, uint256[] memory inIds) external {
-        checkAssumptions(beneficiary, inIds);
+        setUpDeposit(beneficiary, inIds);
+        uint256 outAmount = inIds.length * 10**18;
         uint256 previousBalance = nft.balanceOf(address(vault));
-        mintVaultTokens(beneficiary, inIds);
+        vault.deposit(inIds, outAmount, beneficiary);
         uint256 actualBalance = nft.balanceOf(address(vault));
         uint256 expectedBalance = previousBalance + inIds.length;
         assertEq(actualBalance, expectedBalance, "transferFrom");
@@ -50,9 +69,10 @@ contract Deposit_Test is VaultTest {
 
     /// @dev it should transfer vault tokens to beneficiary.
     function testFuzz_Deposit_TransferVaultTokensToBeneficiary(address beneficiary, uint256[] memory inIds) external {
-        checkAssumptions(beneficiary, inIds);
+        setUpDeposit(beneficiary, inIds);
+        uint256 outAmount = inIds.length * 10**18;
         uint256 previousBalance = vault.balanceOf(beneficiary);
-        mintVaultTokens(beneficiary, inIds);
+        vault.deposit(inIds, outAmount, beneficiary);
         uint256 actualBalance = vault.balanceOf(beneficiary);
         uint256 expectedBalance = previousBalance + inIds.length * 10**18;
         assertEq(actualBalance, expectedBalance, "mint vault tokens");
@@ -60,11 +80,8 @@ contract Deposit_Test is VaultTest {
 
     /// @dev it should emit Deposit event.
     function testFuzz_Deposit_Event(address beneficiary, uint256[] memory inIds) external {
-        checkAssumptions(beneficiary, inIds);
-        mintNft(beneficiary, inIds);
+        setUpDeposit(beneficiary, inIds);
         uint256 outAmount = inIds.length * 10**18;
-        changePrank(beneficiary);
-        nft.setApprovalForAll(address(vault), true);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit Deposit(inIds, outAmount, beneficiary);
         vault.deposit(inIds, outAmount, beneficiary);

@@ -1,24 +1,35 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
+
 import "forge-std/Test.sol";
 import { GodModeERC721 } from "../../contracts/test/GodModeERC721.sol";
+import { RandomNFT } from "./Mocks/RandomNFT.sol";
 
 /// @title BaseTest
 /// @author Hifi
 /// @notice Common contract members needed across test contracts.
 abstract contract BaseTest is Test {
-    /// STRUCTS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                      STRUCTS
+    //////////////////////////////////////////////////////////////////////////*/
+
     struct Users {
         address payable alice;
         address payable admin;
         address payable bob;
     }
 
-    /// TESTING CONTRACTS ///
-    GodModeERC721 internal nft = new GodModeERC721("God Mode NFT", "GMNFT");
+    /*//////////////////////////////////////////////////////////////////////////
+                                 TESTING CONTRACTS
+    //////////////////////////////////////////////////////////////////////////*/
+    GodModeERC721 internal nft = new GodModeERC721("MOCK NFT", "MOCK");
+    RandomNFT internal randomNft = new RandomNFT();
     Users internal users;
 
-    /// SETUP FUNCTION ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                   SETUP FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
+
     /// @dev A setup function invoked before each test case.
     function setUp() public virtual {
         // Create users for testing.
@@ -28,9 +39,11 @@ abstract contract BaseTest is Test {
         changePrank(users.admin);
     }
 
-    /// INTERNAL NON-CONSTANT FUNCTIONS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                          INTERNAL NON-CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH and 1 nft.
+    /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH.
     function createUser(string memory name) internal returns (address payable addr) {
         addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
         vm.label({ account: addr, newLabel: name });
