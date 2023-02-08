@@ -1,12 +1,23 @@
 import type { Signer } from "@ethersproject/abstract-signer";
 import type { MockContract } from "ethereum-waffle";
 
+import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModePool } from "../src/types/GodModePool";
 import { GodModeVault } from "../src/types/GodModeVault";
 import { PoolFactory } from "../src/types/PoolFactory";
 import { VaultFactory } from "../src/types/VaultFactory";
-import { deployGodModePool, deployGodModeVault, deployPoolFactory, deployVaultFactory } from "./deployers";
+import {
+  deployERC20Wnft,
+  deployGodModePool,
+  deployGodModeVault,
+  deployPoolFactory,
+  deployVaultFactory,
+} from "./deployers";
 import { deployMockNft } from "./mocks";
+
+type UnitFixtureERC20WnftReturnType = {
+  erc20Wnft: GodModeERC20Wnft;
+};
 
 type UnitFixturePoolReturnType = {
   nft: MockContract;
@@ -27,6 +38,13 @@ type UnitFixtureVaultFactoryReturnType = {
   nft: MockContract;
   vaultFactory: VaultFactory;
 };
+
+export async function unitFixtureERC20Wnft(signers: Signer[]): Promise<UnitFixtureERC20WnftReturnType> {
+  const deployer: Signer = signers[0];
+  const nft = await deployMockNft(deployer);
+  const erc20Wnft = await deployERC20Wnft(deployer, "My Token", "MTK", nft.address);
+  return { erc20Wnft };
+}
 
 export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePoolReturnType> {
   const deployer: Signer = signers[0];
