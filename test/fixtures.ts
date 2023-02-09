@@ -4,14 +4,14 @@ import type { MockContract } from "ethereum-waffle";
 import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
 import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
-import { GodModePool } from "../src/types/GodModePool";
-import { GodModeVault } from "../src/types/GodModeVault";
+import { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
+import { GodModeERC721Vault } from "../src/types/GodModeERC721Vault";
 import {
   deployERC20Wnft,
   deployERC721PoolFactory,
   deployERC721VaultFactory,
-  deployGodModePool,
-  deployGodModeVault,
+  deployGodModeERC721Pool,
+  deployGodModeERC721Vault,
 } from "./deployers";
 import { deployMockNft } from "./mocks";
 
@@ -19,14 +19,14 @@ type UnitFixtureERC20WnftReturnType = {
   erc20Wnft: GodModeERC20Wnft;
 };
 
-type UnitFixturePoolReturnType = {
+type UnitFixtureERC721PoolReturnType = {
   nft: MockContract;
-  pool: GodModePool;
+  erc721Pool: GodModeERC721Pool;
 };
 
-type UnitFixtureVaultReturnType = {
+type UnitFixtureERC721VaultReturnType = {
   nft: MockContract;
-  vault: GodModeVault;
+  erc721Vault: GodModeERC721Vault;
 };
 
 type UnitFixtureERC721PoolFactoryReturnType = {
@@ -46,18 +46,18 @@ export async function unitFixtureERC20Wnft(signers: Signer[]): Promise<UnitFixtu
   return { erc20Wnft };
 }
 
-export async function unitFixturePool(signers: Signer[]): Promise<UnitFixturePoolReturnType> {
+export async function unitFixtureERC721Pool(signers: Signer[]): Promise<UnitFixtureERC721PoolReturnType> {
   const deployer: Signer = signers[0];
   const nft = await deployMockNft(deployer);
-  const pool = await deployGodModePool(deployer, "JPEG Pool", "pJPEG", nft.address);
-  return { nft, pool };
+  const erc721Pool = await deployGodModeERC721Pool(deployer, "JPEG Pooled", "JPEGp", nft.address);
+  return { nft, erc721Pool };
 }
 
-export async function unitFixtureVault(signers: Signer[]): Promise<UnitFixtureVaultReturnType> {
+export async function unitFixtureERC721Vault(signers: Signer[]): Promise<UnitFixtureERC721VaultReturnType> {
   const deployer: Signer = signers[0];
   const nft = await deployMockNft(deployer);
-  const vault = await deployGodModeVault(deployer, "JPEG Vault", "vJPEG", nft.address);
-  return { nft, vault };
+  const erc721Vault = await deployGodModeERC721Vault(deployer, "JPEG Vaulted", "JPEGv", nft.address);
+  return { nft, erc721Vault };
 }
 
 export async function unitFixtureERC721PoolFactory(signers: Signer[]): Promise<UnitFixtureERC721PoolFactoryReturnType> {

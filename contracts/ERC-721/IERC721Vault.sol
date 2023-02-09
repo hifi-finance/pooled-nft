@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-/// @title IVault
+/// @title IERC721Vault
 /// @author Hifi
-interface IVault {
+interface IERC721Vault {
     /// CUSTOM ERRORS ///
 
-    error Vault__InOutMismatch();
-    error Vault__InsufficientIn();
-    error Vault__InvalidTo();
+    error ERC721Vault__InOutMismatch();
+    error ERC721Vault__InsufficientIn();
+    error ERC721Vault__InvalidTo();
 
     /// EVENTS ///
 
@@ -81,7 +81,7 @@ interface IVault {
     ///
     /// @dev Requirements:
     ///
-    /// - The `signature` must be a valid signed approval given by the caller to the Vault to spend `inAmount`
+    /// - The `signature` must be a valid signed approval given by the caller to the ERC721Vault to spend `inAmount`
     ///  vault tokens for the given `deadline` and the caller's current nonce.
     /// - The value of `inAmount` must be greater than zero.
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
@@ -91,7 +91,7 @@ interface IVault {
     /// @param outIds The asset token IDs to be released from the vault.
     /// @param to The account that receives the released asset token IDs.
     /// @param deadline The deadline beyond which the signature is not valid anymore.
-    /// @param signature The packed signature for Pool.
+    /// @param signature The packed signature for ERC721Vault.
     function withdrawWithSignature(
         uint256 inAmount,
         uint256[] calldata outIds,

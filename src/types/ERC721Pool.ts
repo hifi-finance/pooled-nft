@@ -17,7 +17,7 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface PoolInterface extends utils.Interface {
+export interface ERC721PoolInterface extends utils.Interface {
   contractName: "ERC721Pool";
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
@@ -229,7 +229,7 @@ export interface ERC721Pool extends BaseContract {
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PoolInterface;
+  interface: ERC721PoolInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

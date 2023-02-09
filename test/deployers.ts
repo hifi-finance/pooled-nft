@@ -5,8 +5,8 @@ import type { Artifact } from "hardhat/types";
 import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
 import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
-import { GodModePool } from "../src/types/GodModePool";
-import { GodModeVault } from "../src/types/GodModeVault";
+import { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
+import { GodModeERC721Vault } from "../src/types/GodModeERC721Vault";
 
 export async function deployERC20Wnft(
   deployer: Signer,
@@ -21,26 +21,30 @@ export async function deployERC20Wnft(
   return erc20Wnft;
 }
 
-export async function deployGodModePool(
+export async function deployGodModeERC721Pool(
   deployer: Signer,
   name: string,
   symbol: string,
   asset: string,
-): Promise<GodModePool> {
-  const poolArtifact: Artifact = await artifacts.readArtifact("GodModePool");
-  const pool: GodModePool = <GodModePool>await waffle.deployContract(deployer, poolArtifact, [name, symbol, asset]);
-  return pool;
+): Promise<GodModeERC721Pool> {
+  const erc721PoolArtifact: Artifact = await artifacts.readArtifact("GodModeERC721Pool");
+  const erc721Pool: GodModeERC721Pool = <GodModeERC721Pool>(
+    await waffle.deployContract(deployer, erc721PoolArtifact, [name, symbol, asset])
+  );
+  return erc721Pool;
 }
 
-export async function deployGodModeVault(
+export async function deployGodModeERC721Vault(
   deployer: Signer,
   name: string,
   symbol: string,
   asset: string,
-): Promise<GodModeVault> {
-  const vaultArtifact: Artifact = await artifacts.readArtifact("GodModeVault");
-  const vault: GodModeVault = <GodModeVault>await waffle.deployContract(deployer, vaultArtifact, [name, symbol, asset]);
-  return vault;
+): Promise<GodModeERC721Vault> {
+  const erc721VaultArtifact: Artifact = await artifacts.readArtifact("GodModeERC721Vault");
+  const erc721Vault: GodModeERC721Vault = <GodModeERC721Vault>(
+    await waffle.deployContract(deployer, erc721VaultArtifact, [name, symbol, asset])
+  );
+  return erc721Vault;
 }
 
 export async function deployERC721PoolFactory(deployer: Signer): Promise<ERC721PoolFactory> {

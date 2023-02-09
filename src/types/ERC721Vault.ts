@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface PoolInterface extends utils.Interface {
-  contractName: "ERC721Pool";
+export interface ERC721VaultInterface extends utils.Interface {
+  contractName: "ERC721Vault";
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "PERMIT_TYPEHASH()": FunctionFragment;
@@ -27,22 +27,21 @@ export interface PoolInterface extends utils.Interface {
     "asset()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
+    "deposit(uint256[],uint256,address)": FunctionFragment;
     "factory()": FunctionFragment;
-    "holdingAt(uint256)": FunctionFragment;
-    "holdingsLength()": FunctionFragment;
+    "holdingAt(address,uint256)": FunctionFragment;
+    "holdingsLength(address)": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
-    "mint(uint256[],uint256,address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "redeem(uint256,uint256[],address)": FunctionFragment;
-    "redeemWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
-    "swap(uint256[],uint256[],address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "version()": FunctionFragment;
+    "withdraw(uint256,uint256[],address)": FunctionFragment;
+    "withdrawWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -64,22 +63,22 @@ export interface PoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "deposit",
+    values: [BigNumberish[], BigNumberish, string]
+  ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "holdingAt",
-    values: [BigNumberish]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "holdingsLength",
-    values?: undefined
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mint",
-    values: [BigNumberish[], BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -95,18 +94,6 @@ export interface PoolInterface extends utils.Interface {
       BytesLike
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "redeem",
-    values: [BigNumberish, BigNumberish[], string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "redeemWithSignature",
-    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "swap",
-    values: [BigNumberish[], BigNumberish[], string]
-  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -121,6 +108,14 @@ export interface PoolInterface extends utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BigNumberish, BigNumberish[], string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawWithSignature",
+    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
@@ -135,6 +130,7 @@ export interface PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "holdingAt", data: BytesLike): Result;
   decodeFunctionResult(
@@ -142,16 +138,9 @@ export interface PoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "redeemWithSignature",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -163,22 +152,25 @@ export interface PoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawWithSignature",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "Deposit(uint256[],uint256,address)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
-    "Mint(uint256[],uint256,address)": EventFragment;
-    "Redeem(uint256,uint256[],address)": EventFragment;
-    "Swap(uint256[],uint256[],address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "Withdraw(uint256,uint256[],address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Swap"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
 export type ApprovalEvent = TypedEvent<
@@ -188,33 +180,19 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
+export type DepositEvent = TypedEvent<
+  [BigNumber[], BigNumber, string],
+  { inIds: BigNumber[]; outAmount: BigNumber; to: string }
+>;
+
+export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
 export type InitializeEvent = TypedEvent<
   [string, string, string],
   { name: string; symbol: string; asset: string }
 >;
 
 export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
-
-export type MintEvent = TypedEvent<
-  [BigNumber[], BigNumber, string],
-  { inIds: BigNumber[]; outAmount: BigNumber; to: string }
->;
-
-export type MintEventFilter = TypedEventFilter<MintEvent>;
-
-export type RedeemEvent = TypedEvent<
-  [BigNumber, BigNumber[], string],
-  { inAmount: BigNumber; outIds: BigNumber[]; to: string }
->;
-
-export type RedeemEventFilter = TypedEventFilter<RedeemEvent>;
-
-export type SwapEvent = TypedEvent<
-  [BigNumber[], BigNumber[], string],
-  { inIds: BigNumber[]; outIds: BigNumber[]; to: string }
->;
-
-export type SwapEventFilter = TypedEventFilter<SwapEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -223,13 +201,20 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface ERC721Pool extends BaseContract {
-  contractName: "ERC721Pool";
+export type WithdrawEvent = TypedEvent<
+  [BigNumber, BigNumber[], string],
+  { inAmount: BigNumber; outIds: BigNumber[]; to: string }
+>;
+
+export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
+
+export interface ERC721Vault extends BaseContract {
+  contractName: "ERC721Vault";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PoolInterface;
+  interface: ERC721VaultInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -273,26 +258,30 @@ export interface ERC721Pool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
+    deposit(
+      inIds: BigNumberish[],
+      outAmount: BigNumberish,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     factory(overrides?: CallOverrides): Promise<[string]>;
 
     holdingAt(
+      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
+    holdingsLength(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     initialize(
       name_: string,
       symbol_: string,
       asset_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mint(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -308,29 +297,6 @@ export interface ERC721Pool extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    redeem(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    redeemWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -352,6 +318,22 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<ContractTransaction>;
 
     version(overrides?: CallOverrides): Promise<[string]>;
+
+    withdraw(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
@@ -376,23 +358,30 @@ export interface ERC721Pool extends BaseContract {
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
+  deposit(
+    inIds: BigNumberish[],
+    outAmount: BigNumberish,
+    to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   factory(overrides?: CallOverrides): Promise<string>;
 
-  holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+  holdingAt(
+    account: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
+  holdingsLength(
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   initialize(
     name_: string,
     symbol_: string,
     asset_: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mint(
-    inIds: BigNumberish[],
-    outAmount: BigNumberish,
-    to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -408,29 +397,6 @@ export interface ERC721Pool extends BaseContract {
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  redeem(
-    inAmount: BigNumberish,
-    outIds: BigNumberish[],
-    to: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  redeemWithSignature(
-    inAmount: BigNumberish,
-    outIds: BigNumberish[],
-    to: string,
-    deadline: BigNumberish,
-    signature: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  swap(
-    inIds: BigNumberish[],
-    outIds: BigNumberish[],
-    to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -452,6 +418,22 @@ export interface ERC721Pool extends BaseContract {
   ): Promise<ContractTransaction>;
 
   version(overrides?: CallOverrides): Promise<string>;
+
+  withdraw(
+    inAmount: BigNumberish,
+    outIds: BigNumberish[],
+    to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawWithSignature(
+    inAmount: BigNumberish,
+    outIds: BigNumberish[],
+    to: string,
+    deadline: BigNumberish,
+    signature: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
@@ -476,26 +458,30 @@ export interface ERC721Pool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
+    deposit(
+      inIds: BigNumberish[],
+      outAmount: BigNumberish,
+      to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     factory(overrides?: CallOverrides): Promise<string>;
 
     holdingAt(
+      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
+    holdingsLength(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     initialize(
       name_: string,
       symbol_: string,
       asset_: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mint(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -511,29 +497,6 @@ export interface ERC721Pool extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    redeem(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    redeemWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -555,6 +518,22 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<boolean>;
 
     version(overrides?: CallOverrides): Promise<string>;
+
+    withdraw(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -569,6 +548,17 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
+    "Deposit(uint256[],uint256,address)"(
+      inIds?: null,
+      outAmount?: null,
+      to?: string | null
+    ): DepositEventFilter;
+    Deposit(
+      inIds?: null,
+      outAmount?: null,
+      to?: string | null
+    ): DepositEventFilter;
+
     "Initialize(string,string,address)"(
       name?: null,
       symbol?: null,
@@ -580,31 +570,6 @@ export interface ERC721Pool extends BaseContract {
       asset?: string | null
     ): InitializeEventFilter;
 
-    "Mint(uint256[],uint256,address)"(
-      inIds?: null,
-      outAmount?: null,
-      to?: string | null
-    ): MintEventFilter;
-    Mint(inIds?: null, outAmount?: null, to?: string | null): MintEventFilter;
-
-    "Redeem(uint256,uint256[],address)"(
-      inAmount?: null,
-      outIds?: null,
-      to?: string | null
-    ): RedeemEventFilter;
-    Redeem(
-      inAmount?: null,
-      outIds?: null,
-      to?: string | null
-    ): RedeemEventFilter;
-
-    "Swap(uint256[],uint256[],address)"(
-      inIds?: null,
-      outIds?: null,
-      to?: string | null
-    ): SwapEventFilter;
-    Swap(inIds?: null, outIds?: null, to?: string | null): SwapEventFilter;
-
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -615,6 +580,17 @@ export interface ERC721Pool extends BaseContract {
       to?: string | null,
       value?: null
     ): TransferEventFilter;
+
+    "Withdraw(uint256,uint256[],address)"(
+      inAmount?: null,
+      outIds?: null,
+      to?: string | null
+    ): WithdrawEventFilter;
+    Withdraw(
+      inAmount?: null,
+      outIds?: null,
+      to?: string | null
+    ): WithdrawEventFilter;
   };
 
   estimateGas: {
@@ -640,26 +616,30 @@ export interface ERC721Pool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
+    deposit(
+      inIds: BigNumberish[],
+      outAmount: BigNumberish,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     holdingAt(
+      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
+    holdingsLength(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     initialize(
       name_: string,
       symbol_: string,
       asset_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mint(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -675,29 +655,6 @@ export interface ERC721Pool extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    redeem(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    redeemWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -719,6 +676,22 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<BigNumber>;
 
     version(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -747,26 +720,30 @@ export interface ERC721Pool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    deposit(
+      inIds: BigNumberish[],
+      outAmount: BigNumberish,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     holdingAt(
+      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    holdingsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    holdingsLength(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     initialize(
       name_: string,
       symbol_: string,
       asset_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mint(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -788,29 +765,6 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    redeem(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    redeemWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -829,5 +783,21 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdraw(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawWithSignature(
+      inAmount: BigNumberish,
+      outIds: BigNumberish[],
+      to: string,
+      deadline: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

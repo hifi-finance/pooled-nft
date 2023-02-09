@@ -4,8 +4,8 @@ import type { Fixture, MockContract } from "ethereum-waffle";
 import type { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
 import type { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import type { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
-import type { GodModePool } from "../src/types/GodModePool";
-import type { GodModeVault } from "../src/types/GodModeVault";
+import type { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
+import type { GodModeERC721Vault } from "../src/types/GodModeERC721Vault";
 
 declare module "mocha" {
   export interface Context {
@@ -18,8 +18,8 @@ declare module "mocha" {
 
 export interface Contracts {
   erc20Wnft: GodModeERC20Wnft;
-  pool: GodModePool;
-  vault: GodModeVault;
+  erc721Pool: GodModeERC721Pool;
+  erc721Vault: GodModeERC721Vault;
   erc721PoolFactory: ERC721PoolFactory;
   erc721VaultFactory: ERC721VaultFactory;
 }

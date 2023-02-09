@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-/// @title IPool
+/// @title IERC721Pool
 /// @author Hifi
-interface IPool {
+interface IERC721Pool {
     /// CUSTOM ERRORS ///
 
-    error Pool__InOutMismatch();
-    error Pool__InsufficientIn();
-    error Pool__InvalidTo();
+    error ERC721Pool__InOutMismatch();
+    error ERC721Pool__InsufficientIn();
+    error ERC721Pool__InvalidTo();
 
     /// EVENTS ///
 
@@ -86,7 +86,7 @@ interface IPool {
     /// @dev Emits a {Redeem} event.
     ///
     /// @dev Requirements:
-    /// - The `signature` must be a valid signed approval given by the caller to the Pool to spend `inAmount`
+    /// - The `signature` must be a valid signed approval given by the caller to the ERC721Pool to spend `inAmount`
     ///  pool tokens for the given `deadline` and the caller's current nonce.
     /// - The value of `inAmount` must be greater than zero.
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
@@ -96,7 +96,7 @@ interface IPool {
     /// @param outIds The asset token IDs to be released from the pool.
     /// @param to The account that receives the released asset token IDs.
     /// @param deadline The deadline beyond which the signature is not valid anymore.
-    /// @param signature The packed signature for Pool.
+    /// @param signature The packed signature for ERC721Pool.
     function redeemWithSignature(
         uint256 inAmount,
         uint256[] calldata outIds,

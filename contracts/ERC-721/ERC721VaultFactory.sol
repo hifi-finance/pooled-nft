@@ -4,7 +4,7 @@ pragma solidity >=0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
-import "./Vault.sol";
+import "./ERC721Vault.sol";
 import "./IERC721VaultFactory.sol";
 
 /// @title ERC721VaultFactory
@@ -40,7 +40,7 @@ contract ERC721VaultFactory is IERC721VaultFactory {
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "v");
 
         bytes32 salt = keccak256(abi.encodePacked(asset));
-        Vault vault = new Vault{ salt: salt }();
+        ERC721Vault vault = new ERC721Vault{ salt: salt }();
         vault.initialize(name, symbol, asset);
 
         getVault[asset] = address(vault);

@@ -40,12 +40,12 @@ contract ERC721PoolFactory is IERC721PoolFactory {
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
         bytes32 salt = keccak256(abi.encodePacked(asset));
-        ERC721Pool erc721Pool = new ERC721Pool{ salt: salt }();
-        erc721Pool.initialize(name, symbol, asset);
+        ERC721Pool pool = new ERC721Pool{ salt: salt }();
+        pool.initialize(name, symbol, asset);
 
-        getPool[asset] = address(erc721Pool);
-        allPools.push(address(erc721Pool));
+        getPool[asset] = address(pool);
+        allPools.push(address(pool));
 
-        emit CreatePool(name, symbol, asset, address(erc721Pool));
+        emit CreatePool(name, symbol, asset, address(pool));
     }
 }

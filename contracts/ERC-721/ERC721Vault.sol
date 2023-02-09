@@ -3,13 +3,13 @@ pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "./IVault.sol";
+import "./IERC721Vault.sol";
 
 import "./ERC20Wnft.sol";
 
-/// @title Vault
+/// @title ERC721Vault
 /// @author Hifi
-contract Vault is IVault, ERC20Wnft {
+contract ERC721Vault is IERC721Vault, ERC20Wnft {
     using EnumerableSet for EnumerableSet.UintSet;
 
     /// INTERNAL STORAGE ///
@@ -25,32 +25,32 @@ contract Vault is IVault, ERC20Wnft {
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IERC721Vault
     function holdingAt(address account, uint256 index) external view override returns (uint256) {
         return holdings[account].at(index);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IERC721Vault
     function holdingsLength(address account) external view override returns (uint256) {
         return holdings[account].length();
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IERC721Vault
     function deposit(
         uint256[] calldata inIds,
         uint256 outAmount,
         address to
     ) external override {
         if (inIds.length == 0) {
-            revert Vault__InsufficientIn();
+            revert ERC721Vault__InsufficientIn();
         }
         if (inIds.length * 10**18 != outAmount) {
-            revert Vault__InOutMismatch();
+            revert ERC721Vault__InOutMismatch();
         }
         if (to == address(0)) {
-            revert Vault__InvalidTo();
+            revert ERC721Vault__InvalidTo();
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
@@ -64,20 +64,20 @@ contract Vault is IVault, ERC20Wnft {
         emit Deposit(inIds, outAmount, to);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IERC721Vault
     function withdraw(
         uint256 inAmount,
         uint256[] calldata outIds,
         address to
     ) public override {
         if (inAmount == 0) {
-            revert Vault__InsufficientIn();
+            revert ERC721Vault__InsufficientIn();
         }
         if (inAmount != outIds.length * 10**18) {
-            revert Vault__InOutMismatch();
+            revert ERC721Vault__InOutMismatch();
         }
         if (to == address(0)) {
-            revert Vault__InvalidTo();
+            revert ERC721Vault__InvalidTo();
         }
         _burn(msg.sender, inAmount);
         for (uint256 i; i < outIds.length; ) {
@@ -91,7 +91,7 @@ contract Vault is IVault, ERC20Wnft {
         emit Withdraw(inAmount, outIds, to);
     }
 
-    /// @inheritdoc IVault
+    /// @inheritdoc IERC721Vault
     function withdrawWithSignature(
         uint256 inAmount,
         uint256[] calldata outIds,

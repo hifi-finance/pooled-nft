@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { Vault__factory } from "../../../src/types/factories/Vault__factory";
+import { ERC721Vault__factory } from "../../../src/types/factories/ERC721Vault__factory";
 import { getCreate2Address } from "../../shared/utils";
 
 export function shouldBehaveLikeERC721VaultFactory(): void {
@@ -38,7 +38,7 @@ export function shouldBehaveLikeERC721VaultFactory(): void {
               getCreate2Address(
                 this.contracts.erc721VaultFactory.address,
                 this.mocks.nft.address,
-                Vault__factory.bytecode,
+                ERC721Vault__factory.bytecode,
               ),
             );
         });

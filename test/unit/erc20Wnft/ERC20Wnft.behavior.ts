@@ -1,11 +1,5 @@
-import { AddressZero } from "@ethersproject/constants";
-import { parseEther } from "@ethersproject/units";
 import { expect } from "chai";
 import { constants } from "ethers";
-import hre from "hardhat";
-
-import { ERC20WnftErrors, PoolErrors } from "../../errors";
-import { signERC2612Permit } from "../../shared/utils";
 
 export function shouldBehaveLikeERC20Wnft(): void {
   beforeEach(async function () {
