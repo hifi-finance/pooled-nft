@@ -2,12 +2,12 @@
 // solhint-disable
 pragma solidity >=0.8.4;
 
-import "../Vault.sol";
+import "../../ERC-721/Pool.sol";
 
-/// @title GodModeVault
+/// @title GodModePool
 /// @author Hifi
 /// @dev Strictly for test purposes.
-contract GodModeVault is Vault {
+contract GodModePool is Pool {
     using EnumerableSet for EnumerableSet.UintSet;
 
     /// CONSTRUCTOR ///
@@ -16,7 +16,7 @@ contract GodModeVault is Vault {
         string memory name_,
         string memory symbol_,
         address asset_
-    ) Vault() {
+    ) Pool() {
         initialize(name_, symbol_, asset_);
     }
 
@@ -26,12 +26,12 @@ contract GodModeVault is Vault {
         _mint(beneficiary, mintAmount);
     }
 
-    function __godMode_setHoldings(address account, uint256[] calldata newHoldings) external {
-        for (uint256 i; i < holdings[account].length(); i++) {
-            holdings[account].remove(holdings[account].at(i));
+    function __godMode_setHoldings(uint256[] calldata newHoldings) external {
+        for (uint256 i; i < holdings.length(); i++) {
+            holdings.remove(holdings.at(i));
         }
         for (uint256 i; i < newHoldings.length; i++) {
-            holdings[account].add(newHoldings[i]);
+            holdings.add(newHoldings[i]);
         }
     }
 }
