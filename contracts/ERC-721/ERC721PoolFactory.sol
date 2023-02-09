@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 import "./ERC721Pool.sol";
@@ -29,7 +29,7 @@ contract ERC721PoolFactory is IERC721PoolFactory {
 
     /// @inheritdoc IERC721PoolFactory
     function createPool(address asset) external override {
-        if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
+        if (!IERC165(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
             revert ERC721PoolFactory__DoesNotImplementIERC721Metadata();
         }
         if (getPool[asset] != address(0)) {

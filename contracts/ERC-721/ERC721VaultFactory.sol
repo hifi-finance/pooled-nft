@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 import "./ERC721Vault.sol";
@@ -29,7 +29,7 @@ contract ERC721VaultFactory is IERC721VaultFactory {
 
     /// @inheritdoc IERC721VaultFactory
     function createVault(address asset) external override {
-        if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
+        if (!IERC165(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
             revert ERC721VaultFactory__DoesNotImplementIERC721Metadata();
         }
         if (getVault[asset] != address(0)) {
