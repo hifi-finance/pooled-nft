@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
-/// @title IPoolFactory
+/// @title IERC721PoolFactory
 /// @author Hifi
-interface IPoolFactory {
+interface IERC721PoolFactory {
     /// CUSTOM ERRORS ///
 
-    error PoolFactory__DoesNotImplementIERC721Metadata();
-    error PoolFactory__PoolAlreadyExists();
+    error ERC721PoolFactory__DoesNotImplementIERC721Metadata();
+    error ERC721PoolFactory__PoolAlreadyExists();
 
     /// EVENTS ///
 

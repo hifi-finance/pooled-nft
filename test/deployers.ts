@@ -2,11 +2,11 @@ import type { Signer } from "@ethersproject/abstract-signer";
 import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
+import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
+import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModePool } from "../src/types/GodModePool";
 import { GodModeVault } from "../src/types/GodModeVault";
-import { PoolFactory } from "../src/types/PoolFactory";
-import { VaultFactory } from "../src/types/VaultFactory";
 
 export async function deployERC20Wnft(
   deployer: Signer,
@@ -43,14 +43,18 @@ export async function deployGodModeVault(
   return vault;
 }
 
-export async function deployPoolFactory(deployer: Signer): Promise<PoolFactory> {
-  const poolFactoryArtifact: Artifact = await artifacts.readArtifact("PoolFactory");
-  const poolFactory: PoolFactory = <PoolFactory>await waffle.deployContract(deployer, poolFactoryArtifact, []);
-  return poolFactory;
+export async function deployERC721PoolFactory(deployer: Signer): Promise<ERC721PoolFactory> {
+  const erc721PoolFactoryArtifact: Artifact = await artifacts.readArtifact("ERC721PoolFactory");
+  const erc721PoolFactory: ERC721PoolFactory = <ERC721PoolFactory>(
+    await waffle.deployContract(deployer, erc721PoolFactoryArtifact, [])
+  );
+  return erc721PoolFactory;
 }
 
-export async function deployVaultFactory(deployer: Signer): Promise<VaultFactory> {
-  const vaultFactoryArtifact: Artifact = await artifacts.readArtifact("VaultFactory");
-  const vaultFactory: VaultFactory = <VaultFactory>await waffle.deployContract(deployer, vaultFactoryArtifact, []);
-  return vaultFactory;
+export async function deployERC721VaultFactory(deployer: Signer): Promise<ERC721VaultFactory> {
+  const erc721VaultFactoryArtifact: Artifact = await artifacts.readArtifact("ERC721VaultFactory");
+  const erc721VaultFactory: ERC721VaultFactory = <ERC721VaultFactory>(
+    await waffle.deployContract(deployer, erc721VaultFactoryArtifact, [])
+  );
+  return erc721VaultFactory;
 }

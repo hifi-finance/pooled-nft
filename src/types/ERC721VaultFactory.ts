@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface VaultFactoryInterface extends utils.Interface {
-  contractName: "VaultFactory";
+export interface ERC721VaultFactoryInterface extends utils.Interface {
+  contractName: "ERC721VaultFactory";
   functions: {
     "allVaults(uint256)": FunctionFragment;
     "allVaultsLength()": FunctionFragment;
@@ -62,13 +62,13 @@ export type CreateVaultEvent = TypedEvent<
 
 export type CreateVaultEventFilter = TypedEventFilter<CreateVaultEvent>;
 
-export interface VaultFactory extends BaseContract {
-  contractName: "VaultFactory";
+export interface ERC721VaultFactory extends BaseContract {
+  contractName: "ERC721VaultFactory";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: VaultFactoryInterface;
+  interface: ERC721VaultFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

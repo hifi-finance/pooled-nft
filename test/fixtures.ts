@@ -1,17 +1,17 @@
 import type { Signer } from "@ethersproject/abstract-signer";
 import type { MockContract } from "ethereum-waffle";
 
+import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
+import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModePool } from "../src/types/GodModePool";
 import { GodModeVault } from "../src/types/GodModeVault";
-import { PoolFactory } from "../src/types/PoolFactory";
-import { VaultFactory } from "../src/types/VaultFactory";
 import {
   deployERC20Wnft,
+  deployERC721PoolFactory,
+  deployERC721VaultFactory,
   deployGodModePool,
   deployGodModeVault,
-  deployPoolFactory,
-  deployVaultFactory,
 } from "./deployers";
 import { deployMockNft } from "./mocks";
 
@@ -29,14 +29,14 @@ type UnitFixtureVaultReturnType = {
   vault: GodModeVault;
 };
 
-type UnitFixturePoolFactoryReturnType = {
+type UnitFixtureERC721PoolFactoryReturnType = {
   nft: MockContract;
-  poolFactory: PoolFactory;
+  erc721PoolFactory: ERC721PoolFactory;
 };
 
-type UnitFixtureVaultFactoryReturnType = {
+type UnitFixtureERC721VaultFactoryReturnType = {
   nft: MockContract;
-  vaultFactory: VaultFactory;
+  erc721VaultFactory: ERC721VaultFactory;
 };
 
 export async function unitFixtureERC20Wnft(signers: Signer[]): Promise<UnitFixtureERC20WnftReturnType> {
@@ -60,16 +60,18 @@ export async function unitFixtureVault(signers: Signer[]): Promise<UnitFixtureVa
   return { nft, vault };
 }
 
-export async function unitFixturePoolFactory(signers: Signer[]): Promise<UnitFixturePoolFactoryReturnType> {
+export async function unitFixtureERC721PoolFactory(signers: Signer[]): Promise<UnitFixtureERC721PoolFactoryReturnType> {
   const deployer: Signer = signers[0];
   const nft = await deployMockNft(deployer);
-  const poolFactory = await deployPoolFactory(deployer);
-  return { nft, poolFactory };
+  const erc721PoolFactory = await deployERC721PoolFactory(deployer);
+  return { nft, erc721PoolFactory };
 }
 
-export async function unitFixtureVaultFactory(signers: Signer[]): Promise<UnitFixtureVaultFactoryReturnType> {
+export async function unitFixtureERC721VaultFactory(
+  signers: Signer[],
+): Promise<UnitFixtureERC721VaultFactoryReturnType> {
   const deployer: Signer = signers[0];
   const nft = await deployMockNft(deployer);
-  const vaultFactory = await deployVaultFactory(deployer);
-  return { nft, vaultFactory };
+  const erc721VaultFactory = await deployERC721VaultFactory(deployer);
+  return { nft, erc721VaultFactory };
 }

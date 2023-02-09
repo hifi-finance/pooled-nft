@@ -1,3 +1,3 @@
-import "./poolFactory";
-import "./vaultFactory";
+import "./erc721PoolFactory";
+import "./erc721VaultFactory";
 import "./waitForConfirmations";

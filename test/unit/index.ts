@@ -1,14 +1,14 @@
 import { baseContext } from "../contexts";
 import { unitTestERC20Wnft } from "./erc20Wnft/ERC20Wnft";
+import { unitTestERC721PoolFactory } from "./erc721PoolFactory/ERC721PoolFactory";
+import { unitTestERC721VaultFactory } from "./erc721VaultFactory/ERC721VaultFactory";
 import { unitTestPool } from "./pool/Pool";
-import { unitTestPoolFactory } from "./poolFactory/PoolFactory";
 import { unitTestVault } from "./vault/Vault";
-import { unitTestVaultFactory } from "./vaultFactory/VaultFactory";
 
 baseContext("Unit Tests", function () {
   unitTestERC20Wnft();
   unitTestPool();
-  unitTestPoolFactory();
+  unitTestERC721PoolFactory();
   unitTestVault();
-  unitTestVaultFactory();
+  unitTestERC721VaultFactory();
 });

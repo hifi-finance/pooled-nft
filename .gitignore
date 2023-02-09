@@ -30,8 +30,8 @@ src/types/*
 !src/types/ERC20Wnft.ts
 !src/types/Pool.ts
 !src/types/Vault.ts
-!src/types/PoolFactory.ts
-!src/types/VaultFactory.ts
+!src/types/ERC721PoolFactory.ts
+!src/types/ERC721VaultFactory.ts
 
 # factories
 !src/types/factories
@@ -39,5 +39,5 @@ src/types/factories/*
 !src/types/factories/ERC20Wnft__factory.ts
 !src/types/factories/Pool__factory.ts
 !src/types/factories/Vault__factory.ts
-!src/types/factories/PoolFactory__factory.ts
-!src/types/factories/VaultFactory__factory.ts
+!src/types/factories/ERC721PoolFactory__factory.ts
+!src/types/factories/ERC721VaultFactory__factory.ts

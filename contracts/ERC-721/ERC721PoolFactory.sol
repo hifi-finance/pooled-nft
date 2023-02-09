@@ -4,48 +4,48 @@ pragma solidity >=0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
-import "./Pool.sol";
-import "./IPoolFactory.sol";
+import "./ERC721Pool.sol";
+import "./IERC721PoolFactory.sol";
 
-/// @title PoolFactory
+/// @title ERC721PoolFactory
 /// @author Hifi
-contract PoolFactory is IPoolFactory {
+contract ERC721PoolFactory is IERC721PoolFactory {
     /// PUBLIC STORAGE ///
 
-    /// @inheritdoc IPoolFactory
+    /// @inheritdoc IERC721PoolFactory
     mapping(address => address) public override getPool;
 
-    /// @inheritdoc IPoolFactory
+    /// @inheritdoc IERC721PoolFactory
     address[] public allPools;
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IPoolFactory
+    /// @inheritdoc IERC721PoolFactory
     function allPoolsLength() external view override returns (uint256) {
         return allPools.length;
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IPoolFactory
+    /// @inheritdoc IERC721PoolFactory
     function createPool(address asset) external override {
         if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
-            revert PoolFactory__DoesNotImplementIERC721Metadata();
+            revert ERC721PoolFactory__DoesNotImplementIERC721Metadata();
         }
         if (getPool[asset] != address(0)) {
-            revert PoolFactory__PoolAlreadyExists();
+            revert ERC721PoolFactory__PoolAlreadyExists();
         }
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pooled");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
         bytes32 salt = keccak256(abi.encodePacked(asset));
-        Pool pool = new Pool{ salt: salt }();
-        pool.initialize(name, symbol, asset);
+        ERC721Pool erc721Pool = new ERC721Pool{ salt: salt }();
+        erc721Pool.initialize(name, symbol, asset);
 
-        getPool[asset] = address(pool);
-        allPools.push(address(pool));
+        getPool[asset] = address(erc721Pool);
+        allPools.push(address(erc721Pool));
 
-        emit CreatePool(name, symbol, asset, address(pool));
+        emit CreatePool(name, symbol, asset, address(erc721Pool));
     }
 }

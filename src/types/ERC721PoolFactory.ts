@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface PoolFactoryInterface extends utils.Interface {
-  contractName: "PoolFactory";
+export interface ERC721PoolFactoryInterface extends utils.Interface {
+  contractName: "ERC721PoolFactory";
   functions: {
     "allPools(uint256)": FunctionFragment;
     "allPoolsLength()": FunctionFragment;
@@ -59,13 +59,13 @@ export type CreatePoolEvent = TypedEvent<
 
 export type CreatePoolEventFilter = TypedEventFilter<CreatePoolEvent>;
 
-export interface PoolFactory extends BaseContract {
-  contractName: "PoolFactory";
+export interface ERC721PoolFactory extends BaseContract {
+  contractName: "ERC721PoolFactory";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PoolFactoryInterface;
+  interface: ERC721PoolFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

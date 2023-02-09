@@ -5,35 +5,35 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 import "./Vault.sol";
-import "./IVaultFactory.sol";
+import "./IERC721VaultFactory.sol";
 
-/// @title VaultFactory
+/// @title ERC721VaultFactory
 /// @author Hifi
-contract VaultFactory is IVaultFactory {
+contract ERC721VaultFactory is IERC721VaultFactory {
     /// PUBLIC STORAGE ///
 
-    /// @inheritdoc IVaultFactory
+    /// @inheritdoc IERC721VaultFactory
     mapping(address => address) public override getVault;
 
-    /// @inheritdoc IVaultFactory
+    /// @inheritdoc IERC721VaultFactory
     address[] public allVaults;
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVaultFactory
+    /// @inheritdoc IERC721VaultFactory
     function allVaultsLength() external view override returns (uint256) {
         return allVaults.length;
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
-    /// @inheritdoc IVaultFactory
+    /// @inheritdoc IERC721VaultFactory
     function createVault(address asset) external override {
         if (!IERC721(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
-            revert VaultFactory__DoesNotImplementIERC721Metadata();
+            revert ERC721VaultFactory__DoesNotImplementIERC721Metadata();
         }
         if (getVault[asset] != address(0)) {
-            revert VaultFactory__VaultAlreadyExists();
+            revert ERC721VaultFactory__VaultAlreadyExists();
         }
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Vaulted");
