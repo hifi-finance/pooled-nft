@@ -17,7 +17,8 @@ interface IERC20Wnft is IERC20Metadata {
     /// @notice Emitted when the contract is initialized.
     /// @param asset The underlying ERC-1155 asset contract address.
     /// @param assetId The underlying ERC-1155 asset contract address.
-    event Initialize(address indexed asset, uint256 indexed assetId);
+    /// @param admin The admin contract address.
+    event Initialize(address indexed asset, uint256 indexed assetId, address admin);
 
     /// @notice Emitted when the ERC-20 name and symbol are set.
     /// @param name The ERC-20 name that was set.
@@ -49,7 +50,12 @@ interface IERC20Wnft is IERC20Metadata {
     ///
     /// @param asset The underlying ERC-1155 asset contract address.
     /// @param assetId The underlying ERC-1155 asset token ID.
-    function initialize(address asset, uint256 assetId) external;
+    /// @param admin The admin contract address.
+    function initialize(
+        address asset,
+        uint256 assetId,
+        address admin
+    ) external;
 
     /// @notice Sets the ERC-20 token name and symbol.
     ///

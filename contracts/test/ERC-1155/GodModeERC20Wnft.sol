@@ -10,8 +10,12 @@ import "../../ERC-1155/ERC20Wnft.sol";
 contract GodModeERC20Wnft is ERC20Wnft {
     /// CONSTRUCTOR ///
 
-    constructor(address asset_, uint256 assetId_) ERC20Wnft() {
-        initialize(asset_, assetId_);
+    constructor(
+        address asset_,
+        uint256 assetId_,
+        address admin_
+    ) ERC20Wnft() {
+        initialize(asset_, assetId_, admin_);
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///

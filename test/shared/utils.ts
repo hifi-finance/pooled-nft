@@ -11,6 +11,22 @@ export function getCreate2Address(factoryAddress: string, asset: string, bytecod
   return getAddress(`0x${keccak256(sanitizedInputs).slice(-40)}`);
 }
 
+export function getCreate2AddressERC1155(
+  factoryAddress: string,
+  asset: string,
+  assetId: string,
+  bytecode: string,
+): string {
+  const create2Inputs = [
+    "0xff",
+    factoryAddress,
+    keccak256(solidityPack(["address", "uint256"], [asset, assetId])),
+    keccak256(bytecode),
+  ];
+  const sanitizedInputs = `0x${create2Inputs.map(i => i.slice(2)).join("")}`;
+  return getAddress(`0x${keccak256(sanitizedInputs).slice(-40)}`);
+}
+
 export async function signERC2612Permit({
   provider,
   verifyingContract,
@@ -26,7 +42,7 @@ export async function signERC2612Permit({
   amount: string;
   deadline: string;
 }) {
-  const erc20WnftArtifact: Artifact = await hre.artifacts.readArtifact("ERC20Wnft");
+  const erc20WnftArtifact: Artifact = await hre.artifacts.readArtifact("contracts/ERC-721/ERC20Wnft.sol:ERC20Wnft");
   let contract = new Contract(verifyingContract, erc20WnftArtifact.abi, provider);
   let name = await contract.name();
   let version = await contract.version();

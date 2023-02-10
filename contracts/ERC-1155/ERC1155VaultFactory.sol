@@ -45,7 +45,7 @@ contract ERC1155VaultFactory is IERC1155VaultFactory, Ownable {
 
         bytes32 salt = keccak256(abi.encodePacked(asset, assetId));
         ERC1155Vault vault = new ERC1155Vault{ salt: salt }();
-        vault.initialize(asset, assetId);
+        vault.initialize(asset, assetId, owner());
 
         getVault[asset][assetId] = address(vault);
         allVaults.push(address(vault));

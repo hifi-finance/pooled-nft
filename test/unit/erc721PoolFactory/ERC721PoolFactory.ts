@@ -4,8 +4,8 @@ import { shouldBehaveLikeERC721PoolFactory } from "./ERC721PoolFactory.behavior"
 export function unitTestERC721PoolFactory(): void {
   describe("ERC721PoolFactory", function () {
     beforeEach(async function () {
-      const { nft, erc721PoolFactory } = await this.loadFixture(unitFixtureERC721PoolFactory);
-      this.mocks.nft = nft;
+      const { erc721, erc721PoolFactory } = await this.loadFixture(unitFixtureERC721PoolFactory);
+      this.mocks.erc721 = erc721;
       this.contracts.erc721PoolFactory = erc721PoolFactory;
     });
 

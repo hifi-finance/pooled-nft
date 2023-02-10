@@ -37,26 +37,30 @@ contract ERC20Wnft is IERC20Wnft {
     address public immutable override factory;
 
     /// @inheritdoc IERC20Wnft
-    address public immutable override admin;
+    address public override admin;
 
     /// CONSTRUCTOR ///
 
     constructor() {
         factory = msg.sender;
-        admin = Ownable(factory).owner();
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC20Wnft
-    function initialize(address asset_, uint256 assetId_) public override {
+    function initialize(
+        address asset_,
+        uint256 assetId_,
+        address admin_
+    ) public override {
         if (msg.sender != factory) {
             revert ERC20Wnft__Forbidden();
         }
         asset = asset_;
         assetId = assetId_;
+        admin = admin_;
 
-        emit Initialize(asset, assetId);
+        emit Initialize(asset, assetId, admin);
     }
 
     /// @inheritdoc IERC20Wnft

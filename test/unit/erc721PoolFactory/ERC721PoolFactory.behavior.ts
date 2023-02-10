@@ -14,7 +14,7 @@ export function shouldBehaveLikeERC721PoolFactory(): void {
 
       context("when vaults are created", function () {
         beforeEach(async function () {
-          await this.contracts.erc721PoolFactory.createPool(this.mocks.nft.address);
+          await this.contracts.erc721PoolFactory.createPool(this.mocks.erc721.address);
         });
 
         it("should return the number of vaults", async function () {
@@ -28,16 +28,16 @@ export function shouldBehaveLikeERC721PoolFactory(): void {
     describe("createPool", function () {
       context("when called", function () {
         it("succeeds", async function () {
-          const contractCall = this.contracts.erc721PoolFactory.createPool(this.mocks.nft.address);
+          const contractCall = this.contracts.erc721PoolFactory.createPool(this.mocks.erc721.address);
           await expect(contractCall)
             .to.emit(this.contracts.erc721PoolFactory, "CreatePool")
             .withArgs(
               "Mock NFT Pooled",
               "MOCKp",
-              this.mocks.nft.address,
+              this.mocks.erc721.address,
               getCreate2Address(
                 this.contracts.erc721PoolFactory.address,
-                this.mocks.nft.address,
+                this.mocks.erc721.address,
                 ERC721Pool__factory.bytecode,
               ),
             );

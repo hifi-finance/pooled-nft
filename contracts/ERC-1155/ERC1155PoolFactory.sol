@@ -45,7 +45,7 @@ contract ERC1155PoolFactory is IERC1155PoolFactory, Ownable {
 
         bytes32 salt = keccak256(abi.encodePacked(asset, assetId));
         ERC1155Pool pool = new ERC1155Pool{ salt: salt }();
-        pool.initialize(asset, assetId);
+        pool.initialize(asset, assetId, owner());
 
         getPool[asset][assetId] = address(pool);
         allPools.push(address(pool));

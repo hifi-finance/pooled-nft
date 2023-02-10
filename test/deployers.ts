@@ -4,9 +4,13 @@ import type { Artifact } from "hardhat/types";
 
 import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
 import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
+import { ERC1155PoolFactory } from "../src/types/ERC1155PoolFactory";
+import { ERC1155VaultFactory } from "../src/types/ERC1155VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
 import { GodModeERC721Vault } from "../src/types/GodModeERC721Vault";
+import { GodModeERC1155Pool } from "../src/types/GodModeERC1155Pool";
+import { GodModeERC1155Vault } from "../src/types/GodModeERC1155Vault";
 
 export async function deployERC20Wnft(
   deployer: Signer,
@@ -14,7 +18,9 @@ export async function deployERC20Wnft(
   symbol: string,
   asset: string,
 ): Promise<GodModeERC20Wnft> {
-  const erc20WnftArtifact: Artifact = await artifacts.readArtifact("GodModeERC20Wnft");
+  const erc20WnftArtifact: Artifact = await artifacts.readArtifact(
+    "contracts/test/ERC-721/GodModeERC20Wnft.sol:GodModeERC20Wnft",
+  );
   const erc20Wnft: GodModeERC20Wnft = <GodModeERC20Wnft>(
     await waffle.deployContract(deployer, erc20WnftArtifact, [name, symbol, asset])
   );
@@ -61,4 +67,44 @@ export async function deployERC721VaultFactory(deployer: Signer): Promise<ERC721
     await waffle.deployContract(deployer, erc721VaultFactoryArtifact, [])
   );
   return erc721VaultFactory;
+}
+
+export async function deployGodModeERC1155Pool(
+  deployer: Signer,
+  asset: string,
+  id: string,
+): Promise<GodModeERC1155Pool> {
+  const erc1155PoolArtifact: Artifact = await artifacts.readArtifact("GodModeERC1155Pool");
+  const erc1155Pool: GodModeERC1155Pool = <GodModeERC1155Pool>(
+    await waffle.deployContract(deployer, erc1155PoolArtifact, [asset, id, await deployer.getAddress()])
+  );
+  return erc1155Pool;
+}
+
+export async function deployGodModeERC1155Vault(
+  deployer: Signer,
+  asset: string,
+  id: string,
+): Promise<GodModeERC1155Vault> {
+  const erc1155VaultArtifact: Artifact = await artifacts.readArtifact("GodModeERC1155Vault");
+  const erc1155Vault: GodModeERC1155Vault = <GodModeERC1155Vault>(
+    await waffle.deployContract(deployer, erc1155VaultArtifact, [asset, id, await deployer.getAddress()])
+  );
+  return erc1155Vault;
+}
+
+export async function deployERC1155PoolFactory(deployer: Signer): Promise<ERC1155PoolFactory> {
+  const erc1155PoolFactoryArtifact: Artifact = await artifacts.readArtifact("ERC1155PoolFactory");
+  const erc1155PoolFactory: ERC1155PoolFactory = <ERC1155PoolFactory>(
+    await waffle.deployContract(deployer, erc1155PoolFactoryArtifact, [])
+  );
+  return erc1155PoolFactory;
+}
+
+export async function deployERC1155VaultFactory(deployer: Signer): Promise<ERC1155VaultFactory> {
+  const erc1155VaultFactoryArtifact: Artifact = await artifacts.readArtifact("ERC1155VaultFactory");
+  const erc1155VaultFactory: ERC1155VaultFactory = <ERC1155VaultFactory>(
+    await waffle.deployContract(deployer, erc1155VaultFactoryArtifact, [])
+  );
+  return erc1155VaultFactory;
 }

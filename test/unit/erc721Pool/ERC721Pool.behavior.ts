@@ -11,7 +11,7 @@ export function shouldBehaveLikeERC721Pool(): void {
     it("should be deployed with the correct values", async function () {
       expect(await this.contracts.erc721Pool.name()).to.equal("JPEG Pooled");
       expect(await this.contracts.erc721Pool.symbol()).to.equal("JPEGp");
-      expect(await this.contracts.erc721Pool.asset()).to.equal(this.mocks.nft.address);
+      expect(await this.contracts.erc721Pool.asset()).to.equal(this.mocks.erc721.address);
     });
   });
 
@@ -74,9 +74,9 @@ export function shouldBehaveLikeERC721Pool(): void {
         beforeEach(async function () {
           this.inIds = ["0", "1", "2"];
           this.to = this.signers.alice.address;
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "0").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "1").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "2").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "0").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "1").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "2").returns();
         });
 
         context("when length of `inIds` does not match `outAmount`", function () {
@@ -160,9 +160,15 @@ export function shouldBehaveLikeERC721Pool(): void {
           beforeEach(async function () {
             this.outIds = ["0", "1", "2"];
             this.to = this.signers.alice.address;
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "0").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "1").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "2").returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "0")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "1")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "2")
+              .returns();
           });
 
           context("when `to` is the zero address", function () {
@@ -298,13 +304,13 @@ export function shouldBehaveLikeERC721Pool(): void {
               beforeEach(async function () {
                 this.outIds = ["0", "1", "2"];
                 this.to = this.signers.alice.address;
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Pool.address, this.to, "0")
                   .returns();
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Pool.address, this.to, "1")
                   .returns();
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Pool.address, this.to, "2")
                   .returns();
               });
@@ -354,9 +360,9 @@ export function shouldBehaveLikeERC721Pool(): void {
         beforeEach(async function () {
           this.inIds = ["0", "1", "2"];
           this.to = this.signers.alice.address;
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "0").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "1").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "2").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "0").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "1").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "2").returns();
         });
 
         context("when length of `inIds` does not match length of `outIds`", function () {
@@ -374,9 +380,15 @@ export function shouldBehaveLikeERC721Pool(): void {
         context("when length of `inIds` matches length of `outIds`", function () {
           beforeEach(async function () {
             this.outIds = ["3", "4", "5"];
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "3").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "4").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "5").returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "3")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "4")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Pool.address, this.to, "5")
+              .returns();
           });
 
           context("when `to` is the zero address", function () {

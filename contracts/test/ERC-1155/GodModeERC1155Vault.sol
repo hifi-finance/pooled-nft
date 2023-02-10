@@ -10,8 +10,12 @@ import "../../ERC-1155/ERC1155Vault.sol";
 contract GodModeERC1155Vault is ERC1155Vault {
     /// CONSTRUCTOR ///
 
-    constructor(address asset_, uint256 assetId_) ERC1155Vault() {
-        initialize(asset_, assetId_);
+    constructor(
+        address asset_,
+        uint256 assetId_,
+        address admin_
+    ) ERC1155Vault() {
+        initialize(asset_, assetId_, admin_);
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///

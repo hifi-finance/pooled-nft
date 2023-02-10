@@ -10,8 +10,12 @@ import "../../ERC-1155/ERC1155Pool.sol";
 contract GodModeERC1155Pool is ERC1155Pool {
     /// CONSTRUCTOR ///
 
-    constructor(address asset_, uint256 assetId_) ERC1155Pool() {
-        initialize(asset_, assetId_);
+    constructor(
+        address asset_,
+        uint256 assetId_,
+        address admin_
+    ) ERC1155Pool() {
+        initialize(asset_, assetId_, admin_);
     }
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///

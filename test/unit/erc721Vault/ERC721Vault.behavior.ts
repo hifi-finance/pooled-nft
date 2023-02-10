@@ -11,7 +11,7 @@ export function shouldBehaveLikeERC721Vault(): void {
     it("should be deployed with the correct values", async function () {
       expect(await this.contracts.erc721Vault.name()).to.equal("JPEG Vaulted");
       expect(await this.contracts.erc721Vault.symbol()).to.equal("JPEGv");
-      expect(await this.contracts.erc721Vault.asset()).to.equal(this.mocks.nft.address);
+      expect(await this.contracts.erc721Vault.asset()).to.equal(this.mocks.erc721.address);
     });
   });
 
@@ -74,9 +74,15 @@ export function shouldBehaveLikeERC721Vault(): void {
         beforeEach(async function () {
           this.inIds = ["0", "1", "2"];
           this.to = this.signers.alice.address;
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Vault.address, "0").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Vault.address, "1").returns();
-          await this.mocks.nft.mock.transferFrom.withArgs(this.to, this.contracts.erc721Vault.address, "2").returns();
+          await this.mocks.erc721.mock.transferFrom
+            .withArgs(this.to, this.contracts.erc721Vault.address, "0")
+            .returns();
+          await this.mocks.erc721.mock.transferFrom
+            .withArgs(this.to, this.contracts.erc721Vault.address, "1")
+            .returns();
+          await this.mocks.erc721.mock.transferFrom
+            .withArgs(this.to, this.contracts.erc721Vault.address, "2")
+            .returns();
         });
 
         context("when length of `inIds` does not match `outAmount`", function () {
@@ -166,9 +172,15 @@ export function shouldBehaveLikeERC721Vault(): void {
           beforeEach(async function () {
             this.outIds = ["0", "1", "2"];
             this.to = this.signers.alice.address;
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Vault.address, this.to, "0").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Vault.address, this.to, "1").returns();
-            await this.mocks.nft.mock.transferFrom.withArgs(this.contracts.erc721Vault.address, this.to, "2").returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Vault.address, this.to, "0")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Vault.address, this.to, "1")
+              .returns();
+            await this.mocks.erc721.mock.transferFrom
+              .withArgs(this.contracts.erc721Vault.address, this.to, "2")
+              .returns();
           });
 
           context("when `to` is the zero address", function () {
@@ -305,13 +317,13 @@ export function shouldBehaveLikeERC721Vault(): void {
               beforeEach(async function () {
                 this.outIds = ["0", "1", "2"];
                 this.to = this.signers.alice.address;
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Vault.address, this.to, "0")
                   .returns();
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Vault.address, this.to, "1")
                   .returns();
-                await this.mocks.nft.mock.transferFrom
+                await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Vault.address, this.to, "2")
                   .returns();
               });
