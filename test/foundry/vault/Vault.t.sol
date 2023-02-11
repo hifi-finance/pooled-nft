@@ -3,6 +3,7 @@ pragma solidity >=0.8.4 <0.9.0;
 
 import { GodModeVault } from "contracts/test/GodModeVault.sol";
 import { BaseTest } from "../BaseTest.t.sol";
+import { SigUtils } from "../utils/SigUtils.sol";
 
 /// @title VaultTest
 /// @author Hifi
@@ -20,6 +21,7 @@ abstract contract VaultTest is BaseTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     GodModeVault internal vault = new GodModeVault("JPEG Vaulted", "JPEGv", address(nft));
+    SigUtils internal sigUtils = new SigUtils(vault.DOMAIN_SEPARATOR());
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION

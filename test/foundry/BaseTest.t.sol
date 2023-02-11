@@ -14,9 +14,9 @@ abstract contract BaseTest is Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     struct Users {
-        address payable alice;
-        address payable admin;
-        address payable bob;
+        address alice;
+        address admin;
+        address bob;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -44,9 +44,8 @@ abstract contract BaseTest is Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH.
-    function createUser(string memory name) internal returns (address payable addr) {
-        addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
-        vm.label({ account: addr, newLabel: name });
+    function createUser(string memory name) internal returns (address addr) {
+        (addr, ) = makeAddrAndKey(name);
         vm.deal({ account: addr, newBalance: 100 ether });
     }
 }

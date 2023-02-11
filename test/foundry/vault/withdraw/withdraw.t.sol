@@ -32,7 +32,7 @@ contract Withdraw_Test is VaultTest {
     }
 
     /// @dev Common set up for redeem
-    function setUpRedeem(address beneficiary, uint256[] memory outIds) internal {
+    function setUpWithdraw(address beneficiary, uint256[] memory outIds) internal {
         vm.assume(outIds.length != 0);
         vm.assume(beneficiary != address(0));
         vm.assume(beneficiary != address(vault));
@@ -53,7 +53,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should burn vault token inAmount.
     function testFuzz_Withdraw_BurnVaultTokenInAmount(address beneficiary, uint256[] memory outIds) external {
-        setUpRedeem(beneficiary, outIds);
+        setUpWithdraw(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         uint256 previousBalance = vault.balanceOf(beneficiary);
         vault.withdraw(inAmount, outIds, beneficiary);
@@ -64,7 +64,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should remove tokenIds from holdings.
     function testFuzz_Withdraw_RemoveAssetTokenIdsfromHoldings(address beneficiary, uint256[] memory outIds) external {
-        setUpRedeem(beneficiary, outIds);
+        setUpWithdraw(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         vault.__godMode_setHoldings(beneficiary, outIds);
         uint256 previousHoldingsLength = vault.holdingsLength(beneficiary);
@@ -76,7 +76,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should transfer nft from vault contract to beneficiary
     function testFuzz_Withdraw_TransferNftOutIdsToBeneficiary(address beneficiary, uint256[] memory outIds) external {
-        setUpRedeem(beneficiary, outIds);
+        setUpWithdraw(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         uint256 previousBalance = nft.balanceOf(beneficiary);
         vault.withdraw(inAmount, outIds, beneficiary);
@@ -87,7 +87,7 @@ contract Withdraw_Test is VaultTest {
 
     /// @dev it should emit Withdraw event.
     function testFuzz_Withdraw_Event(address beneficiary, uint256[] memory outIds) external {
-        setUpRedeem(beneficiary, outIds);
+        setUpWithdraw(beneficiary, outIds);
         uint256 inAmount = outIds.length * 10**18;
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit Withdraw(inAmount, outIds, beneficiary);

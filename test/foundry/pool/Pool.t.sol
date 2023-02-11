@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
 
-import { GodModePool } from "contracts/test/GodModePool.sol";
 import { BaseTest } from "../BaseTest.t.sol";
+import { GodModePool } from "contracts/test/GodModePool.sol";
+import { SigUtils } from "../utils/SigUtils.sol";
 
 /// @title PoolTest
 /// @author Hifi
@@ -21,6 +22,7 @@ abstract contract PoolTest is BaseTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     GodModePool internal pool = new GodModePool("JPEG Pooled", "JPEGp", address(nft));
+    SigUtils internal sigUtils = new SigUtils(pool.DOMAIN_SEPARATOR());
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
