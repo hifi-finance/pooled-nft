@@ -243,11 +243,22 @@ export function shouldBehaveLikePool(): void {
             beforeEach(async function () {
               this.inAmount = "0";
               this.to = this.signers.alice.address;
+              this.deadline = (await hre.ethers.provider.getBlock("latest")).timestamp + 100;
+              this.signature = await signERC2612Permit({
+                provider: hre.ethers.provider as any,
+                verifyingContract: this.contracts.pool.address,
+                ownerAddress: this.signers.alice.address,
+                spenderAddress: this.contracts.pool.address,
+                amount: this.inAmount,
+                deadline: this.deadline,
+              });
             });
 
             it("reverts", async function () {
               await expect(
-                this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, [], this.to),
+                this.contracts.pool
+                  .connect(this.signers.alice)
+                  .redeemWithSignature(this.inAmount, [], this.to, this.deadline, this.signature),
               ).to.be.revertedWith(PoolErrors.INSUFFICIENT_IN);
             });
           });
@@ -256,6 +267,16 @@ export function shouldBehaveLikePool(): void {
             beforeEach(async function () {
               this.inAmount = parseEther("3");
               this.to = this.signers.alice.address;
+              this.deadline = (await hre.ethers.provider.getBlock("latest")).timestamp + 100;
+              this.signature = await signERC2612Permit({
+                provider: hre.ethers.provider as any,
+                verifyingContract: this.contracts.pool.address,
+                ownerAddress: this.signers.alice.address,
+                spenderAddress: this.contracts.pool.address,
+                amount: this.inAmount,
+                deadline: this.deadline,
+              });
+
               await this.contracts.pool.__godMode_mint(this.to, this.inAmount);
             });
 
@@ -266,7 +287,9 @@ export function shouldBehaveLikePool(): void {
 
               it("reverts", async function () {
                 await expect(
-                  this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, this.outIds, this.to),
+                  this.contracts.pool
+                    .connect(this.signers.alice)
+                    .redeemWithSignature(this.inAmount, this.outIds, this.to, this.deadline, this.signature),
                 ).to.be.revertedWith(PoolErrors.IN_OUT_MISMATCH);
               });
             });
@@ -283,7 +306,9 @@ export function shouldBehaveLikePool(): void {
               context("when `to` is the zero address", function () {
                 it("reverts", async function () {
                   await expect(
-                    this.contracts.pool.connect(this.signers.alice).redeem(this.inAmount, this.outIds, AddressZero),
+                    this.contracts.pool
+                      .connect(this.signers.alice)
+                      .redeemWithSignature(this.inAmount, this.outIds, AddressZero, this.deadline, this.signature),
                   ).to.be.revertedWith(PoolErrors.INVALID_TO);
                 });
               });
@@ -292,7 +317,7 @@ export function shouldBehaveLikePool(): void {
                 it("succeeds", async function () {
                   const contractCall = this.contracts.pool
                     .connect(this.signers.alice)
-                    .redeem(this.inAmount, this.outIds, this.to);
+                    .redeemWithSignature(this.inAmount, this.outIds, this.to, this.deadline, this.signature);
                   await expect(contractCall)
                     .to.emit(this.contracts.pool, "Redeem")
                     .withArgs(this.inAmount, this.outIds, this.to);

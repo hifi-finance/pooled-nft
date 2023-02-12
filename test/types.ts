@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import type { Fixture, MockContract } from "ethereum-waffle";
 
+import type { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import type { GodModePool } from "../src/types/GodModePool";
 import type { GodModeVault } from "../src/types/GodModeVault";
 import type { PoolFactory } from "../src/types/PoolFactory";
@@ -16,6 +17,7 @@ declare module "mocha" {
 }
 
 export interface Contracts {
+  erc20Wnft: GodModeERC20Wnft;
   pool: GodModePool;
   vault: GodModeVault;
   poolFactory: PoolFactory;
@@ -30,4 +32,5 @@ export interface Signers {
   admin: SignerWithAddress;
   alice: SignerWithAddress;
   bob: SignerWithAddress;
+  carol: SignerWithAddress;
 }

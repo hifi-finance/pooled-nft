@@ -29,6 +29,7 @@ yarn-error.log*
 # types
 src/types/*
 !src/types/common.ts
+!src/types/ERC20Wnft.ts
 !src/types/Pool.ts
 !src/types/Vault.ts
 !src/types/PoolFactory.ts
@@ -37,6 +38,7 @@ src/types/*
 # factories
 !src/types/factories
 src/types/factories/*
+!src/types/factories/ERC20Wnft__factory.ts
 !src/types/factories/Pool__factory.ts
 !src/types/factories/Vault__factory.ts
 !src/types/factories/PoolFactory__factory.ts
