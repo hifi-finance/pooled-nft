@@ -172,6 +172,7 @@ export function shouldBehaveLikeERC721Vault(): void {
           beforeEach(async function () {
             this.outIds = ["0", "1", "2"];
             this.to = this.signers.alice.address;
+            await this.contracts.erc721Vault.__godMode_setHoldings(this.to, this.outIds);
             await this.mocks.erc721.mock.transferFrom
               .withArgs(this.contracts.erc721Vault.address, this.to, "0")
               .returns();
@@ -317,6 +318,7 @@ export function shouldBehaveLikeERC721Vault(): void {
               beforeEach(async function () {
                 this.outIds = ["0", "1", "2"];
                 this.to = this.signers.alice.address;
+                await this.contracts.erc721Vault.__godMode_setHoldings(this.to, this.outIds);
                 await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Vault.address, this.to, "0")
                   .returns();

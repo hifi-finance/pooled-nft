@@ -53,7 +53,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
-            holdings.add(inId);
+            require(holdings.add(inId));
             IERC721(asset).transferFrom(msg.sender, address(this), inId);
             unchecked {
                 ++i;
@@ -81,7 +81,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         _burn(msg.sender, inAmount);
         for (uint256 i; i < outIds.length; ) {
             uint256 outId = outIds[i];
-            holdings.remove(outId);
+            require(holdings.remove(outId));
             IERC721(asset).transferFrom(address(this), to, outId);
             unchecked {
                 ++i;
@@ -119,10 +119,10 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
-            holdings.add(inId);
+            require(holdings.add(inId));
             IERC721(asset).transferFrom(msg.sender, address(this), inId);
             uint256 outId = outIds[i];
-            holdings.remove(outId);
+            require(holdings.remove(outId));
             IERC721(asset).transferFrom(address(this), to, outId);
             unchecked {
                 ++i;

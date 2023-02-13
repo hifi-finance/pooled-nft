@@ -160,6 +160,7 @@ export function shouldBehaveLikeERC721Pool(): void {
           beforeEach(async function () {
             this.outIds = ["0", "1", "2"];
             this.to = this.signers.alice.address;
+            await this.contracts.erc721Pool.__godMode_setHoldings(this.outIds);
             await this.mocks.erc721.mock.transferFrom
               .withArgs(this.contracts.erc721Pool.address, this.to, "0")
               .returns();
@@ -304,6 +305,7 @@ export function shouldBehaveLikeERC721Pool(): void {
               beforeEach(async function () {
                 this.outIds = ["0", "1", "2"];
                 this.to = this.signers.alice.address;
+                await this.contracts.erc721Pool.__godMode_setHoldings(this.outIds);
                 await this.mocks.erc721.mock.transferFrom
                   .withArgs(this.contracts.erc721Pool.address, this.to, "0")
                   .returns();
@@ -380,6 +382,7 @@ export function shouldBehaveLikeERC721Pool(): void {
         context("when length of `inIds` matches length of `outIds`", function () {
           beforeEach(async function () {
             this.outIds = ["3", "4", "5"];
+            await this.contracts.erc721Pool.__godMode_setHoldings(this.outIds);
             await this.mocks.erc721.mock.transferFrom
               .withArgs(this.contracts.erc721Pool.address, this.to, "3")
               .returns();

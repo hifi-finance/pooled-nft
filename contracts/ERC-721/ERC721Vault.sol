@@ -54,7 +54,7 @@ contract ERC721Vault is IERC721Vault, ERC20Wnft {
         }
         for (uint256 i; i < inIds.length; ) {
             uint256 inId = inIds[i];
-            holdings[msg.sender].add(inId);
+            require(holdings[msg.sender].add(inId));
             IERC721(asset).transferFrom(msg.sender, address(this), inId);
             unchecked {
                 ++i;
@@ -82,7 +82,7 @@ contract ERC721Vault is IERC721Vault, ERC20Wnft {
         _burn(msg.sender, inAmount);
         for (uint256 i; i < outIds.length; ) {
             uint256 outId = outIds[i];
-            holdings[msg.sender].remove(outId);
+            require(holdings[msg.sender].remove(outId));
             IERC721(asset).transferFrom(address(this), to, outId);
             unchecked {
                 ++i;
