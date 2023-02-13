@@ -24,10 +24,6 @@ $ yarn install
 
 Create a `.env` file and follow the `.env.example` file to add the requisite environment variables. Now you can start making changes.
 
-## Security
-
-For security concerns, please email [security@hifi.finance](mailto:security@hifi.finance). This repository is subject to the Hifi bug bounty program, per the terms defined [here](https://docs.hifi.finance/getting-started/security#bug-bounty).
-
 ## License
 
 [GPLv3](./LICENSE.md) © Mainframe Group Inc.
