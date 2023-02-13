@@ -62,8 +62,12 @@ To deploy and verify the factory smart contract(s), you would need to run the fo
 $ yarn hardhat deploy:contract:<TOKEN_STANDARD>-{pool,vault}-factory --confirmations 5 --verify true
 ```
 
-Replacing `TOKEN_STANDARD` with the appropriate standard (i.e., `erc721` or `erc1155`). And replacing `{pool,vault}` by either `pool` or `vault`.
+Replacing `TOKEN_STANDARD` with the appropriate standard (i.e., `erc721` or `erc1155`). And replacing `{pool,vault}` by either `pool` or `vault`. For example, here is how we would deploy `ERC721PoolFactory`:
+
+```bash
+$ yarn hardhat deploy:contract:erc721-pool-factory --confirmations 5 --verify true
+```
 
 ## License
 
-[GPLv3](./LICENSE.md) © Mainframe Group Inc.
+[GPLv3](./LICENSE.md) © Hifi Labs.
