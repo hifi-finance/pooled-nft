@@ -2210,9 +2210,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hifi-finance/wnft@workspace:.":
+"@hifi-finance/pooled-nft@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@hifi-finance/wnft@workspace:."
+  resolution: "@hifi-finance/pooled-nft@workspace:."
   dependencies:
     "@codechecks/client": ^0.1.12
     "@commitlint/cli": ^16.2.1
