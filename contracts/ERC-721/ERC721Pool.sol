@@ -101,33 +101,4 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         permitInternal(inAmount, deadline, signature);
         redeem(inAmount, outIds, to);
     }
-
-    /// @inheritdoc IERC721Pool
-    function swap(
-        uint256[] calldata inIds,
-        uint256[] calldata outIds,
-        address to
-    ) external override {
-        if (inIds.length == 0) {
-            revert ERC721Pool__InsufficientIn();
-        }
-        if (inIds.length != outIds.length) {
-            revert ERC721Pool__InOutMismatch();
-        }
-        if (to == address(0)) {
-            revert ERC721Pool__InvalidTo();
-        }
-        for (uint256 i; i < inIds.length; ) {
-            uint256 inId = inIds[i];
-            require(holdings.add(inId));
-            IERC721(asset).transferFrom(msg.sender, address(this), inId);
-            uint256 outId = outIds[i];
-            require(holdings.remove(outId));
-            IERC721(asset).transferFrom(address(this), to, outId);
-            unchecked {
-                ++i;
-            }
-        }
-        emit Swap(inIds, outIds, to);
-    }
 }

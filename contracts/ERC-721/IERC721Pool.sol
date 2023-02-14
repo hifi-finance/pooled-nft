@@ -25,13 +25,6 @@ interface IERC721Pool {
     /// @param to The account that received the released asset token IDs.
     event Redeem(uint256 inAmount, uint256[] outIds, address indexed to);
 
-    /// @notice Emitted when an amount of asset token IDs are swapped in exchange for an equivalent amount
-    /// of asset token IDs.
-    /// @param inIds The asset token IDs sent from the user's account to the pool.
-    /// @param outIds The asset token IDs released from the pool.
-    /// @param to The account that received the released asset token IDs.
-    event Swap(uint256[] inIds, uint256[] outIds, address indexed to);
-
     /// CONSTANT FUNCTIONS ///
 
     /// @notice Returns the asset token ID held at index.
@@ -103,24 +96,5 @@ interface IERC721Pool {
         address to,
         uint256 deadline,
         bytes memory signature
-    ) external;
-
-    /// @notice Swap asset token IDs in user's account in exchange for asset token IDs in the pool.
-    ///
-    /// @dev Emits a {Swap} event.
-    ///
-    /// @dev Requirements:
-    ///
-    /// - The length of `inIds` must be greater than zero.
-    /// - The length of `inIds` must match the length of `outIds`.
-    /// - The address `to` must not be the zero address.
-    ///
-    /// @param inIds The asset token IDs sent from the user's account to the pool.
-    /// @param outIds The asset token IDs to be released from the pool.
-    /// @param to The account that receives the released asset token IDs.
-    function swap(
-        uint256[] calldata inIds,
-        uint256[] calldata outIds,
-        address to
     ) external;
 }

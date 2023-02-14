@@ -37,7 +37,6 @@ export interface ERC721PoolInterface extends utils.Interface {
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "redeem(uint256,uint256[],address)": FunctionFragment;
     "redeemWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
-    "swap(uint256[],uint256[],address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -103,10 +102,6 @@ export interface ERC721PoolInterface extends utils.Interface {
     functionFragment: "redeemWithSignature",
     values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "swap",
-    values: [BigNumberish[], BigNumberish[], string]
-  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -151,7 +146,6 @@ export interface ERC721PoolInterface extends utils.Interface {
     functionFragment: "redeemWithSignature",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -169,7 +163,6 @@ export interface ERC721PoolInterface extends utils.Interface {
     "Initialize(string,string,address)": EventFragment;
     "Mint(uint256[],uint256,address)": EventFragment;
     "Redeem(uint256,uint256[],address)": EventFragment;
-    "Swap(uint256[],uint256[],address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -177,7 +170,6 @@ export interface ERC721PoolInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Swap"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -208,13 +200,6 @@ export type RedeemEvent = TypedEvent<
 >;
 
 export type RedeemEventFilter = TypedEventFilter<RedeemEvent>;
-
-export type SwapEvent = TypedEvent<
-  [BigNumber[], BigNumber[], string],
-  { inIds: BigNumber[]; outIds: BigNumber[]; to: string }
->;
-
-export type SwapEventFilter = TypedEventFilter<SwapEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -327,13 +312,6 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -424,13 +402,6 @@ export interface ERC721Pool extends BaseContract {
     to: string,
     deadline: BigNumberish,
     signature: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  swap(
-    inIds: BigNumberish[],
-    outIds: BigNumberish[],
-    to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -530,13 +501,6 @@ export interface ERC721Pool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -597,13 +561,6 @@ export interface ERC721Pool extends BaseContract {
       outIds?: null,
       to?: string | null
     ): RedeemEventFilter;
-
-    "Swap(uint256[],uint256[],address)"(
-      inIds?: null,
-      outIds?: null,
-      to?: string | null
-    ): SwapEventFilter;
-    Swap(inIds?: null, outIds?: null, to?: string | null): SwapEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -691,13 +648,6 @@ export interface ERC721Pool extends BaseContract {
       to: string,
       deadline: BigNumberish,
       signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -801,13 +751,6 @@ export interface ERC721Pool extends BaseContract {
       to: string,
       deadline: BigNumberish,
       signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swap(
-      inIds: BigNumberish[],
-      outIds: BigNumberish[],
-      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
