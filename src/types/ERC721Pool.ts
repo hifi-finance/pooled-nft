@@ -31,12 +31,12 @@ export interface ERC721PoolInterface extends utils.Interface {
     "holdingAt(uint256)": FunctionFragment;
     "holdingsLength()": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
-    "mint(uint256[],uint256,address)": FunctionFragment;
+    "mint(uint256[],address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "redeem(uint256,uint256[],address)": FunctionFragment;
-    "redeemWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
+    "redeem(uint256[],address)": FunctionFragment;
+    "redeemWithSignature(uint256[],address,uint256,bytes)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -78,7 +78,7 @@ export interface ERC721PoolInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [BigNumberish[], BigNumberish, string]
+    values: [BigNumberish[], string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -96,11 +96,11 @@ export interface ERC721PoolInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "redeem",
-    values: [BigNumberish, BigNumberish[], string]
+    values: [BigNumberish[], string]
   ): string;
   encodeFunctionData(
     functionFragment: "redeemWithSignature",
-    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
+    values: [BigNumberish[], string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
@@ -161,8 +161,8 @@ export interface ERC721PoolInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
-    "Mint(uint256[],uint256,address)": EventFragment;
-    "Redeem(uint256,uint256[],address)": EventFragment;
+    "Mint(uint256[],address)": EventFragment;
+    "Redeem(uint256[],address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -188,15 +188,15 @@ export type InitializeEvent = TypedEvent<
 export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
 
 export type MintEvent = TypedEvent<
-  [BigNumber[], BigNumber, string],
-  { inIds: BigNumber[]; outAmount: BigNumber; to: string }
+  [BigNumber[], string],
+  { inIds: BigNumber[]; to: string }
 >;
 
 export type MintEventFilter = TypedEventFilter<MintEvent>;
 
 export type RedeemEvent = TypedEvent<
-  [BigNumber, BigNumber[], string],
-  { inAmount: BigNumber; outIds: BigNumber[]; to: string }
+  [BigNumber[], string],
+  { outIds: BigNumber[]; to: string }
 >;
 
 export type RedeemEventFilter = TypedEventFilter<RedeemEvent>;
@@ -276,7 +276,6 @@ export interface ERC721Pool extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
-      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -297,14 +296,12 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<ContractTransaction>;
 
     redeem(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     redeemWithSignature(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       deadline: BigNumberish,
@@ -369,7 +366,6 @@ export interface ERC721Pool extends BaseContract {
 
   mint(
     inIds: BigNumberish[],
-    outAmount: BigNumberish,
     to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -390,14 +386,12 @@ export interface ERC721Pool extends BaseContract {
   ): Promise<ContractTransaction>;
 
   redeem(
-    inAmount: BigNumberish,
     outIds: BigNumberish[],
     to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   redeemWithSignature(
-    inAmount: BigNumberish,
     outIds: BigNumberish[],
     to: string,
     deadline: BigNumberish,
@@ -465,7 +459,6 @@ export interface ERC721Pool extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
-      outAmount: BigNumberish,
       to: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -486,14 +479,12 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<void>;
 
     redeem(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     redeemWithSignature(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       deadline: BigNumberish,
@@ -544,23 +535,17 @@ export interface ERC721Pool extends BaseContract {
       asset?: string | null
     ): InitializeEventFilter;
 
-    "Mint(uint256[],uint256,address)"(
+    "Mint(uint256[],address)"(
       inIds?: null,
-      outAmount?: null,
       to?: string | null
     ): MintEventFilter;
-    Mint(inIds?: null, outAmount?: null, to?: string | null): MintEventFilter;
+    Mint(inIds?: null, to?: string | null): MintEventFilter;
 
-    "Redeem(uint256,uint256[],address)"(
-      inAmount?: null,
+    "Redeem(uint256[],address)"(
       outIds?: null,
       to?: string | null
     ): RedeemEventFilter;
-    Redeem(
-      inAmount?: null,
-      outIds?: null,
-      to?: string | null
-    ): RedeemEventFilter;
+    Redeem(outIds?: null, to?: string | null): RedeemEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -615,7 +600,6 @@ export interface ERC721Pool extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
-      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -636,14 +620,12 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<BigNumber>;
 
     redeem(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     redeemWithSignature(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       deadline: BigNumberish,
@@ -715,7 +697,6 @@ export interface ERC721Pool extends BaseContract {
 
     mint(
       inIds: BigNumberish[],
-      outAmount: BigNumberish,
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -739,14 +720,12 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     redeem(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     redeemWithSignature(
-      inAmount: BigNumberish,
       outIds: BigNumberish[],
       to: string,
       deadline: BigNumberish,

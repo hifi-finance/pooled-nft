@@ -37,16 +37,9 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721Pool
-    function mint(
-        uint256[] calldata inIds,
-        uint256 outAmount,
-        address to
-    ) external override {
+    function mint(uint256[] calldata inIds, address to) external override {
         if (inIds.length == 0) {
             revert ERC721Pool__InsufficientIn();
-        }
-        if (inIds.length * 10**18 != outAmount) {
-            revert ERC721Pool__InOutMismatch();
         }
         if (to == address(0)) {
             revert ERC721Pool__InvalidTo();
@@ -59,26 +52,16 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
                 ++i;
             }
         }
-        _mint(to, outAmount);
-        emit Mint(inIds, outAmount, to);
+        _mint(to, inIds.length * 10**18);
+        emit Mint(inIds, to);
     }
 
     /// @inheritdoc IERC721Pool
-    function redeem(
-        uint256 inAmount,
-        uint256[] calldata outIds,
-        address to
-    ) public override {
-        if (inAmount == 0) {
-            revert ERC721Pool__InsufficientIn();
-        }
-        if (inAmount != outIds.length * 10**18) {
-            revert ERC721Pool__InOutMismatch();
-        }
+    function redeem(uint256[] calldata outIds, address to) public override {
         if (to == address(0)) {
             revert ERC721Pool__InvalidTo();
         }
-        _burn(msg.sender, inAmount);
+        _burn(msg.sender, outIds.length * 10**18);
         for (uint256 i; i < outIds.length; ) {
             uint256 outId = outIds[i];
             require(holdings.remove(outId));
@@ -87,18 +70,17 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
                 ++i;
             }
         }
-        emit Redeem(inAmount, outIds, to);
+        emit Redeem(outIds, to);
     }
 
     /// @inheritdoc IERC721Pool
     function redeemWithSignature(
-        uint256 inAmount,
         uint256[] calldata outIds,
         address to,
         uint256 deadline,
         bytes memory signature
     ) external override {
-        permitInternal(inAmount, deadline, signature);
-        redeem(inAmount, outIds, to);
+        permitInternal(outIds.length * 10**18, deadline, signature);
+        redeem(outIds, to);
     }
 }

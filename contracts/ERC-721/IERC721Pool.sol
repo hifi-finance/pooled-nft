@@ -6,7 +6,6 @@ pragma solidity >=0.8.4;
 interface IERC721Pool {
     /// CUSTOM ERRORS ///
 
-    error ERC721Pool__InOutMismatch();
     error ERC721Pool__InsufficientIn();
     error ERC721Pool__InvalidTo();
 
@@ -14,16 +13,14 @@ interface IERC721Pool {
 
     /// @notice Emitted when pool tokens are minted in exchange for an equivalent amount of asset token IDs.
     /// @param inIds The asset token IDs sent from the user's account to the pool.
-    /// @param outAmount The amount of pool tokens minted by the pool.
     /// @param to The account that received the minted pool tokens.
-    event Mint(uint256[] inIds, uint256 outAmount, address indexed to);
+    event Mint(uint256[] inIds, address indexed to);
 
     /// @notice Emitted when an amount of pool tokens are redeemed in exchange for an equivalent amount
     /// of asset token IDs.
-    /// @param inAmount The amount of pool tokens sent from the user's account to the pool.
     /// @param outIds The asset token IDs released from the pool.
     /// @param to The account that received the released asset token IDs.
-    event Redeem(uint256 inAmount, uint256[] outIds, address indexed to);
+    event Redeem(uint256[] outIds, address indexed to);
 
     /// CONSTANT FUNCTIONS ///
 
@@ -47,13 +44,8 @@ interface IERC721Pool {
     /// - The address `to` must not be the zero address.
     ///
     /// @param inIds The asset token IDs sent from the user's account to the pool.
-    /// @param outAmount The amount of pool tokens to be minted by the pool.
     /// @param to The account that receives the minted pool tokens.
-    function mint(
-        uint256[] calldata inIds,
-        uint256 outAmount,
-        address to
-    ) external;
+    function mint(uint256[] calldata inIds, address to) external;
 
     /// @notice Redeem an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
     ///
@@ -65,14 +57,9 @@ interface IERC721Pool {
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
     /// - The address `to` must not be the zero address.
     ///
-    /// @param inAmount The amount of pool tokens sent from the user's account to the pool.
     /// @param outIds The asset token IDs to be released from the pool.
     /// @param to The account that receives the released asset token IDs.
-    function redeem(
-        uint256 inAmount,
-        uint256[] calldata outIds,
-        address to
-    ) external;
+    function redeem(uint256[] calldata outIds, address to) external;
 
     /// @notice Redeem an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
     ///
@@ -85,13 +72,11 @@ interface IERC721Pool {
     /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
     /// - The address `to` must not be the zero address.
     ///
-    /// @param inAmount The amount of pool tokens sent from the user's account to the pool.
     /// @param outIds The asset token IDs to be released from the pool.
     /// @param to The account that receives the released asset token IDs.
     /// @param deadline The deadline beyond which the signature is not valid anymore.
     /// @param signature The packed signature for ERC721Pool.
     function redeemWithSignature(
-        uint256 inAmount,
         uint256[] calldata outIds,
         address to,
         uint256 deadline,
