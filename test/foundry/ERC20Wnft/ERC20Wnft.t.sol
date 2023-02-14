@@ -35,10 +35,7 @@ abstract contract ERC20WnftTest is BaseTest {
 
     /// @dev A setup function invoked before each test case.
     function setUp() public virtual override {
-        console2.log("in erc20Wnft 1", msg.sender);
-
         BaseTest.setUp();
-        console2.log("in erc20Wnft 2", msg.sender);
 
         erc20Wnft.__godMode_mint(users.admin, ONE_MILLION_WNFT);
         // Make Alice the default caller in all subsequent tests.
