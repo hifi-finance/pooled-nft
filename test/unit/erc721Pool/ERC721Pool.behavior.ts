@@ -9,7 +9,7 @@ import { signERC2612Permit } from "../../shared/utils";
 export function shouldBehaveLikeERC721Pool(): void {
   describe("Deployment", function () {
     it("should be deployed with the correct values", async function () {
-      expect(await this.contracts.erc721Pool.name()).to.equal("JPEG Pooled");
+      expect(await this.contracts.erc721Pool.name()).to.equal("JPEG Pool");
       expect(await this.contracts.erc721Pool.symbol()).to.equal("JPEGp");
       expect(await this.contracts.erc721Pool.asset()).to.equal(this.mocks.erc721.address);
     });

@@ -32,7 +32,7 @@ export function shouldBehaveLikeERC721PoolFactory(): void {
           await expect(contractCall)
             .to.emit(this.contracts.erc721PoolFactory, "CreatePool")
             .withArgs(
-              "Mock NFT Pooled",
+              "Mock NFT Pool",
               "MOCKp",
               this.mocks.erc721.address,
               getCreate2Address(

@@ -36,7 +36,7 @@ contract ERC721PoolFactory is IERC721PoolFactory {
             revert ERC721PoolFactory__PoolAlreadyExists();
         }
 
-        string memory name = string.concat(IERC721Metadata(asset).name(), " Pooled");
+        string memory name = string.concat(IERC721Metadata(asset).name(), " Pool");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
         bytes32 salt = keccak256(abi.encodePacked(asset));

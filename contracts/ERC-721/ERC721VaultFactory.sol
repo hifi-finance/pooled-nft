@@ -36,7 +36,7 @@ contract ERC721VaultFactory is IERC721VaultFactory {
             revert ERC721VaultFactory__VaultAlreadyExists();
         }
 
-        string memory name = string.concat(IERC721Metadata(asset).name(), " Vaulted");
+        string memory name = string.concat(IERC721Metadata(asset).name(), " Vault");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "v");
 
         bytes32 salt = keccak256(abi.encodePacked(asset));

@@ -77,14 +77,14 @@ export async function unitFixtureERC20Wnft(signers: Signer[]): Promise<UnitFixtu
 export async function unitFixtureERC721Pool(signers: Signer[]): Promise<UnitFixtureERC721PoolReturnType> {
   const deployer: Signer = signers[0];
   const erc721 = await deployMockERC712(deployer);
-  const erc721Pool = await deployGodModeERC721Pool(deployer, "JPEG Pooled", "JPEGp", erc721.address);
+  const erc721Pool = await deployGodModeERC721Pool(deployer, "JPEG Pool", "JPEGp", erc721.address);
   return { erc721, erc721Pool };
 }
 
 export async function unitFixtureERC721Vault(signers: Signer[]): Promise<UnitFixtureERC721VaultReturnType> {
   const deployer: Signer = signers[0];
   const erc721 = await deployMockERC712(deployer);
-  const erc721Vault = await deployGodModeERC721Vault(deployer, "JPEG Vaulted", "JPEGv", erc721.address);
+  const erc721Vault = await deployGodModeERC721Vault(deployer, "JPEG Vault", "JPEGv", erc721.address);
   return { erc721, erc721Vault };
 }
 
