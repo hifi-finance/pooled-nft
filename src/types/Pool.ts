@@ -18,7 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface PoolInterface extends utils.Interface {
-  contractName: "Pool";
+  contractName: "ERC721Pool";
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "PERMIT_TYPEHASH()": FunctionFragment;
@@ -223,8 +223,8 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface Pool extends BaseContract {
-  contractName: "Pool";
+export interface ERC721Pool extends BaseContract {
+  contractName: "ERC721Pool";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

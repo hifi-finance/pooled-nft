@@ -3,7 +3,7 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/providers";
-import type { Pool, PoolInterface } from "../Pool";
+import type { ERC721Pool, PoolInterface } from "../ERC721Pool";
 
 const _abi = [
   {
@@ -28,17 +28,17 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "Pool__InOutMismatch",
+    name: "ERC721Pool__InOutMismatch",
     type: "error",
   },
   {
     inputs: [],
-    name: "Pool__InsufficientIn",
+    name: "ERC721Pool__InsufficientIn",
     type: "error",
   },
   {
     inputs: [],
-    name: "Pool__InvalidTo",
+    name: "ERC721Pool__InvalidTo",
     type: "error",
   },
   {
@@ -660,40 +660,40 @@ const isSuperArgs = (
   xs: PoolConstructorParams
 ): xs is ConstructorParameters<typeof ContractFactory> => xs.length > 1;
 
-export class Pool__factory extends ContractFactory {
+export class ERC721Pool__factory extends ContractFactory {
   constructor(...args: PoolConstructorParams) {
     if (isSuperArgs(args)) {
       super(...args);
     } else {
       super(_abi, _bytecode, args[0]);
     }
-    this.contractName = "Pool";
+    this.contractName = "ERC721Pool";
   }
 
   deploy(
     overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<Pool> {
-    return super.deploy(overrides || {}) as Promise<Pool>;
+  ): Promise<ERC721Pool> {
+    return super.deploy(overrides || {}) as Promise<ERC721Pool>;
   }
   getDeployTransaction(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(overrides || {});
   }
-  attach(address: string): Pool {
-    return super.attach(address) as Pool;
+  attach(address: string): ERC721Pool {
+    return super.attach(address) as ERC721Pool;
   }
-  connect(signer: Signer): Pool__factory {
-    return super.connect(signer) as Pool__factory;
+  connect(signer: Signer): ERC721Pool__factory {
+    return super.connect(signer) as ERC721Pool__factory;
   }
-  static readonly contractName: "Pool";
-  public readonly contractName: "Pool";
+  static readonly contractName: "ERC721Pool";
+  public readonly contractName: "ERC721Pool";
   static readonly bytecode = _bytecode;
   static readonly abi = _abi;
   static createInterface(): PoolInterface {
     return new utils.Interface(_abi) as PoolInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): Pool {
-    return new Contract(address, _abi, signerOrProvider) as Pool;
+  static connect(address: string, signerOrProvider: Signer | Provider): ERC721Pool {
+    return new Contract(address, _abi, signerOrProvider) as ERC721Pool;
   }
 }
