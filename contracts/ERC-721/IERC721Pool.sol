@@ -11,16 +11,15 @@ interface IERC721Pool {
 
     /// EVENTS ///
 
-    /// @notice Emitted when pool tokens are minted in exchange for an equivalent amount of asset token IDs.
-    /// @param inIds The asset token IDs sent from the user's account to the pool.
+    /// @notice Emitted when NFTs are deposited and an equal amount of pool tokens are minted.
+    /// @param ids The asset token IDs sent from the user's account to the pool.
     /// @param to The account that received the minted pool tokens.
-    event Mint(uint256[] inIds, address indexed to);
+    event Deposit(uint256[] ids, address indexed to);
 
-    /// @notice Emitted when an amount of pool tokens are redeemed in exchange for an equivalent amount
-    /// of asset token IDs.
-    /// @param outIds The asset token IDs released from the pool.
+    /// @notice Emitted when NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
+    /// @param ids The asset token IDs released from the pool.
     /// @param to The account that received the released asset token IDs.
-    event Redeem(uint256[] outIds, address indexed to);
+    event Withdraw(uint256[] ids, address indexed to);
 
     /// CONSTANT FUNCTIONS ///
 
@@ -33,51 +32,51 @@ interface IERC721Pool {
 
     /// NON-CONSTANT FUNCTIONS ///
 
-    /// @notice Mint an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
+    /// @notice Deposit NFTs in exchange for an equivalent amount of pool tokens.
     ///
-    /// @dev Emits a {Mint} event.
+    /// @dev Emits a {Deposit} event.
     ///
     /// @dev Requirements:
     ///
-    /// - The length of `inIds` must be greater than zero.
-    /// - The length of `inIds` scaled to 18 decimals must match the value of `outAmount`.
+    /// - The length of `ids` must be greater than zero.
+    /// - The length of `ids` scaled to 18 decimals.
     /// - The address `to` must not be the zero address.
     ///
-    /// @param inIds The asset token IDs sent from the user's account to the pool.
+    /// @param ids The asset token IDs sent from the user's account to the pool.
     /// @param to The account that receives the minted pool tokens.
-    function mint(uint256[] calldata inIds, address to) external;
+    function deposit(uint256[] calldata ids, address to) external;
 
-    /// @notice Redeem an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
+    /// @notice Withdraw specified NFTs in exchange for an equivalent amount of pool tokens.
     ///
-    /// @dev Emits a {Redeem} event.
+    /// @dev Emits a {Withdraw} event.
     ///
     /// @dev Requirements:
     ///
-    /// - The value of `inAmount` must be greater than zero.
-    /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
+    /// - The length of `ids` must be greater than zero.
+    /// - The length of `ids` scaled to 18 decimals.
     /// - The address `to` must not be the zero address.
     ///
-    /// @param outIds The asset token IDs to be released from the pool.
+    /// @param ids The asset token IDs to be released from the pool.
     /// @param to The account that receives the released asset token IDs.
-    function redeem(uint256[] calldata outIds, address to) external;
+    function withdraw(uint256[] calldata ids, address to) external;
 
-    /// @notice Redeem an amount of pool tokens in exchange for an equivalent amount of asset token IDs.
+    /// @notice Withdraw specified NFTs in exchange for an equivalent amount of pool tokens.
     ///
-    /// @dev Emits a {Redeem} event.
+    /// @dev Emits a {Withdraw} event.
     ///
     /// @dev Requirements:
-    /// - The `signature` must be a valid signed approval given by the caller to the ERC721Pool to spend `inAmount`
-    ///  pool tokens for the given `deadline` and the caller's current nonce.
-    /// - The value of `inAmount` must be greater than zero.
-    /// - The value of `inAmount` must match the length of `outIds` scaled to 18 decimals.
+    /// - The `signature` must be a valid signed approval given by the caller to the ERC721Pool to spend pool tokens
+    ///   equal to the length of the ids array for the given `deadline` and the caller's current nonce.
+    /// - The length of `ids` must be greater than zero.
+    /// - The length of `ids` scaled to 18 decimals.
     /// - The address `to` must not be the zero address.
     ///
-    /// @param outIds The asset token IDs to be released from the pool.
+    /// @param ids The asset token IDs to be released from the pool.
     /// @param to The account that receives the released asset token IDs.
     /// @param deadline The deadline beyond which the signature is not valid anymore.
     /// @param signature The packed signature for ERC721Pool.
-    function redeemWithSignature(
-        uint256[] calldata outIds,
+    function withdrawWithSignature(
+        uint256[] calldata ids,
         address to,
         uint256 deadline,
         bytes memory signature
