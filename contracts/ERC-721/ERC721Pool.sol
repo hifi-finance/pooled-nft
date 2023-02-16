@@ -37,53 +37,53 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721Pool
-    function mint(uint256[] calldata inIds, address to) external override {
-        if (inIds.length == 0) {
+    function deposit(uint256[] calldata ids, address to) external override {
+        if (ids.length == 0) {
             revert ERC721Pool__InsufficientIn();
         }
         if (to == address(0)) {
             revert ERC721Pool__InvalidTo();
         }
-        for (uint256 i; i < inIds.length; ) {
-            uint256 inId = inIds[i];
-            require(holdings.add(inId));
-            IERC721(asset).transferFrom(msg.sender, address(this), inId);
+        for (uint256 i; i < ids.length; ) {
+            uint256 id = ids[i];
+            require(holdings.add(id));
+            IERC721(asset).transferFrom(msg.sender, address(this), id);
             unchecked {
                 ++i;
             }
         }
-        _mint(to, inIds.length * 10**18);
-        emit Mint(inIds, to);
+        _mint(to, ids.length * 10**18);
+        emit Deposit(ids, to);
     }
 
     /// @inheritdoc IERC721Pool
-    function redeem(uint256[] calldata outIds, address to) public override {
-        if (outIds.length == 0) {
+    function withdraw(uint256[] calldata ids, address to) public override {
+        if (ids.length == 0) {
             revert ERC721Pool__InsufficientIn();
         }
         if (to == address(0)) {
             revert ERC721Pool__InvalidTo();
         }
-        _burn(msg.sender, outIds.length * 10**18);
-        for (uint256 i; i < outIds.length; ) {
-            uint256 outId = outIds[i];
-            require(holdings.remove(outId));
-            IERC721(asset).transferFrom(address(this), to, outId);
+        _burn(msg.sender, ids.length * 10**18);
+        for (uint256 i; i < ids.length; ) {
+            uint256 id = ids[i];
+            require(holdings.remove(id));
+            IERC721(asset).transferFrom(address(this), to, id);
             unchecked {
                 ++i;
             }
         }
-        emit Redeem(outIds, to);
+        emit Withdraw(ids, to);
     }
 
     /// @inheritdoc IERC721Pool
-    function redeemWithSignature(
-        uint256[] calldata outIds,
+    function withdrawWithSignature(
+        uint256[] calldata ids,
         address to,
         uint256 deadline,
         bytes memory signature
     ) external override {
-        permitInternal(outIds.length * 10**18, deadline, signature);
-        redeem(outIds, to);
+        permitInternal(ids.length * 10**18, deadline, signature);
+        withdraw(ids, to);
     }
 }
