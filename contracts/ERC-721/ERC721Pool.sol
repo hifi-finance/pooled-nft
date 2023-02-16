@@ -74,7 +74,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     }
 
     /// @inheritdoc IERC721Pool
-    function redeemWithSignature(
+    function withdrawWithSignature(
         uint256[] calldata ids,
         address to,
         uint256 deadline,
