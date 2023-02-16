@@ -58,6 +58,9 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
 
     /// @inheritdoc IERC721Pool
     function withdraw(uint256[] calldata ids, address to) public override {
+        if (ids.length == 0) {
+            revert ERC721Pool__InsufficientIn();
+        }
         if (to == address(0)) {
             revert ERC721Pool__InvalidTo();
         }
