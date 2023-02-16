@@ -2,7 +2,7 @@
 
 Pooled NFT is a protocol that enables fractionalizing NFTs into fungible ERC-20 tokens. This is useful in connecting NFT collections to DeFi. For example, adding liquidity to a uniswap market. ERC-20 tokens are fully backed 1:1 by specific NFT collections. There are no fees.
 
-[](./images/pooledNFT.gif)
+![](./images/pooledNFT.gif)
 
 ## Overview
 
