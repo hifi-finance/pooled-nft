@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
 
-import "forge-std/console2.sol";
-import { Base_Test } from "../Base.t.sol";
+import { Base_Test } from "test/foundry/Base.t.sol";
 import { ERC20Wnft } from "contracts/ERC-721/ERC20Wnft.sol";
 import { GodModeERC20Wnft } from "contracts/test/ERC-721/GodModeERC20Wnft.sol";
 

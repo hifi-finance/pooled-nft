@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
 
+import { Base_Test } from "test/foundry/Base.t.sol";
 import { GodModeERC721Vault } from "contracts/test/ERC-721/GodModeERC721Vault.sol";
-import { Base_Test } from "../Base.t.sol";
-import { SigUtils } from "../utils/SigUtils.sol";
+import { SigUtils } from "test/foundry/utils/SigUtils.sol";
 
 /// @title ERC721Vault_Test
 /// @author Hifi
