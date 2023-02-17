@@ -13,11 +13,13 @@ interface IERC721Pool {
 
     /// @notice Emitted when NFTs are deposited and an equal amount of pool tokens are minted.
     /// @param ids The asset token IDs sent from the user's account to the pool.
-    event Deposit(uint256[] ids);
+    /// @param caller The caller of the function equal to msg.sender
+    event Deposit(uint256[] ids, address caller);
 
     /// @notice Emitted when NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
     /// @param ids The asset token IDs released from the pool.
-    event Withdraw(uint256[] ids);
+    /// @param caller The caller of the function equal to msg.sender
+    event Withdraw(uint256[] ids, address caller);
 
     /// CONSTANT FUNCTIONS ///
 

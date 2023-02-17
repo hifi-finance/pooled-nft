@@ -160,10 +160,10 @@ export interface ERC721PoolInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "Deposit(uint256[])": EventFragment;
+    "Deposit(uint256[],address)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "Withdraw(uint256[])": EventFragment;
+    "Withdraw(uint256[],address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -180,7 +180,10 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
-export type DepositEvent = TypedEvent<[BigNumber[]], { ids: BigNumber[] }>;
+export type DepositEvent = TypedEvent<
+  [BigNumber[], string],
+  { ids: BigNumber[]; caller: string }
+>;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
 
@@ -198,7 +201,10 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export type WithdrawEvent = TypedEvent<[BigNumber[]], { ids: BigNumber[] }>;
+export type WithdrawEvent = TypedEvent<
+  [BigNumber[], string],
+  { ids: BigNumber[]; caller: string }
+>;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 
@@ -503,8 +509,8 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    "Deposit(uint256[])"(ids?: null): DepositEventFilter;
-    Deposit(ids?: null): DepositEventFilter;
+    "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
+    Deposit(ids?: null, caller?: null): DepositEventFilter;
 
     "Initialize(string,string,address)"(
       name?: null,
@@ -528,8 +534,11 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): TransferEventFilter;
 
-    "Withdraw(uint256[])"(ids?: null): WithdrawEventFilter;
-    Withdraw(ids?: null): WithdrawEventFilter;
+    "Withdraw(uint256[],address)"(
+      ids?: null,
+      caller?: null
+    ): WithdrawEventFilter;
+    Withdraw(ids?: null, caller?: null): WithdrawEventFilter;
   };
 
   estimateGas: {
