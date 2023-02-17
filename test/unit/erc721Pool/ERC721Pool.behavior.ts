@@ -65,7 +65,7 @@ export function shouldBehaveLikeERC721Pool(): void {
 
         it("reverts", async function () {
           await expect(
-            this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.ids, this.to),
+            this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.ids),
           ).to.be.revertedWith(ERC721PoolErrors.INSUFFICIENT_IN);
         });
       });
@@ -79,24 +79,15 @@ export function shouldBehaveLikeERC721Pool(): void {
           await this.mocks.erc721.mock.transferFrom.withArgs(this.to, this.contracts.erc721Pool.address, "2").returns();
         });
 
-
-        context("when length of `ids` given is not zero", function () { //TODO: rewrite this description
-          context("when `to` is the zero address", function () {
-            it("reverts", async function () {
-              await expect(
-                this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.ids, AddressZero),
-              ).to.be.revertedWith(ERC721PoolErrors.INVALID_TO);
-            });
-          });
-
+        context("when length of `ids` given is not zero", function () { 
           context("when `to` is not the zero address", function () {
             it("succeeds", async function () {
               const contractCall = this.contracts.erc721Pool
                 .connect(this.signers.alice)
-                .deposit(this.ids, this.to);
+                .deposit(this.ids);
               await expect(contractCall)
                 .to.emit(this.contracts.erc721Pool, "Deposit")
-                .withArgs(this.ids, this.to);
+                .withArgs(this.ids);
               expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("3");
               expect(await this.contracts.erc721Pool.holdingAt("0")).to.be.equal(this.ids["0"]);
               expect(await this.contracts.erc721Pool.holdingAt("1")).to.be.equal(this.ids["1"]);
@@ -116,7 +107,7 @@ export function shouldBehaveLikeERC721Pool(): void {
 
         it("reverts", async function () {
           await expect(
-            this.contracts.erc721Pool.connect(this.signers.alice).withdraw( [], this.to),
+            this.contracts.erc721Pool.connect(this.signers.alice).withdraw([]),
           ).to.be.revertedWith(ERC721PoolErrors.INSUFFICIENT_IN);
         });
       });
@@ -144,22 +135,14 @@ export function shouldBehaveLikeERC721Pool(): void {
               .returns();
           });
 
-          context("when `to` is the zero address", function () {
-            it("reverts", async function () {
-              await expect(
-                this.contracts.erc721Pool.connect(this.signers.alice).withdraw(this.ids, AddressZero),
-              ).to.be.revertedWith(ERC721PoolErrors.INVALID_TO);
-            });
-          });
-
           context("when `to` is not the zero address", function () {
             it("succeeds", async function () {
               const contractCall = this.contracts.erc721Pool
                 .connect(this.signers.alice)
-                .withdraw(this.ids, this.to);
+                .withdraw(this.ids);
               await expect(contractCall)
                 .to.emit(this.contracts.erc721Pool, "Withdraw")
-                .withArgs(this.ids, this.to);
+                .withArgs(this.ids);
               expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("0");
             });
           });
@@ -187,7 +170,7 @@ export function shouldBehaveLikeERC721Pool(): void {
           await expect(
             this.contracts.erc721Pool
               .connect(this.signers.alice)
-              .withdrawWithSignature([], this.to, this.deadline, this.signature),
+              .withdrawWithSignature([], this.deadline, this.signature),
           ).to.be.revertedWith(ERC20WnftErrors.PermitExpired);
         });
       });
@@ -212,7 +195,7 @@ export function shouldBehaveLikeERC721Pool(): void {
             await expect(
               this.contracts.erc721Pool
                 .connect(this.signers.alice)
-                .withdrawWithSignature([], this.to, this.deadline, this.signature),
+                .withdrawWithSignature([], this.deadline, this.signature),
             ).to.be.revertedWith(ERC20WnftErrors.InvalidSignature);
           });
         });
@@ -237,7 +220,7 @@ export function shouldBehaveLikeERC721Pool(): void {
               await expect(
                 this.contracts.erc721Pool
                   .connect(this.signers.alice)
-                  .withdrawWithSignature([], this.to, this.deadline, this.signature),
+                  .withdrawWithSignature([], this.deadline, this.signature),
               ).to.be.revertedWith(ERC721PoolErrors.INSUFFICIENT_IN);
             });
           });
@@ -275,24 +258,14 @@ export function shouldBehaveLikeERC721Pool(): void {
                   .returns();
               });
 
-              context("when `to` is the zero address", function () {
-                it("reverts", async function () {
-                  await expect(
-                    this.contracts.erc721Pool
-                      .connect(this.signers.alice)
-                      .withdrawWithSignature(this.ids, AddressZero, this.deadline, this.signature),
-                  ).to.be.revertedWith(ERC721PoolErrors.INVALID_TO);
-                });
-              });
-
               context("when `to` is not the zero address", function () {
                 it("succeeds", async function () {
                   const contractCall = this.contracts.erc721Pool
                     .connect(this.signers.alice)
-                    .withdrawWithSignature(this.ids, this.to, this.deadline, this.signature);
+                    .withdrawWithSignature(this.ids, this.deadline, this.signature);
                   await expect(contractCall)
                     .to.emit(this.contracts.erc721Pool, "Withdraw")
-                    .withArgs(this.ids, this.to);
+                    .withArgs(this.ids);
                   expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("0");
                 });
               });
