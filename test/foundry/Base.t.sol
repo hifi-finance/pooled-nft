@@ -2,7 +2,8 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import "forge-std/Test.sol";
-import { GodModeERC721 } from "../../contracts/test/ERC-721/GodModeERC721.sol";
+import { GodModeERC721 } from "contracts/test/ERC-721/GodModeERC721.sol";
+import { GodModeERC1155 } from "contracts/test/ERC-1155/GodModeERC1155.sol";
 import { RandomNFT } from "./Mocks/RandomNFT.sol";
 
 /// @title Base_Test
@@ -23,6 +24,7 @@ abstract contract Base_Test is Test {
                                  TESTING CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
     GodModeERC721 internal nft = new GodModeERC721("MOCK NFT", "MOCK");
+    GodModeERC1155 internal erc1155 = new GodModeERC1155("MOCK ERC1155 NFT", "ERC1155");
     RandomNFT internal randomNft = new RandomNFT();
     Users internal users;
 
