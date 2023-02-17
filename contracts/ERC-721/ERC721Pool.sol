@@ -67,7 +67,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
                 ++i;
             }
         }
-        // emit Withdraw(ids, msg.sender);
+        emit Withdraw(ids, msg.sender);
     }
 
     /// @inheritdoc IERC721Pool
