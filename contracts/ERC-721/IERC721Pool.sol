@@ -13,13 +13,13 @@ interface IERC721Pool {
 
     /// @notice Emitted when NFTs are deposited and an equal amount of pool tokens are minted.
     /// @param ids The asset token IDs sent from the user's account to the pool.
-    /// @param to The account that received the minted pool tokens.
-    event Deposit(uint256[] ids, address indexed to);
+    /// @param caller The caller of the function equal to msg.sender
+    event Deposit(uint256[] ids, address caller);
 
     /// @notice Emitted when NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
     /// @param ids The asset token IDs released from the pool.
-    /// @param to The account that received the released asset token IDs.
-    event Withdraw(uint256[] ids, address indexed to);
+    /// @param caller The caller of the function equal to msg.sender
+    event Withdraw(uint256[] ids, address caller);
 
     /// CONSTANT FUNCTIONS ///
 
@@ -43,8 +43,7 @@ interface IERC721Pool {
     /// - The address `to` must not be the zero address.
     ///
     /// @param ids The asset token IDs sent from the user's account to the pool.
-    /// @param to The account that receives the minted pool tokens.
-    function deposit(uint256[] calldata ids, address to) external;
+    function deposit(uint256[] calldata ids) external;
 
     /// @notice Withdraw specified NFTs in exchange for an equivalent amount of pool tokens.
     ///
@@ -57,8 +56,7 @@ interface IERC721Pool {
     /// - The address `to` must not be the zero address.
     ///
     /// @param ids The asset token IDs to be released from the pool.
-    /// @param to The account that receives the released asset token IDs.
-    function withdraw(uint256[] calldata ids, address to) external;
+    function withdraw(uint256[] calldata ids) external;
 
     /// @notice Withdraw specified NFTs in exchange for an equivalent amount of pool tokens.
     ///
@@ -72,12 +70,10 @@ interface IERC721Pool {
     /// - The address `to` must not be the zero address.
     ///
     /// @param ids The asset token IDs to be released from the pool.
-    /// @param to The account that receives the released asset token IDs.
     /// @param deadline The deadline beyond which the signature is not valid anymore.
     /// @param signature The packed signature for ERC721Pool.
     function withdrawWithSignature(
         uint256[] calldata ids,
-        address to,
         uint256 deadline,
         bytes memory signature
     ) external;
