@@ -13,9 +13,8 @@ abstract contract ERC721Pool_Test is Base_Test {
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    event Mint(uint256[] inIds, address indexed to);
-    event Redeem(uint256[] outIds, address indexed to);
-    event Swap(uint256[] inIds, uint256[] outIds, address indexed to);
+    event Deposit(uint256[] ids, address caller);
+    event Withdraw(uint256[] ids, address caller);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  TESTING CONTRACTS
