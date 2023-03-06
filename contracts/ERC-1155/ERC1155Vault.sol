@@ -2,13 +2,14 @@
 pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./IERC1155Vault.sol";
 
 import "./ERC20Wnft.sol";
 
 /// @title ERC1155Vault
 /// @author Hifi
-contract ERC1155Vault is IERC1155Vault, ERC20Wnft {
+contract ERC1155Vault is IERC1155Vault, ERC20Wnft, ERC1155Holder {
     /// PUBLIC STORAGE ///
 
     /// @dev The asset tokens held for a user account in the vault.
