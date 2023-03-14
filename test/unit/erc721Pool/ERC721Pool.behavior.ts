@@ -64,9 +64,9 @@ export function shouldBehaveLikeERC721Pool(): void {
         });
 
         it("reverts", async function () {
-          await expect(
-            this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.inIds),
-          ).to.be.revertedWith(ERC721PoolErrors.INSUFFICIENT_IN);
+          await expect(this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.inIds)).to.be.revertedWith(
+            ERC721PoolErrors.INSUFFICIENT_IN,
+          );
         });
       });
 
@@ -81,12 +81,8 @@ export function shouldBehaveLikeERC721Pool(): void {
         });
 
         it("succeeds", async function () {
-          const contractCall = this.contracts.erc721Pool
-            .connect(this.signers.alice)
-            .deposit(this.inIds);
-          await expect(contractCall)
-            .to.emit(this.contracts.erc721Pool, "Deposit")
-            .withArgs(this.inIds, this.to);
+          const contractCall = this.contracts.erc721Pool.connect(this.signers.alice).deposit(this.inIds);
+          await expect(contractCall).to.emit(this.contracts.erc721Pool, "Deposit").withArgs(this.inIds, this.to);
           expect(await this.contracts.erc721Pool.balanceOf(this.to)).to.be.eq(this.outAmount);
           expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("3");
           expect(await this.contracts.erc721Pool.holdingAt("0")).to.be.equal(this.inIds["0"]);
@@ -104,9 +100,9 @@ export function shouldBehaveLikeERC721Pool(): void {
         });
 
         it("reverts", async function () {
-          await expect(
-            this.contracts.erc721Pool.connect(this.signers.alice).withdraw(this.outIds),
-          ).to.be.revertedWith(ERC721PoolErrors.INSUFFICIENT_IN);
+          await expect(this.contracts.erc721Pool.connect(this.signers.alice).withdraw(this.outIds)).to.be.revertedWith(
+            ERC721PoolErrors.INSUFFICIENT_IN,
+          );
         });
       });
 
@@ -115,26 +111,16 @@ export function shouldBehaveLikeERC721Pool(): void {
           this.outIds = ["0", "1", "2"];
           this.to = this.signers.alice.address;
           this.inAmount = parseEther("3");
-          await this.contracts.erc721Pool.__godMode_mint(this.to, this.inAmount);  
+          await this.contracts.erc721Pool.__godMode_mint(this.to, this.inAmount);
           await this.contracts.erc721Pool.__godMode_setHoldings(this.outIds);
-          await this.mocks.erc721.mock.transferFrom
-            .withArgs(this.contracts.erc721Pool.address, this.to, "0")
-            .returns();
-          await this.mocks.erc721.mock.transferFrom
-            .withArgs(this.contracts.erc721Pool.address, this.to, "1")
-            .returns();
-          await this.mocks.erc721.mock.transferFrom
-            .withArgs(this.contracts.erc721Pool.address, this.to, "2")
-            .returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "0").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "1").returns();
+          await this.mocks.erc721.mock.transferFrom.withArgs(this.contracts.erc721Pool.address, this.to, "2").returns();
         });
 
         it("succeeds", async function () {
-          const contractCall = this.contracts.erc721Pool
-            .connect(this.signers.alice)
-            .withdraw(this.outIds);
-          await expect(contractCall)
-            .to.emit(this.contracts.erc721Pool, "Withdraw")
-            .withArgs(this.outIds, this.to);
+          const contractCall = this.contracts.erc721Pool.connect(this.signers.alice).withdraw(this.outIds);
+          await expect(contractCall).to.emit(this.contracts.erc721Pool, "Withdraw").withArgs(this.outIds, this.to);
           expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("0");
         });
       });
@@ -249,15 +235,15 @@ export function shouldBehaveLikeERC721Pool(): void {
                   .returns();
               });
 
-                it("succeeds", async function () {
-                  const contractCall = this.contracts.erc721Pool
-                    .connect(this.signers.alice)
-                    .withdrawWithSignature(this.outIds, this.deadline, this.signature);
-                  await expect(contractCall)
-                    .to.emit(this.contracts.erc721Pool, "Withdraw")
-                    .withArgs(this.outIds, this.to);
-                  expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("0");
-                });
+              it("succeeds", async function () {
+                const contractCall = this.contracts.erc721Pool
+                  .connect(this.signers.alice)
+                  .withdrawWithSignature(this.outIds, this.deadline, this.signature);
+                await expect(contractCall)
+                  .to.emit(this.contracts.erc721Pool, "Withdraw")
+                  .withArgs(this.outIds, this.to);
+                expect(await this.contracts.erc721Pool.holdingsLength()).to.be.equal("0");
+              });
               // });
             });
           });
