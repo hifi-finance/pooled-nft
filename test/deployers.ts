@@ -3,7 +3,6 @@ import { artifacts, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
-import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
 

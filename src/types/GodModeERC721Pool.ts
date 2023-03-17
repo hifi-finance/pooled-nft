@@ -17,20 +17,22 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface VaultInterface extends utils.Interface {
-  contractName: "Vault";
+export interface GodModeERC721PoolInterface extends utils.Interface {
+  contractName: "GodModeERC721Pool";
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "PERMIT_TYPEHASH()": FunctionFragment;
+    "__godMode_mint(address,uint256)": FunctionFragment;
+    "__godMode_setHoldings(uint256[])": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
-    "deposit(uint256[],uint256,address)": FunctionFragment;
+    "deposit(uint256[])": FunctionFragment;
     "factory()": FunctionFragment;
-    "holdingAt(address,uint256)": FunctionFragment;
-    "holdingsLength(address)": FunctionFragment;
+    "holdingAt(uint256)": FunctionFragment;
+    "holdingsLength()": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -40,8 +42,8 @@ export interface VaultInterface extends utils.Interface {
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "version()": FunctionFragment;
-    "withdraw(uint256,uint256[],address)": FunctionFragment;
-    "withdrawWithSignature(uint256,uint256[],address,uint256,bytes)": FunctionFragment;
+    "withdraw(uint256[])": FunctionFragment;
+    "withdrawWithSignature(uint256[],uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -51,6 +53,14 @@ export interface VaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "PERMIT_TYPEHASH",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__godMode_mint",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__godMode_setHoldings",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "allowance",
@@ -65,16 +75,16 @@ export interface VaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish[], BigNumberish, string]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "holdingAt",
-    values: [string, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "holdingsLength",
-    values: [string]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -110,11 +120,11 @@ export interface VaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [BigNumberish, BigNumberish[], string]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawWithSignature",
-    values: [BigNumberish, BigNumberish[], string, BigNumberish, BytesLike]
+    values: [BigNumberish[], BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -123,6 +133,14 @@ export interface VaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "PERMIT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "__godMode_mint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "__godMode_setHoldings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
@@ -160,10 +178,10 @@ export interface VaultInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "Deposit(uint256[],uint256,address)": EventFragment;
+    "Deposit(uint256[],address)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "Withdraw(uint256,uint256[],address)": EventFragment;
+    "Withdraw(uint256[],address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -181,8 +199,8 @@ export type ApprovalEvent = TypedEvent<
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
 export type DepositEvent = TypedEvent<
-  [BigNumber[], BigNumber, string],
-  { inIds: BigNumber[]; outAmount: BigNumber; to: string }
+  [BigNumber[], string],
+  { ids: BigNumber[]; caller: string }
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
@@ -202,19 +220,19 @@ export type TransferEvent = TypedEvent<
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export type WithdrawEvent = TypedEvent<
-  [BigNumber, BigNumber[], string],
-  { inAmount: BigNumber; outIds: BigNumber[]; to: string }
+  [BigNumber[], string],
+  { ids: BigNumber[]; caller: string }
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 
-export interface Vault extends BaseContract {
-  contractName: "Vault";
+export interface GodModeERC721Pool extends BaseContract {
+  contractName: "GodModeERC721Pool";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: VaultInterface;
+  interface: GodModeERC721PoolInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -240,6 +258,17 @@ export interface Vault extends BaseContract {
 
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
 
+    __godMode_mint(
+      beneficiary: string,
+      mintAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    __godMode_setHoldings(
+      newHoldings: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     allowance(
       arg0: string,
       arg1: string,
@@ -259,24 +288,18 @@ export interface Vault extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     deposit(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
     holdingAt(
-      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    holdingsLength(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     initialize(
       name_: string,
@@ -320,16 +343,12 @@ export interface Vault extends BaseContract {
     version(overrides?: CallOverrides): Promise<[string]>;
 
     withdraw(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     withdrawWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       deadline: BigNumberish,
       signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -339,6 +358,17 @@ export interface Vault extends BaseContract {
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
   PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  __godMode_mint(
+    beneficiary: string,
+    mintAmount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  __godMode_setHoldings(
+    newHoldings: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   allowance(
     arg0: string,
@@ -359,24 +389,15 @@ export interface Vault extends BaseContract {
   decimals(overrides?: CallOverrides): Promise<number>;
 
   deposit(
-    inIds: BigNumberish[],
-    outAmount: BigNumberish,
-    to: string,
+    ids: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
-  holdingAt(
-    account: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  holdingsLength(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
   initialize(
     name_: string,
@@ -420,16 +441,12 @@ export interface Vault extends BaseContract {
   version(overrides?: CallOverrides): Promise<string>;
 
   withdraw(
-    inAmount: BigNumberish,
-    outIds: BigNumberish[],
-    to: string,
+    ids: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   withdrawWithSignature(
-    inAmount: BigNumberish,
-    outIds: BigNumberish[],
-    to: string,
+    ids: BigNumberish[],
     deadline: BigNumberish,
     signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -439,6 +456,17 @@ export interface Vault extends BaseContract {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    __godMode_mint(
+      beneficiary: string,
+      mintAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    __godMode_setHoldings(
+      newHoldings: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     allowance(
       arg0: string,
@@ -458,25 +486,16 @@ export interface Vault extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
-    deposit(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    deposit(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
 
     factory(overrides?: CallOverrides): Promise<string>;
 
     holdingAt(
-      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    holdingsLength(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       name_: string,
@@ -519,17 +538,10 @@ export interface Vault extends BaseContract {
 
     version(overrides?: CallOverrides): Promise<string>;
 
-    withdraw(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    withdraw(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
 
     withdrawWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       deadline: BigNumberish,
       signature: BytesLike,
       overrides?: CallOverrides
@@ -548,16 +560,8 @@ export interface Vault extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    "Deposit(uint256[],uint256,address)"(
-      inIds?: null,
-      outAmount?: null,
-      to?: string | null
-    ): DepositEventFilter;
-    Deposit(
-      inIds?: null,
-      outAmount?: null,
-      to?: string | null
-    ): DepositEventFilter;
+    "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
+    Deposit(ids?: null, caller?: null): DepositEventFilter;
 
     "Initialize(string,string,address)"(
       name?: null,
@@ -581,22 +585,28 @@ export interface Vault extends BaseContract {
       value?: null
     ): TransferEventFilter;
 
-    "Withdraw(uint256,uint256[],address)"(
-      inAmount?: null,
-      outIds?: null,
-      to?: string | null
+    "Withdraw(uint256[],address)"(
+      ids?: null,
+      caller?: null
     ): WithdrawEventFilter;
-    Withdraw(
-      inAmount?: null,
-      outIds?: null,
-      to?: string | null
-    ): WithdrawEventFilter;
+    Withdraw(ids?: null, caller?: null): WithdrawEventFilter;
   };
 
   estimateGas: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
 
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    __godMode_mint(
+      beneficiary: string,
+      mintAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    __godMode_setHoldings(
+      newHoldings: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     allowance(
       arg0: string,
@@ -617,24 +627,18 @@ export interface Vault extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     holdingAt(
-      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    holdingsLength(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       name_: string,
@@ -678,16 +682,12 @@ export interface Vault extends BaseContract {
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdraw(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     withdrawWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       deadline: BigNumberish,
       signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -698,6 +698,17 @@ export interface Vault extends BaseContract {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    __godMode_mint(
+      beneficiary: string,
+      mintAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    __godMode_setHoldings(
+      newHoldings: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     allowance(
       arg0: string,
@@ -721,24 +732,18 @@ export interface Vault extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deposit(
-      inIds: BigNumberish[],
-      outAmount: BigNumberish,
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     holdingAt(
-      account: string,
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    holdingsLength(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    holdingsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
       name_: string,
@@ -785,16 +790,12 @@ export interface Vault extends BaseContract {
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdraw(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     withdrawWithSignature(
-      inAmount: BigNumberish,
-      outIds: BigNumberish[],
-      to: string,
+      ids: BigNumberish[],
       deadline: BigNumberish,
       signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }

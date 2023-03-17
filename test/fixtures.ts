@@ -2,7 +2,6 @@ import type { Signer } from "@ethersproject/abstract-signer";
 import type { MockContract } from "ethereum-waffle";
 
 import { ERC721PoolFactory } from "../src/types/ERC721PoolFactory";
-import { ERC721VaultFactory } from "../src/types/ERC721VaultFactory";
 import { GodModeERC20Wnft } from "../src/types/GodModeERC20Wnft";
 import { GodModeERC721Pool } from "../src/types/GodModeERC721Pool";
 import { deployERC20Wnft, deployERC721PoolFactory, deployGodModeERC721Pool } from "./deployers";
@@ -20,11 +19,6 @@ type UnitFixtureERC721PoolReturnType = {
 type UnitFixtureERC721PoolFactoryReturnType = {
   erc721: MockContract;
   erc721PoolFactory: ERC721PoolFactory;
-};
-
-type UnitFixtureERC721VaultFactoryReturnType = {
-  erc721: MockContract;
-  erc721VaultFactory: ERC721VaultFactory;
 };
 
 export async function unitFixtureERC20Wnft(signers: Signer[]): Promise<UnitFixtureERC20WnftReturnType> {

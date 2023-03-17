@@ -22,7 +22,6 @@ export interface Contracts {
 
 export interface Mocks {
   erc721: MockContract;
-  erc1155: MockContract;
 }
 
 export interface Signers {

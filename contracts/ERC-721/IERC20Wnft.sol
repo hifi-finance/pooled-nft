@@ -17,8 +17,8 @@ interface IERC20Wnft is IERC20Permit, IERC20Metadata {
     /// EVENTS ///
 
     /// @notice Emitted when the contract is initialized.
-    /// @param name The ERC-20 name of the vault.
-    /// @param symbol The ERC-20 symbol of the vault.
+    /// @param name The ERC-20 name.
+    /// @param symbol The ERC-20 symbol.
     /// @param asset The underlying ERC-721 asset contract address.
     event Initialize(string name, string symbol, address indexed asset);
 
@@ -39,8 +39,8 @@ interface IERC20Wnft is IERC20Permit, IERC20Metadata {
     /// @dev Requirements:
     /// - Can only be called by the factory.
     ///
-    /// @param name The ERC-20 name of the vault.
-    /// @param symbol The ERC-20 symbol of the vault.
+    /// @param name The ERC-20 name.
+    /// @param symbol The ERC-20 symbol.
     /// @param asset The underlying ERC-721 asset contract address.
     function initialize(
         string memory name,
