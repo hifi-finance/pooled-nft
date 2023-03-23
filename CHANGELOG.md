@@ -21,3 +21,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `Vault` contract.
 - `VaultFactory` contract.
+
+## [1.0.0] - 2023-04-07
+
+### Added
+
+- First release of the package.
