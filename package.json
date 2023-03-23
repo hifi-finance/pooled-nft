@@ -1,7 +1,7 @@
 {
   "name": "@hifi-finance/pooled-nft",
   "description": "Pooled NFT is a protocol that enables fractionalizing NFTs into fungible ERC-20 tokens",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "GPL-3.0-or-later",
   "author": {
     "name": "Hifi",
