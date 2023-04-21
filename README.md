@@ -14,7 +14,7 @@ A smart contract that is responsible for creating and registering new pools. Fac
 
 ### ERC721Pool
 
-Represents a shared store of NFTs which operates as follows:
+Responsible for managing the NFTs and the ERC-20 (Pooled NFT) tokens, and operates as follows:
 
 - Any user can deposit NFTs to the pool in order to have an equivalent amount of the pool ERC-20 token minted and sent to their wallet address.
 - Any user can pull out any NFT from the pool by trading in an equivalent amount of the pool ERC-20 token to be burnt by the pool.
@@ -50,22 +50,13 @@ To deploy and verify the factory smart contract, you would need to run the follo
 $ yarn hardhat deploy:contract:erc721-pool-factory --confirmations 5 --verify true
 ```
 
-## Integrating with Pooled NFT
+### Integration
 
-Integrating with Pooled NFT allows you to seamlessly interact with the protocol.
+The following examples demonstrate how to interact with the factory smart contract to register new pools, or interact with individual pools to initiate deposits or withdrawals.
 
-This is useful if you want to interact with the factory smart contract, or interact with individual pools for deposits, swaps or withdrawals.
+#### Examples
 
-### Before you start integrating
-
-The protocol exists of two main parts:
-
-- Factory Smart Contract: Responsible for creating and registering new pools.
-- Pool Smart Contract: Responsible for managing the NFTs and the ERC-20 (Wrapped NFT) tokens.
-
-You may register new pools using the factory contract. To make deposits, swaps or initiate withdrawals, you would need to interact with the individual pool smart contracts.
-
-### Example of enumerating through all active pools using the PooledNFT factory smart contract
+- How to enumerate through all active pools using the PooledNFT factory smart contract:
 
 ```javascript
 // To interact with the factory contract, you will need its abi.
@@ -86,7 +77,7 @@ for (let i = 0; i < numberOfPools.toNumber(); i++) {
 }
 ```
 
-### Example of how to deposit an NFT into a pool
+- How to deposit an NFT into a pool:
 
 ```javascript
 // Add the ABI of the pool contract
@@ -123,7 +114,7 @@ const depositTx = await pooledNftPool.deposit(idsToDeposit)
 await depositTx.wait()
 ```
 
-### Example of extracting a specific NFT from a pool
+- How to extract a specific NFT from a pool:
 
 ```javascript
 // Add the ABI of the pool contract
