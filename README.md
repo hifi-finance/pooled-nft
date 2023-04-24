@@ -14,7 +14,7 @@ A smart contract that is responsible for creating and registering new pools. Fac
 
 ### ERC721Pool
 
-Represents a shared store of NFTs which operates as follows:
+Responsible for managing the NFTs and the ERC-20 (Pooled NFT) tokens, and operates as follows:
 
 - Any user can deposit NFTs to the pool in order to have an equivalent amount of the pool ERC-20 token minted and sent to their wallet address.
 - Any user can pull out any NFT from the pool by trading in an equivalent amount of the pool ERC-20 token to be burnt by the pool.
@@ -48,6 +48,88 @@ To deploy and verify the factory smart contract, you would need to run the follo
 
 ```bash
 $ yarn hardhat deploy:contract:erc721-pool-factory --confirmations 5 --verify true
+```
+
+### Integration
+
+The following examples demonstrate how to interact with the factory smart contract to register new pools, or interact with individual pools to initiate deposits or withdrawals.
+
+#### Examples
+
+- How to enumerate through all active pools using the PooledNFT factory smart contract:
+
+```javascript
+// To interact with the factory contract, you will need its abi.
+// You can find that in the repository or on etherscan.
+const pooledNftFactoryAbi = [...]
+// The current factory pool address is: 0xb67dc4b5a296c3068e8eec16f02cdae4c9a255e5
+const pooledNftFactory = new ethers.Contract(
+    "0x...",
+    pooledNftFactoryAbi,
+    provider
+)
+
+const numberOfPools = await pooledNftFactory.allPoolsLength()
+for (let i = 0; i < numberOfPools.toNumber(); i++) {
+    const pool = await pooledNftFactory.allPools(i)
+
+    // do something with pool here
+}
+```
+
+- How to deposit an NFT into a pool:
+
+```javascript
+// Add the ABI of the pool contract
+const pooledNftPoolAbi = [...]
+// Add the address of the pool contract
+const poolAddress = "0x..."
+
+// Add the ABI of the NFT contract
+const nftAbi = [...]
+// Add the address of the NFT contract
+const nftAddress = "0x..."
+
+const pooledNftPool = new ethers.Contract(
+    poolAddress,
+    pooledNftPoolAbi,
+    signer
+)
+
+const nftContract = new ethers.Contract(nftAddress, nftAbi, signer)
+
+// Add all token ids that you want to deposit into the pool
+// You may also use only one token id in the array
+const idsToDeposit = [1, 2, 3]
+
+// Approving the pool to transfer the NFTs
+for (const id of idsToDeposit) {
+    console.log(id)
+    const approveTx = await nftContract.approve(pooledNftPool.address, id)
+    await approveTx.wait()
+}
+
+// Depositing the NFTs into the pool
+const depositTx = await pooledNftPool.deposit(idsToDeposit)
+await depositTx.wait()
+```
+
+- How to extract a specific NFT from a pool:
+
+```javascript
+// Add the ABI of the pool contract
+const pooledNftPoolAbi = [...]
+// Add the address of the pool contract
+const poolAddress = "0x..."
+
+const pooledNftPool = new ethers.Contract(poolAddress, pooledNftPoolAbi, signer)
+
+// Add all token ids that you want to extract from the pool
+const idsToWithdraw = [1, 2, 3]
+
+// Depositing the NFTs into the pool
+const withdrawTx = await pooledNftPool.withdraw(idsToWithdraw)
+await withdrawTx.wait()
 ```
 
 ## License
