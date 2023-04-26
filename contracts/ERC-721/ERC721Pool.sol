@@ -11,6 +11,12 @@ import "./ERC20Wnft.sol";
 /// @author Hifi
 contract ERC721Pool is IERC721Pool, ERC20Wnft {
     using EnumerableSet for EnumerableSet.UintSet;
+
+    /// PUBLIC STORAGE ///
+
+    /// @inheritdoc IERC721Pool
+    bool public poolFrozen;
+
     /// INTERNAL STORAGE ///
 
     /// @dev The asset token IDs held in the pool.
@@ -20,6 +26,24 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
 
     constructor() ERC20Wnft() {
         // solhint-disable-previous-line no-empty-blocks
+    }
+
+    /// MODIFIERS ///
+
+    /// @notice Ensures that the pool is not frozen.
+    modifier notFrozen() {
+        if (poolFrozen) {
+            revert ERC721Pool__PoolFrozen();
+        }
+        _;
+    }
+
+    /// @notice Ensures that the caller is the factory.
+    modifier onlyFactory() {
+        if (msg.sender != factory) {
+            revert ERC721Pool__CallerNotFactory({ factory: factory, caller: msg.sender });
+        }
+        _;
     }
 
     /// PUBLIC CONSTANT FUNCTIONS ///
@@ -37,7 +61,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721Pool
-    function deposit(uint256[] calldata ids) external override {
+    function deposit(uint256[] calldata ids) external override notFrozen {
         if (ids.length == 0) {
             revert ERC721Pool__InsufficientIn();
         }
@@ -51,6 +75,18 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         }
         _mint(msg.sender, ids.length * 10**18);
         emit Deposit(ids, msg.sender);
+    }
+
+    /// @inheritdoc IERC721Pool
+    function rescueLastNFT(address to) external override onlyFactory {
+        if (holdings.length() != 1) {
+            revert ERC721Pool__MoreThanOneNFTInPool();
+        }
+        uint256 lastNFT = holdings.at(0);
+        holdings.remove(lastNFT);
+        IERC721(asset).transferFrom(address(this), to, lastNFT);
+        poolFrozen = true;
+        emit PoolFrozen();
     }
 
     /// @inheritdoc IERC721Pool

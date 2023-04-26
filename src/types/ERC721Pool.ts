@@ -35,6 +35,8 @@ export interface ERC721PoolInterface extends utils.Interface {
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "poolFrozen()": FunctionFragment;
+    "rescueLastNFT(address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -94,6 +96,14 @@ export interface ERC721PoolInterface extends utils.Interface {
       BytesLike
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "poolFrozen",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rescueLastNFT",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -141,6 +151,11 @@ export interface ERC721PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "poolFrozen", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "rescueLastNFT",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -162,6 +177,7 @@ export interface ERC721PoolInterface extends utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "Deposit(uint256[],address)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
+    "PoolFrozen()": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(uint256[],address)": EventFragment;
   };
@@ -169,6 +185,7 @@ export interface ERC721PoolInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PoolFrozen"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
@@ -193,6 +210,10 @@ export type InitializeEvent = TypedEvent<
 >;
 
 export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
+
+export type PoolFrozenEvent = TypedEvent<[], {}>;
+
+export type PoolFrozenEventFilter = TypedEventFilter<PoolFrozenEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -294,6 +315,13 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<[boolean]>;
+
+    rescueLastNFT(
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -378,6 +406,13 @@ export interface ERC721Pool extends BaseContract {
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  poolFrozen(overrides?: CallOverrides): Promise<boolean>;
+
+  rescueLastNFT(
+    to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -468,6 +503,10 @@ export interface ERC721Pool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<boolean>;
+
+    rescueLastNFT(to: string, overrides?: CallOverrides): Promise<void>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -522,6 +561,9 @@ export interface ERC721Pool extends BaseContract {
       symbol?: null,
       asset?: string | null
     ): InitializeEventFilter;
+
+    "PoolFrozen()"(): PoolFrozenEventFilter;
+    PoolFrozen(): PoolFrozenEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -597,6 +639,13 @@ export interface ERC721Pool extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    poolFrozen(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rescueLastNFT(
+      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -694,6 +743,13 @@ export interface ERC721Pool extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    poolFrozen(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rescueLastNFT(
+      to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

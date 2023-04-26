@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 /// @title IERC721PoolFactory
 /// @author Hifi
 interface IERC721PoolFactory {
@@ -8,6 +10,7 @@ interface IERC721PoolFactory {
 
     error ERC721PoolFactory__DoesNotImplementIERC721Metadata();
     error ERC721PoolFactory__PoolAlreadyExists();
+    error ERC721PoolFactory__PoolDoesNotExist();
 
     /// EVENTS ///
 
@@ -17,6 +20,11 @@ interface IERC721PoolFactory {
     /// @param asset The underlying ERC-721 asset contract address.
     /// @param pool The created pool contract address.
     event CreatePool(string name, string symbol, address indexed asset, address indexed pool);
+
+    /// @notice Emitted when the last NFT of a pool is rescued.
+    /// @param asset The underlying ERC-721 asset contract address.
+    /// @param to The address to which the NFT was sent.
+    event RescueLastNFT(address asset, address to);
 
     /// CONSTANT FUNCTIONS ///
 
@@ -41,4 +49,16 @@ interface IERC721PoolFactory {
     ///
     /// @param asset The underlying ERC-721 asset contract address.
     function createPool(address asset) external;
+
+    /// @notice Rescue the last NFT of a pool.
+    ///
+    /// @dev Emits a {RescueLastNFT} event.
+    ///
+    /// @dev Requirements:
+    /// - Can only rescue the last NFT of a pool.
+    /// - Can only be called by the owner.
+    /// - The pool must exist.
+    ///
+    /// @param asset The underlying ERC-721 asset contract address.
+    function rescueLastNFT(address asset, address to) external;
 }

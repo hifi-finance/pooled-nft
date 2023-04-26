@@ -24,6 +24,10 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     "allPoolsLength()": FunctionFragment;
     "createPool(address)": FunctionFragment;
     "getPool(address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "rescueLastNFT(address,address)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -36,6 +40,19 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "createPool", values: [string]): string;
   encodeFunctionData(functionFragment: "getPool", values: [string]): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rescueLastNFT",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "allPools", data: BytesLike): Result;
   decodeFunctionResult(
@@ -44,12 +61,29 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPool", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rescueLastNFT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "RescueLastNFT(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CreatePool"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RescueLastNFT"): EventFragment;
 }
 
 export type CreatePoolEvent = TypedEvent<
@@ -58,6 +92,21 @@ export type CreatePoolEvent = TypedEvent<
 >;
 
 export type CreatePoolEventFilter = TypedEventFilter<CreatePoolEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
+export type RescueLastNFTEvent = TypedEvent<
+  [string, string],
+  { asset: string; to: string }
+>;
+
+export type RescueLastNFTEventFilter = TypedEventFilter<RescueLastNFTEvent>;
 
 export interface ERC721PoolFactory extends BaseContract {
   contractName: "ERC721PoolFactory";
@@ -97,6 +146,23 @@ export interface ERC721PoolFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<[string]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
@@ -110,6 +176,23 @@ export interface ERC721PoolFactory extends BaseContract {
 
   getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  rescueLastNFT(
+    asset: string,
+    to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -118,6 +201,21 @@ export interface ERC721PoolFactory extends BaseContract {
     createPool(asset: string, overrides?: CallOverrides): Promise<void>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -133,6 +231,21 @@ export interface ERC721PoolFactory extends BaseContract {
       asset?: string | null,
       pool?: string | null
     ): CreatePoolEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+
+    "RescueLastNFT(address,address)"(
+      asset?: null,
+      to?: null
+    ): RescueLastNFTEventFilter;
+    RescueLastNFT(asset?: null, to?: null): RescueLastNFTEventFilter;
   };
 
   estimateGas: {
@@ -146,6 +259,23 @@ export interface ERC721PoolFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -164,6 +294,23 @@ export interface ERC721PoolFactory extends BaseContract {
     getPool(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

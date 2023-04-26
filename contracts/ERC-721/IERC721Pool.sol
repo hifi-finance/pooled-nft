@@ -6,8 +6,11 @@ pragma solidity >=0.8.4;
 interface IERC721Pool {
     /// CUSTOM ERRORS ///
 
+    error ERC721Pool__CallerNotFactory(address factory, address caller);
     error ERC721Pool__InsufficientIn();
     error ERC721Pool__InvalidTo();
+    error ERC721Pool__MoreThanOneNFTInPool();
+    error ERC721Pool__PoolFrozen();
 
     /// EVENTS ///
 
@@ -16,12 +19,18 @@ interface IERC721Pool {
     /// @param caller The caller of the function equal to msg.sender
     event Deposit(uint256[] ids, address caller);
 
+    /// @notice Emitted when the pool is frozen.
+    event PoolFrozen();
+
     /// @notice Emitted when NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
     /// @param ids The asset token IDs released from the pool.
     /// @param caller The caller of the function equal to msg.sender
     event Withdraw(uint256[] ids, address caller);
 
     /// CONSTANT FUNCTIONS ///
+
+    /// @notice A boolean flag indicating whether the pool is frozen.
+    function poolFrozen() external view returns (bool);
 
     /// @notice Returns the asset token ID held at index.
     /// @param index The index to check.
@@ -77,4 +86,13 @@ interface IERC721Pool {
         uint256 deadline,
         bytes memory signature
     ) external;
+
+    /// @notice Allows the factory to rescue the last NFT in the pool and set the pool to frozen.
+    ///
+    /// @dev Requirements:
+    /// - The caller must be the factory.
+    /// - The pool must only hold one NFT.
+    ///
+    /// @param to The address to send the NFT to.
+    function rescueLastNFT(address to) external;
 }
