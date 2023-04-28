@@ -38,6 +38,10 @@ interface IERC721PoolFactory {
     /// @notice Returns the length of the pools list.
     function allPoolsLength() external view returns (uint256);
 
+    /// @notice Returns the nonce used to calculate the salt for deploying new pools.
+    /// @dev The nonce ensures that each new pool contract is deployed at a unique address.
+    function nonce() external view returns (uint256);
+
     /// NON-CONSTANT FUNCTIONS ///
 
     /// @notice Create a new pool.

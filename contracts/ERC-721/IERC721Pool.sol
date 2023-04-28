@@ -9,7 +9,7 @@ interface IERC721Pool {
     error ERC721Pool__CallerNotFactory(address factory, address caller);
     error ERC721Pool__InsufficientIn();
     error ERC721Pool__InvalidTo();
-    error ERC721Pool__MoreThanOneNFTInPool();
+    error ERC721Pool__MustContainExactlyOneNFT();
     error ERC721Pool__PoolFrozen();
 
     /// EVENTS ///

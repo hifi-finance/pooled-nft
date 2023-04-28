@@ -24,6 +24,7 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     "allPoolsLength()": FunctionFragment;
     "createPool(address)": FunctionFragment;
     "getPool(address)": FunctionFragment;
+    "nonce()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rescueLastNFT(address,address)": FunctionFragment;
@@ -40,6 +41,7 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "createPool", values: [string]): string;
   encodeFunctionData(functionFragment: "getPool", values: [string]): string;
+  encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -61,6 +63,7 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPool", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -147,6 +150,8 @@ export interface ERC721PoolFactory extends BaseContract {
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<[string]>;
 
+    nonce(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
@@ -176,6 +181,8 @@ export interface ERC721PoolFactory extends BaseContract {
 
   getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
 
+  nonce(overrides?: CallOverrides): Promise<BigNumber>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
@@ -201,6 +208,8 @@ export interface ERC721PoolFactory extends BaseContract {
     createPool(asset: string, overrides?: CallOverrides): Promise<void>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    nonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -260,6 +269,8 @@ export interface ERC721PoolFactory extends BaseContract {
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    nonce(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
@@ -295,6 +306,8 @@ export interface ERC721PoolFactory extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    nonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

@@ -19,6 +19,9 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
     /// @inheritdoc IERC721PoolFactory
     address[] public allPools;
 
+    /// @inheritdoc IERC721PoolFactory
+    uint256 public nonce = 0;
+
     /// PUBLIC CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721PoolFactory
@@ -40,7 +43,9 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pool");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
-        bytes32 salt = keccak256(abi.encodePacked(asset));
+        // bytes32 salt = keccak256(abi.encodePacked(asset));
+        bytes32 salt = keccak256(abi.encodePacked(asset, nonce));
+        nonce++;
         ERC721Pool pool = new ERC721Pool{ salt: salt }();
         pool.initialize(name, symbol, asset);
 

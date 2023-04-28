@@ -80,7 +80,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// @inheritdoc IERC721Pool
     function rescueLastNFT(address to) external override onlyFactory {
         if (holdings.length() != 1) {
-            revert ERC721Pool__MoreThanOneNFTInPool();
+            revert ERC721Pool__MustContainExactlyOneNFT();
         }
         uint256 lastNFT = holdings.at(0);
         holdings.remove(lastNFT);
