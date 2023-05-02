@@ -39,6 +39,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "poolFrozen()": FunctionFragment;
     "rescueLastNFT(address)": FunctionFragment;
+    "setENSName(address,string)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -114,6 +115,10 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     functionFragment: "rescueLastNFT",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setENSName",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -174,6 +179,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     functionFragment: "rescueLastNFT",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setENSName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -194,6 +200,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "Deposit(uint256[],address)": EventFragment;
+    "ENSNameSet(address,string,bytes32)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
     "PoolFrozen()": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -202,6 +209,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PoolFrozen"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -221,6 +229,13 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export type ENSNameSetEvent = TypedEvent<
+  [string, string, string],
+  { registrar: string; name: string; nodeHash: string }
+>;
+
+export type ENSNameSetEventFilter = TypedEventFilter<ENSNameSetEvent>;
 
 export type InitializeEvent = TypedEvent<
   [string, string, string],
@@ -351,6 +366,12 @@ export interface GodModeERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -456,6 +477,12 @@ export interface GodModeERC721Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setENSName(
+    registrar: string,
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -558,6 +585,12 @@ export interface GodModeERC721Pool extends BaseContract {
 
     rescueLastNFT(to: string, overrides?: CallOverrides): Promise<void>;
 
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -601,6 +634,17 @@ export interface GodModeERC721Pool extends BaseContract {
 
     "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
     Deposit(ids?: null, caller?: null): DepositEventFilter;
+
+    "ENSNameSet(address,string,bytes32)"(
+      registrar?: null,
+      name?: null,
+      nodeHash?: null
+    ): ENSNameSetEventFilter;
+    ENSNameSet(
+      registrar?: null,
+      name?: null,
+      nodeHash?: null
+    ): ENSNameSetEventFilter;
 
     "Initialize(string,string,address)"(
       name?: null,
@@ -708,6 +752,12 @@ export interface GodModeERC721Pool extends BaseContract {
 
     rescueLastNFT(
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setENSName(
+      registrar: string,
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -823,6 +873,12 @@ export interface GodModeERC721Pool extends BaseContract {
 
     rescueLastNFT(
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setENSName(
+      registrar: string,
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

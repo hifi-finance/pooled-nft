@@ -28,6 +28,7 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rescueLastNFT(address,address)": FunctionFragment;
+    "setENSName(address,address,string)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -52,6 +53,10 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "setENSName",
+    values: [string, string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
@@ -73,6 +78,7 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     functionFragment: "rescueLastNFT",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setENSName", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -164,6 +170,13 @@ export interface ERC721PoolFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -195,6 +208,13 @@ export interface ERC721PoolFactory extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setENSName(
+    asset: string,
+    registrar: string,
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -218,6 +238,13 @@ export interface ERC721PoolFactory extends BaseContract {
     rescueLastNFT(
       asset: string,
       to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -283,6 +310,13 @@ export interface ERC721PoolFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -318,6 +352,13 @@ export interface ERC721PoolFactory extends BaseContract {
     rescueLastNFT(
       asset: string,
       to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

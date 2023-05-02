@@ -65,4 +65,19 @@ interface IERC721PoolFactory {
     ///
     /// @param asset The underlying ERC-721 asset contract address.
     function rescueLastNFT(address asset, address to) external;
+
+    /// @notice Set the ENS name of a pool.
+    ///
+    /// @dev Requirements:
+    /// - Can only be called by the owner.
+    /// - The pool must exist.
+    ///
+    /// @param asset The underlying ERC-721 asset contract address.
+    /// @param registrar The ENS registrar address.
+    /// @param name The ENS name.
+    function setENSName(
+        address asset,
+        address registrar,
+        string memory name
+    ) external;
 }

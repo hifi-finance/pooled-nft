@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./IERC721Pool.sol";
 
 import "./ERC20Wnft.sol";
+import "./IENSReverseRegistrar.sol";
 
 /// @title ERC721Pool
 /// @author Hifi
@@ -87,6 +88,13 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         IERC721(asset).transferFrom(address(this), to, lastNFT);
         poolFrozen = true;
         emit PoolFrozen();
+    }
+
+    /// @inheritdoc IERC721Pool
+    function setENSName(address registrar, string memory name) external override onlyFactory returns (bytes32) {
+        bytes32 nodeHash = IENSReverseRegistrar(registrar).setName(name);
+        emit ENSNameSet(registrar, name, nodeHash);
+        return nodeHash;
     }
 
     /// @inheritdoc IERC721Pool

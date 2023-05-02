@@ -14,6 +14,12 @@ interface IERC721Pool {
 
     /// EVENTS ///
 
+    /// @notice Emitted when the ENS name is set.
+    /// @param registrar The address of the ENS registrar.
+    /// @param name The ENS name.
+    /// @param nodeHash The ENS node hash.
+    event ENSNameSet(address registrar, string name, bytes32 nodeHash);
+
     /// @notice Emitted when NFTs are deposited and an equal amount of pool tokens are minted.
     /// @param ids The asset token IDs sent from the user's account to the pool.
     /// @param caller The caller of the function equal to msg.sender
@@ -54,6 +60,25 @@ interface IERC721Pool {
     /// @param ids The asset token IDs sent from the user's account to the pool.
     function deposit(uint256[] calldata ids) external;
 
+    /// @notice Allows the factory to rescue the last NFT in the pool and set the pool to frozen.
+    ///
+    /// @dev Requirements:
+    /// - The caller must be the factory.
+    /// - The pool must only hold one NFT.
+    ///
+    /// @param to The address to send the NFT to.
+    function rescueLastNFT(address to) external;
+
+    /// @notice Allows the factory to set the ENS name for the pool.
+    ///
+    /// @dev Requirements:
+    /// - The caller must be the factory.
+    ///
+    /// @param registrar The address of the ENS registrar.
+    /// @param name The name to set.
+    /// @return The ENS node hash.
+    function setENSName(address registrar, string memory name) external returns (bytes32);
+
     /// @notice Withdraw specified NFTs in exchange for an equivalent amount of pool tokens.
     ///
     /// @dev Emits a {Withdraw} event.
@@ -86,13 +111,4 @@ interface IERC721Pool {
         uint256 deadline,
         bytes memory signature
     ) external;
-
-    /// @notice Allows the factory to rescue the last NFT in the pool and set the pool to frozen.
-    ///
-    /// @dev Requirements:
-    /// - The caller must be the factory.
-    /// - The pool must only hold one NFT.
-    ///
-    /// @param to The address to send the NFT to.
-    function rescueLastNFT(address to) external;
 }
