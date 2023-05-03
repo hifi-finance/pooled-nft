@@ -3,7 +3,7 @@ pragma solidity >=0.8.4 <0.9.0;
 
 import "forge-std/Test.sol";
 import { GodModeERC721 } from "contracts/test/ERC-721/GodModeERC721.sol";
-import { RandomNFT } from "./Mocks/RandomNFT.sol";
+import { RandomNFT } from "./mocks/RandomNFT.sol";
 
 /// @title Base_Test
 /// @author Hifi

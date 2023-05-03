@@ -15,7 +15,7 @@ abstract contract ERC721Pool_Test is Base_Test {
 
     event Deposit(uint256[] ids, address caller);
     event Withdraw(uint256[] ids, address caller);
-
+    event PoolFrozen();
     /*//////////////////////////////////////////////////////////////////////////
                                  TESTING CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/

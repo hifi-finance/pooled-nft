@@ -43,7 +43,6 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pool");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
-        // bytes32 salt = keccak256(abi.encodePacked(asset));
         bytes32 salt = keccak256(abi.encodePacked(asset, nonce));
         nonce++;
         ERC721Pool pool = new ERC721Pool{ salt: salt }();
@@ -59,6 +58,9 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
     function rescueLastNFT(address asset, address to) external override onlyOwner {
         if (getPool[asset] == address(0)) {
             revert ERC721PoolFactory__PoolDoesNotExist();
+        }
+        if (to == address(0)) {
+            revert ERC721PoolFactory__RecipientZeroAddress();
         }
         ERC721Pool pool = ERC721Pool(getPool[asset]);
         pool.rescueLastNFT(to);
