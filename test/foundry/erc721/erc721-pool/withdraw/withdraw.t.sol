@@ -12,6 +12,13 @@ contract Withdraw_Test is ERC721Pool_Test {
         erc721Pool.withdraw(ids);
     }
 
+    /// @dev it should revert.
+    function test_RevertWhen_PoolIsFrozen(uint256[] memory ids) external {
+        erc721Pool.__godMode_setPoolFrozenStatus(true);
+        vm.expectRevert(IERC721Pool.ERC721Pool__PoolFrozen.selector);
+        erc721Pool.withdraw(ids);
+    }
+
     /// @dev Common set up for withdraw
     function setUpWithdraw(uint256[] memory ids) internal {
         vm.assume(ids.length > 0);

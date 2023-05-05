@@ -90,6 +90,7 @@
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
   },
   "dependencies": {
+    "@ensdomains/ens-contracts": "^0.0.20",
     "@openzeppelin/contracts": "^4.8.1"
   }
 }

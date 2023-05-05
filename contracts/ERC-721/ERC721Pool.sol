@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4;
 
+import "@ensdomains/ens-contracts/contracts/registry/IReverseRegistrar.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "./IERC721Pool.sol";
 
+import "./IERC721Pool.sol";
 import "./ERC20Wnft.sol";
-import "./IENSReverseRegistrar.sol";
 
 /// @title ERC721Pool
 /// @author Hifi
@@ -84,7 +84,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
             revert ERC721Pool__MustContainExactlyOneNFT();
         }
         uint256 lastNFT = holdings.at(0);
-        holdings.remove(lastNFT);
+        require(holdings.remove(lastNFT));
         IERC721(asset).transferFrom(address(this), to, lastNFT);
         poolFrozen = true;
         emit PoolFrozen();
@@ -92,13 +92,13 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
 
     /// @inheritdoc IERC721Pool
     function setENSName(address registrar, string memory name) external override onlyFactory returns (bytes32) {
-        bytes32 nodeHash = IENSReverseRegistrar(registrar).setName(name);
+        bytes32 nodeHash = IReverseRegistrar(registrar).setName(name);
         emit ENSNameSet(registrar, name, nodeHash);
         return nodeHash;
     }
 
     /// @inheritdoc IERC721Pool
-    function withdraw(uint256[] calldata ids) public override {
+    function withdraw(uint256[] calldata ids) public override notFrozen {
         if (ids.length == 0) {
             revert ERC721Pool__InsufficientIn();
         }

@@ -77,6 +77,9 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
         if (getPool[asset] == address(0)) {
             revert ERC721PoolFactory__PoolDoesNotExist();
         }
+        if (registrar == address(0)) {
+            revert ERC721PoolFactory__RegistrarZeroAddress();
+        }
         ERC721Pool pool = ERC721Pool(getPool[asset]);
         pool.setENSName(registrar, name);
     }

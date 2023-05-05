@@ -12,6 +12,7 @@ interface IERC721PoolFactory {
     error ERC721PoolFactory__PoolAlreadyExists();
     error ERC721PoolFactory__PoolDoesNotExist();
     error ERC721PoolFactory__RecipientZeroAddress();
+    error ERC721PoolFactory__RegistrarZeroAddress();
 
     /// EVENTS ///
 

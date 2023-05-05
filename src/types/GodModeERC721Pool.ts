@@ -24,6 +24,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "PERMIT_TYPEHASH()": FunctionFragment;
     "__godMode_mint(address,uint256)": FunctionFragment;
     "__godMode_setHoldings(uint256[])": FunctionFragment;
+    "__godMode_setPoolFrozenStatus(bool)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
@@ -64,6 +65,10 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "__godMode_setHoldings",
     values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__godMode_setPoolFrozenStatus",
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "allowance",
@@ -156,6 +161,10 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "__godMode_setHoldings",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "__godMode_setPoolFrozenStatus",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
@@ -305,6 +314,11 @@ export interface GodModeERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    __godMode_setPoolFrozenStatus(
+      isFrozen: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     allowance(
       arg0: string,
       arg1: string,
@@ -419,6 +433,11 @@ export interface GodModeERC721Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  __godMode_setPoolFrozenStatus(
+    isFrozen: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   allowance(
     arg0: string,
     arg1: string,
@@ -527,6 +546,11 @@ export interface GodModeERC721Pool extends BaseContract {
 
     __godMode_setHoldings(
       newHoldings: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    __godMode_setPoolFrozenStatus(
+      isFrozen: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -694,6 +718,11 @@ export interface GodModeERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    __godMode_setPoolFrozenStatus(
+      isFrozen: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     allowance(
       arg0: string,
       arg1: string,
@@ -806,6 +835,11 @@ export interface GodModeERC721Pool extends BaseContract {
 
     __godMode_setHoldings(
       newHoldings: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    __godMode_setPoolFrozenStatus(
+      isFrozen: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

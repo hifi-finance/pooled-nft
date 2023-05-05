@@ -4,6 +4,7 @@ pragma solidity >=0.8.4 <0.9.0;
 import { Base_Test } from "test/foundry/Base.t.sol";
 import { GodModeERC721Pool } from "contracts/test/ERC-721/GodModeERC721Pool.sol";
 import { SigUtils } from "test/foundry/utils/SigUtils.sol";
+import { ReverseRegistrar } from "test/foundry/mocks/ReverseRegistrar.sol";
 
 /// @title ERC721Pool_Test
 /// @author Hifi
@@ -14,14 +15,17 @@ abstract contract ERC721Pool_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     event Deposit(uint256[] ids, address caller);
+    event ENSNameSet(address registrar, string name, bytes32 nodeHash);
     event Withdraw(uint256[] ids, address caller);
     event PoolFrozen();
+
     /*//////////////////////////////////////////////////////////////////////////
                                  TESTING CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
     GodModeERC721Pool internal erc721Pool = new GodModeERC721Pool("JPEG Pool", "JPEGp", address(nft));
     SigUtils internal sigUtils = new SigUtils(erc721Pool.DOMAIN_SEPARATOR());
+    ReverseRegistrar internal reverseRegistrar = new ReverseRegistrar();
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION

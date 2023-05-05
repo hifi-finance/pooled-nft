@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-
 import { IERC721PoolFactory } from "contracts/ERC-721/IERC721PoolFactory.sol";
 import { ERC721PoolFactory_Test } from "../ERC721PoolFactory.t.sol";
 import { ERC721Pool } from "contracts/ERC-721/ERC721Pool.sol";

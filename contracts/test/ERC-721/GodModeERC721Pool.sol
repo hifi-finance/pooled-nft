@@ -34,4 +34,8 @@ contract GodModeERC721Pool is ERC721Pool {
             holdings.add(newHoldings[i]);
         }
     }
+
+    function __godMode_setPoolFrozenStatus(bool isFrozen) external {
+        poolFrozen = isFrozen;
+    }
 }
