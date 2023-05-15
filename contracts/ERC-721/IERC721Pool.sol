@@ -11,8 +11,14 @@ interface IERC721Pool {
     error ERC721Pool__InvalidTo();
     error ERC721Pool__MustContainExactlyOneNFT();
     error ERC721Pool__PoolFrozen();
+    error ERC721Pool__NoNFTsWithdrawn();
 
     /// EVENTS ///
+
+    /// @notice Emitted when NFTs are atomic withdrawn from the pool in exchange for an equal amount of pool tokens.
+    /// @param withdrawnCount The number of NFTs withdrawn.
+    /// @param caller The caller of the function equal to msg.sender
+    event AtomicWithdraw(uint256 withdrawnCount, address caller);
 
     /// @notice Emitted when the ENS name is set.
     /// @param registrar The address of the ENS registrar.
@@ -46,6 +52,18 @@ interface IERC721Pool {
     function holdingsLength() external view returns (uint256);
 
     /// NON-CONSTANT FUNCTIONS ///
+
+    /// @notice Withdraw specified available non-overlapping NFTs in exchange for an equivalent amount of pool tokens.
+    ///
+    /// @dev Emits a {Withdraw} event.
+    ///
+    /// @dev Requirements:
+    ///
+    /// - The length of `ids` must be greater than zero.
+    /// - The address `to` must not be the zero address.
+    ///
+    /// @param ids The asset token IDs to be released from the pool.
+    function atomicWithdraw(uint256[] calldata ids) external;
 
     /// @notice Deposit NFTs in exchange for an equivalent amount of pool tokens.
     ///

@@ -62,6 +62,32 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721Pool
+    function atomicWithdraw(uint256[] calldata ids) external override notFrozen {
+        if (ids.length == 0) {
+            revert ERC721Pool__InsufficientIn();
+        }
+
+        uint256 withdrawnCount;
+        for (uint256 i; i < ids.length; ) {
+            uint256 id = ids[i];
+            if (holdings.remove(id)) {
+                IERC721(asset).transferFrom(address(this), msg.sender, id);
+                withdrawnCount++;
+            }
+            unchecked {
+                ++i;
+            }
+        }
+
+        if (withdrawnCount == 0) {
+            revert ERC721Pool__NoNFTsWithdrawn();
+        }
+
+        _burn(msg.sender, withdrawnCount * 10**18);
+        emit AtomicWithdraw(withdrawnCount, msg.sender);
+    }
+
+    /// @inheritdoc IERC721Pool
     function deposit(uint256[] calldata ids) external override notFrozen {
         if (ids.length == 0) {
             revert ERC721Pool__InsufficientIn();

@@ -25,6 +25,7 @@ export interface ERC721PoolInterface extends utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
+    "atomicWithdraw(uint256[])": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "deposit(uint256[])": FunctionFragment;
@@ -64,6 +65,10 @@ export interface ERC721PoolInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "atomicWithdraw",
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
@@ -143,6 +148,10 @@ export interface ERC721PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "atomicWithdraw",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
@@ -181,6 +190,7 @@ export interface ERC721PoolInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "AtomicWithdraw(uint256,address)": EventFragment;
     "Deposit(uint256[],address)": EventFragment;
     "ENSNameSet(address,string,bytes32)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
@@ -190,6 +200,7 @@ export interface ERC721PoolInterface extends utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AtomicWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
@@ -204,6 +215,13 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export type AtomicWithdrawEvent = TypedEvent<
+  [BigNumber, string],
+  { withdrawnCount: BigNumber; caller: string }
+>;
+
+export type AtomicWithdrawEventFilter = TypedEventFilter<AtomicWithdrawEvent>;
 
 export type DepositEvent = TypedEvent<
   [BigNumber[], string],
@@ -289,6 +307,11 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<ContractTransaction>;
 
     asset(overrides?: CallOverrides): Promise<[string]>;
+
+    atomicWithdraw(
+      ids: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -393,6 +416,11 @@ export interface ERC721Pool extends BaseContract {
 
   asset(overrides?: CallOverrides): Promise<string>;
 
+  atomicWithdraw(
+    ids: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
@@ -493,6 +521,11 @@ export interface ERC721Pool extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<string>;
 
+    atomicWithdraw(
+      ids: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
@@ -581,6 +614,15 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
+    "AtomicWithdraw(uint256,address)"(
+      withdrawnCount?: null,
+      caller?: null
+    ): AtomicWithdrawEventFilter;
+    AtomicWithdraw(
+      withdrawnCount?: null,
+      caller?: null
+    ): AtomicWithdrawEventFilter;
+
     "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
     Deposit(ids?: null, caller?: null): DepositEventFilter;
 
@@ -645,6 +687,11 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<BigNumber>;
 
     asset(overrides?: CallOverrides): Promise<BigNumber>;
+
+    atomicWithdraw(
+      ids: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -749,6 +796,11 @@ export interface ERC721Pool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    atomicWithdraw(
+      ids: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     balanceOf(
       arg0: string,
