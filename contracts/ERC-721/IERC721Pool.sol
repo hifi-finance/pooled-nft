@@ -31,8 +31,10 @@ interface IERC721Pool {
     /// @param caller The caller of the function equal to msg.sender
     event Deposit(uint256[] ids, address caller);
 
-    /// @notice Emitted when the pool is frozen.
-    event PoolFrozen();
+    /// @notice Emitted when the last NFT of a pool is rescued.
+    /// @param lastNFT The last NFT of the pool.
+    /// @param to The address to which the NFT was sent.
+    event RescueLastNFT(uint256 lastNFT, address to);
 
     /// @notice Emitted when NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
     /// @param ids The asset token IDs released from the pool.

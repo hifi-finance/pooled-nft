@@ -56,16 +56,16 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
 
     /// @inheritdoc IERC721PoolFactory
     function rescueLastNFT(address asset, address to) external override onlyOwner {
-        if (getPool[asset] == address(0)) {
+        address poolAddress = getPool[asset];
+        if (poolAddress == address(0)) {
             revert ERC721PoolFactory__PoolDoesNotExist();
         }
         if (to == address(0)) {
             revert ERC721PoolFactory__RecipientZeroAddress();
         }
-        ERC721Pool pool = ERC721Pool(getPool[asset]);
+        ERC721Pool pool = ERC721Pool(poolAddress);
         pool.rescueLastNFT(to);
         delete getPool[asset];
-        emit RescueLastNFT(asset, to);
     }
 
     /// @inheritdoc IERC721PoolFactory

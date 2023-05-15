@@ -87,12 +87,10 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "RescueLastNFT(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CreatePool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RescueLastNFT"): EventFragment;
 }
 
 export type CreatePoolEvent = TypedEvent<
@@ -109,13 +107,6 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
-
-export type RescueLastNFTEvent = TypedEvent<
-  [string, string],
-  { asset: string; to: string }
->;
-
-export type RescueLastNFTEventFilter = TypedEventFilter<RescueLastNFTEvent>;
 
 export interface ERC721PoolFactory extends BaseContract {
   contractName: "ERC721PoolFactory";
@@ -276,12 +267,6 @@ export interface ERC721PoolFactory extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
-
-    "RescueLastNFT(address,address)"(
-      asset?: null,
-      to?: null
-    ): RescueLastNFTEventFilter;
-    RescueLastNFT(asset?: null, to?: null): RescueLastNFTEventFilter;
   };
 
   estimateGas: {

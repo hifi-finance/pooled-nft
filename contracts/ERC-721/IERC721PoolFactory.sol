@@ -23,11 +23,6 @@ interface IERC721PoolFactory {
     /// @param pool The created pool contract address.
     event CreatePool(string name, string symbol, address indexed asset, address indexed pool);
 
-    /// @notice Emitted when the last NFT of a pool is rescued.
-    /// @param asset The underlying ERC-721 asset contract address.
-    /// @param to The address to which the NFT was sent.
-    event RescueLastNFT(address asset, address to);
-
     /// CONSTANT FUNCTIONS ///
 
     /// @notice Returns the pool of the given asset token.
@@ -66,6 +61,7 @@ interface IERC721PoolFactory {
     /// - The pool must exist.
     ///
     /// @param asset The underlying ERC-721 asset contract address.
+    /// @param to The address to which the NFT will be sent.
     function rescueLastNFT(address asset, address to) external;
 
     /// @notice Set the ENS name of a pool.

@@ -113,7 +113,7 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         require(holdings.remove(lastNFT));
         IERC721(asset).transferFrom(address(this), to, lastNFT);
         poolFrozen = true;
-        emit PoolFrozen();
+        emit RescueLastNFT(lastNFT, to);
     }
 
     /// @inheritdoc IERC721Pool

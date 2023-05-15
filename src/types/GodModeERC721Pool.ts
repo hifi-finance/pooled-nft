@@ -221,7 +221,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "Deposit(uint256[],address)": EventFragment;
     "ENSNameSet(address,string,bytes32)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
-    "PoolFrozen()": EventFragment;
+    "RescueLastNFT(uint256,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(uint256[],address)": EventFragment;
   };
@@ -231,7 +231,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "PoolFrozen"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RescueLastNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
@@ -271,9 +271,12 @@ export type InitializeEvent = TypedEvent<
 
 export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
 
-export type PoolFrozenEvent = TypedEvent<[], {}>;
+export type RescueLastNFTEvent = TypedEvent<
+  [BigNumber, string],
+  { lastNFT: BigNumber; to: string }
+>;
 
-export type PoolFrozenEventFilter = TypedEventFilter<PoolFrozenEvent>;
+export type RescueLastNFTEventFilter = TypedEventFilter<RescueLastNFTEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -723,8 +726,11 @@ export interface GodModeERC721Pool extends BaseContract {
       asset?: string | null
     ): InitializeEventFilter;
 
-    "PoolFrozen()"(): PoolFrozenEventFilter;
-    PoolFrozen(): PoolFrozenEventFilter;
+    "RescueLastNFT(uint256,address)"(
+      lastNFT?: null,
+      to?: null
+    ): RescueLastNFTEventFilter;
+    RescueLastNFT(lastNFT?: null, to?: null): RescueLastNFTEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
