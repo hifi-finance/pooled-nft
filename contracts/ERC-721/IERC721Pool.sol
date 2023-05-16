@@ -82,6 +82,8 @@ interface IERC721Pool {
 
     /// @notice Allows the factory to rescue the last NFT in the pool and set the pool to frozen.
     ///
+    /// Emits a {RescueLastNFT} event.
+    ///
     /// @dev Requirements:
     /// - The caller must be the factory.
     /// - The pool must only hold one NFT.
@@ -90,6 +92,8 @@ interface IERC721Pool {
     function rescueLastNFT(address to) external;
 
     /// @notice Allows the factory to set the ENS name for the pool.
+    ///
+    /// Emits a {ENSNameSet} event.
     ///
     /// @dev Requirements:
     /// - The caller must be the factory.
