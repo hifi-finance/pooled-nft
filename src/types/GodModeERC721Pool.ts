@@ -48,7 +48,6 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "version()": FunctionFragment;
     "withdraw(uint256[])": FunctionFragment;
-    "withdrawWithSignature(uint256[],uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -147,10 +146,6 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     functionFragment: "withdraw",
     values: [BigNumberish[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawWithSignature",
-    values: [BigNumberish[], BigNumberish, BytesLike]
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
@@ -210,10 +205,6 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawWithSignature",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -435,13 +426,6 @@ export interface GodModeERC721Pool extends BaseContract {
       ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
@@ -557,13 +541,6 @@ export interface GodModeERC721Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  withdrawWithSignature(
-    ids: BigNumberish[],
-    deadline: BigNumberish,
-    signature: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
@@ -671,13 +648,6 @@ export interface GodModeERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<string>;
 
     withdraw(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -866,13 +836,6 @@ export interface GodModeERC721Pool extends BaseContract {
       ids: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -995,13 +958,6 @@ export interface GodModeERC721Pool extends BaseContract {
 
     withdraw(
       ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
