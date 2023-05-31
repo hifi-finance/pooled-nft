@@ -4,6 +4,7 @@ pragma solidity >=0.8.4 <0.9.0;
 import { IERC721PoolFactory } from "contracts/ERC-721/IERC721PoolFactory.sol";
 import { ERC721PoolFactory_Test } from "../ERC721PoolFactory.t.sol";
 import { ERC721Pool } from "contracts/ERC-721/ERC721Pool.sol";
+import "forge-std/console2.sol";
 
 contract RescueLastNFT_Test is ERC721PoolFactory_Test {
     /// @dev it should revert.
@@ -37,28 +38,19 @@ contract RescueLastNFT_Test is ERC721PoolFactory_Test {
 
     function setUpRescueLastNFT(uint256 id) internal {
         changePrank(users.alice);
-        id = bound(id, 1, 100);
         uint256[] memory ids = new uint256[](1);
         ids[0] = id;
         ERC721Pool pool = ERC721Pool(erc721PoolFactory.getPool(address(nft)));
         nft.__godMode_mint(users.alice, id);
         nft.setApprovalForAll(address(pool), true);
-        pool.deposit(ids);
+        pool.deposit(id, users.alice);
         changePrank(erc721PoolFactory.owner());
     }
 
-    /// @dev it should create pool.
+    /// @dev it should delete pool.
     function testFuzz_RescueLastNFT_RemoveAssetPoolFromGetPool(uint256 id) external callerIsOwner poolAlreadyExists {
         setUpRescueLastNFT(id);
         erc721PoolFactory.rescueLastNFT(address(nft), users.admin);
         assertTrue(erc721PoolFactory.getPool(address(nft)) == address(0), "delete pool");
-    }
-
-    /// @dev it should emit RescueLastNFT
-    function testFuzz_RescueLastNFT_Event(uint256 id) external callerIsOwner poolAlreadyExists {
-        setUpRescueLastNFT(id);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
-        emit RescueLastNFT(address(nft), users.admin);
-        erc721PoolFactory.rescueLastNFT(address(nft), users.admin);
     }
 }

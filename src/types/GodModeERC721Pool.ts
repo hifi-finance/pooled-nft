@@ -28,12 +28,12 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
-    "atomicWithdraw(uint256[])": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
-    "deposit(uint256[])": FunctionFragment;
+    "deposit(uint256,address)": FunctionFragment;
     "factory()": FunctionFragment;
     "holdingAt(uint256)": FunctionFragment;
+    "holdingContains(uint256)": FunctionFragment;
     "holdingsLength()": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -47,7 +47,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "version()": FunctionFragment;
-    "withdraw(uint256[])": FunctionFragment;
+    "withdraw(uint256,address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -79,19 +79,19 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "atomicWithdraw",
-    values: [BigNumberish[]]
-  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish[]]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "holdingAt",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "holdingContains",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -144,7 +144,7 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [BigNumberish[]]
+    values: [BigNumberish, string]
   ): string;
 
   decodeFunctionResult(
@@ -170,15 +170,15 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "atomicWithdraw",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "holdingAt", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "holdingContains",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "holdingsLength",
     data: BytesLike
@@ -208,17 +208,15 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "AtomicWithdraw(uint256,address)": EventFragment;
-    "Deposit(uint256[],address)": EventFragment;
+    "Deposit(uint256,address,address)": EventFragment;
     "ENSNameSet(address,string,bytes32)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
     "RescueLastNFT(uint256,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "Withdraw(uint256[],address)": EventFragment;
+    "Withdraw(uint256,address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AtomicWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
@@ -234,16 +232,9 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
-export type AtomicWithdrawEvent = TypedEvent<
-  [BigNumber, string],
-  { withdrawnCount: BigNumber; caller: string }
->;
-
-export type AtomicWithdrawEventFilter = TypedEventFilter<AtomicWithdrawEvent>;
-
 export type DepositEvent = TypedEvent<
-  [BigNumber[], string],
-  { ids: BigNumber[]; caller: string }
+  [BigNumber, string, string],
+  { id: BigNumber; beneficiary: string; caller: string }
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
@@ -277,8 +268,8 @@ export type TransferEvent = TypedEvent<
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export type WithdrawEvent = TypedEvent<
-  [BigNumber[], string],
-  { ids: BigNumber[]; caller: string }
+  [BigNumber, string, string],
+  { id: BigNumber; beneficiary: string; caller: string }
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
@@ -345,17 +336,13 @@ export interface GodModeERC721Pool extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<[string]>;
 
-    atomicWithdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -365,6 +352,11 @@ export interface GodModeERC721Pool extends BaseContract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    holdingContains(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -423,7 +415,8 @@ export interface GodModeERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<[string]>;
 
     withdraw(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -462,23 +455,24 @@ export interface GodModeERC721Pool extends BaseContract {
 
   asset(overrides?: CallOverrides): Promise<string>;
 
-  atomicWithdraw(
-    ids: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
   deposit(
-    ids: BigNumberish[],
+    id: BigNumberish,
+    beneficiary: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
   holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  holdingContains(
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -537,7 +531,8 @@ export interface GodModeERC721Pool extends BaseContract {
   version(overrides?: CallOverrides): Promise<string>;
 
   withdraw(
-    ids: BigNumberish[],
+    id: BigNumberish,
+    beneficiary: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -576,16 +571,15 @@ export interface GodModeERC721Pool extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<string>;
 
-    atomicWithdraw(
-      ids: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
-    deposit(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
+    deposit(
+      id: BigNumberish,
+      beneficiary: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     factory(overrides?: CallOverrides): Promise<string>;
 
@@ -593,6 +587,11 @@ export interface GodModeERC721Pool extends BaseContract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    holdingContains(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -647,7 +646,11 @@ export interface GodModeERC721Pool extends BaseContract {
 
     version(overrides?: CallOverrides): Promise<string>;
 
-    withdraw(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
+    withdraw(
+      id: BigNumberish,
+      beneficiary: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -662,17 +665,12 @@ export interface GodModeERC721Pool extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    "AtomicWithdraw(uint256,address)"(
-      withdrawnCount?: null,
+    "Deposit(uint256,address,address)"(
+      id?: null,
+      beneficiary?: null,
       caller?: null
-    ): AtomicWithdrawEventFilter;
-    AtomicWithdraw(
-      withdrawnCount?: null,
-      caller?: null
-    ): AtomicWithdrawEventFilter;
-
-    "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
-    Deposit(ids?: null, caller?: null): DepositEventFilter;
+    ): DepositEventFilter;
+    Deposit(id?: null, beneficiary?: null, caller?: null): DepositEventFilter;
 
     "ENSNameSet(address,string,bytes32)"(
       registrar?: null,
@@ -713,11 +711,12 @@ export interface GodModeERC721Pool extends BaseContract {
       value?: null
     ): TransferEventFilter;
 
-    "Withdraw(uint256[],address)"(
-      ids?: null,
+    "Withdraw(uint256,address,address)"(
+      id?: null,
+      beneficiary?: null,
       caller?: null
     ): WithdrawEventFilter;
-    Withdraw(ids?: null, caller?: null): WithdrawEventFilter;
+    Withdraw(id?: null, beneficiary?: null, caller?: null): WithdrawEventFilter;
   };
 
   estimateGas: {
@@ -755,17 +754,13 @@ export interface GodModeERC721Pool extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<BigNumber>;
 
-    atomicWithdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -773,6 +768,11 @@ export interface GodModeERC721Pool extends BaseContract {
 
     holdingAt(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    holdingContains(
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -833,7 +833,8 @@ export interface GodModeERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdraw(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -873,11 +874,6 @@ export interface GodModeERC721Pool extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    atomicWithdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     balanceOf(
       arg0: string,
       overrides?: CallOverrides
@@ -886,7 +882,8 @@ export interface GodModeERC721Pool extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -894,6 +891,11 @@ export interface GodModeERC721Pool extends BaseContract {
 
     holdingAt(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    holdingContains(
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -957,7 +959,8 @@ export interface GodModeERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdraw(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

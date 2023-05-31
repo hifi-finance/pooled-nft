@@ -10,6 +10,7 @@ import "./ERC20Wnft.sol";
 
 /// @title ERC721Pool
 /// @author Hifi
+
 contract ERC721Pool is IERC721Pool, ERC20Wnft {
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -54,6 +55,10 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
         return holdings.at(index);
     }
 
+    function holdingContains(uint256 id) external view override returns (bool) {
+        return holdings.contains(id);
+    }
+
     /// @inheritdoc IERC721Pool
     function holdingsLength() external view override returns (uint256) {
         return holdings.length();
@@ -62,57 +67,42 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IERC721Pool
-    function atomicWithdraw(uint256[] calldata ids) external override notFrozen {
-        if (ids.length == 0) {
-            revert ERC721Pool__InsufficientIn();
+    function deposit(uint256 id, address beneficiary) external override notFrozen {
+        // Checks: beneficiary is not zero address
+        if (beneficiary == address(0)) {
+            revert ERC721Pool__ZeroAddress();
+        }
+        // Checks: Add a NFT to the holdings.
+        if (!holdings.add(id)) {
+            revert ERC721Pool__NFTAlreadyInPool(id);
         }
 
-        uint256 withdrawnCount;
-        for (uint256 i; i < ids.length; ) {
-            uint256 id = ids[i];
-            if (holdings.remove(id)) {
-                IERC721(asset).transferFrom(address(this), msg.sender, id);
-                withdrawnCount++;
-            }
-            unchecked {
-                ++i;
-            }
-        }
+        // Interactions: perform the Erc721 transfer from caller.
+        IERC721(asset).transferFrom(msg.sender, address(this), id);
 
-        if (withdrawnCount == 0) {
-            revert ERC721Pool__NoNFTsWithdrawn();
-        }
+        // Effects: Mint an equivalent amount of pool tokens to the beneficiary.
+        _mint(beneficiary, 10**18);
 
-        _burn(msg.sender, withdrawnCount * 10**18);
-        emit AtomicWithdraw(withdrawnCount, msg.sender);
-    }
-
-    /// @inheritdoc IERC721Pool
-    function deposit(uint256[] calldata ids) external override notFrozen {
-        if (ids.length == 0) {
-            revert ERC721Pool__InsufficientIn();
-        }
-        for (uint256 i; i < ids.length; ) {
-            uint256 id = ids[i];
-            require(holdings.add(id));
-            IERC721(asset).transferFrom(msg.sender, address(this), id);
-            unchecked {
-                ++i;
-            }
-        }
-        _mint(msg.sender, ids.length * 10**18);
-        emit Deposit(ids, msg.sender);
+        emit Deposit(id, beneficiary, msg.sender);
     }
 
     /// @inheritdoc IERC721Pool
     function rescueLastNFT(address to) external override onlyFactory {
+        // Checks: The pool must contain exactly one NFT.
         if (holdings.length() != 1) {
             revert ERC721Pool__MustContainExactlyOneNFT();
         }
         uint256 lastNFT = holdings.at(0);
-        require(holdings.remove(lastNFT));
+
+        // Effects: Remove lastNFT from the holdings.
+        holdings.remove(lastNFT);
+
+        // Interactions: Transfer the NFT to the specified address.
         IERC721(asset).transferFrom(address(this), to, lastNFT);
+
+        // Effects: Freeze the pool.
         poolFrozen = true;
+
         emit RescueLastNFT(lastNFT, to);
     }
 
@@ -124,19 +114,19 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     }
 
     /// @inheritdoc IERC721Pool
-    function withdraw(uint256[] calldata ids) public override notFrozen {
-        if (ids.length == 0) {
-            revert ERC721Pool__InsufficientIn();
+    function withdraw(uint256 id, address beneficiary) public override notFrozen {
+        // Checks: Remove the NFT from the holdings.
+        if (!holdings.remove(id)) {
+            revert ERC721Pool__NFTNotFoundInPool(id);
         }
-        _burn(msg.sender, ids.length * 10**18);
-        for (uint256 i; i < ids.length; ) {
-            uint256 id = ids[i];
-            require(holdings.remove(id));
-            IERC721(asset).transferFrom(address(this), msg.sender, id);
-            unchecked {
-                ++i;
-            }
-        }
-        emit Withdraw(ids, msg.sender);
+
+        // Effects: Burn an equivalent amount of pool token from the caller.
+        // `msg.sender` is the caller of this function. Pool tokens are burnt from their account.
+        _burn(msg.sender, 10**18);
+
+        // Interactions: Perform the ERC721 transfer from the pool to the beneficiary address.
+        IERC721(asset).transferFrom(address(this), beneficiary, id);
+
+        emit Withdraw(id, beneficiary, msg.sender);
     }
 }

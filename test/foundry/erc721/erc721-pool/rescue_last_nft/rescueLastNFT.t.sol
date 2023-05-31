@@ -3,6 +3,7 @@ pragma solidity >=0.8.4 <0.9.0;
 
 import { IERC721Pool } from "contracts/ERC-721/IERC721Pool.sol";
 import { ERC721Pool_Test } from "../ERC721Pool.t.sol";
+import "forge-std/console2.sol";
 
 contract RescueLastNFT_Test is ERC721Pool_Test {
     /// @dev it should revert.
@@ -26,7 +27,6 @@ contract RescueLastNFT_Test is ERC721Pool_Test {
 
     /// @dev Common set up for rescueLastNFT tests.
     function setUpRescueLastNFT(uint256 id) internal {
-        id = bound(id, 1, 100);
         uint256[] memory ids = new uint256[](1);
         ids[0] = id;
         erc721Pool.__godMode_setHoldings(ids);
@@ -70,10 +70,10 @@ contract RescueLastNFT_Test is ERC721Pool_Test {
     }
 
     /// @dev it should emit PoolFrozen event.
-    function testFuzz_RescueLastNFT_Event(uint256 id) external onlyFactory {
+    function testFuzz_RescueLastNFT_Eventbla(uint256 id) external onlyFactory {
         setUpRescueLastNFT(id);
-        vm.expectEmit({ checkTopic1: false, checkTopic2: false, checkTopic3: false, checkData: false });
-        emit PoolFrozen();
+        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true });
+        emit RescueLastNFT(id, users.admin);
         erc721Pool.rescueLastNFT(users.admin);
     }
 }

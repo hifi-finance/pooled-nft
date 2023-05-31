@@ -2,28 +2,27 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import { Base_Test } from "test/foundry/Base.t.sol";
+import { PeripheralERC721Pool } from "contracts/ERC-721/PeripheralERC721Pool.sol";
 import { GodModeERC721Pool } from "contracts/test/ERC-721/GodModeERC721Pool.sol";
-import { ReverseRegistrar } from "test/foundry/mocks/ReverseRegistrar.sol";
 
-/// @title ERC721Pool_Test
+/// @title PeripheralERC721Pool_Test
 /// @author Hifi
-/// @notice Common contract members needed across Pool test contracts.
-abstract contract ERC721Pool_Test is Base_Test {
+/// @notice Common contract members needed across PeripheralERC721Pool test contracts.
+abstract contract PeripheralERC721Pool_Test is Base_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    event Deposit(uint256 id, address beneficiary, address caller);
-    event ENSNameSet(address registrar, string name, bytes32 nodeHash);
-    event RescueLastNFT(uint256 lastNFT, address to);
-    event Withdraw(uint256 id, address beneficiary, address caller);
+    event BulkDeposit(address pool, uint256[] ids, address caller);
+    event BulkWithdraw(address pool, uint256[] ids, address caller);
+    event WithdrawAvailable(uint256[] withdrawnIds, address caller);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  TESTING CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    PeripheralERC721Pool internal peripheralERC721Pool = new PeripheralERC721Pool();
     GodModeERC721Pool internal erc721Pool = new GodModeERC721Pool("JPEG Pool", "JPEGp", address(nft));
-    ReverseRegistrar internal reverseRegistrar = new ReverseRegistrar();
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
