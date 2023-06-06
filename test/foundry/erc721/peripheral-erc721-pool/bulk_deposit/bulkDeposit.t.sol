@@ -37,7 +37,7 @@ contract BulkDeposit_Test is PeripheralERC721Pool_Test {
     /// @dev it should revert when caller tries to deposit NFTs that it doesn't own.
     function testFuzz_RevertWhen_CallerDoesntOwnNFTs(uint256[] memory ids) external {
         setUpBulkDeposit(ids);
-        nft.transferFrom(users.alice, users.bob, ids[1]);
+        nft.transferFrom(users.alice, users.bob, ids[0]);
 
         // The transaction should revert because user doesn't own all of the NFTs they are trying to deposit.
         vm.expectRevert("ERC721: caller is not token owner or approved");

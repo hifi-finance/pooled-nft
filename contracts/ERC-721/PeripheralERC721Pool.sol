@@ -10,18 +10,18 @@ import "./IERC721Pool.sol";
 contract PeripheralERC721Pool is IPeripheralERC721Pool {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
+    /// @inheritdoc IPeripheralERC721Pool
     function bulkDeposit(IERC721Pool pool, uint256[] calldata ids) external override {
         // Checks: ids length must be greater than zero
         if (ids.length == 0) {
             revert PeripheralERC721Pool__InsufficientIn();
         }
 
-        // `msg.sender` is the owner of the NFTs who will receive the pool tokens.
-        address sender = msg.sender;
         IERC721 erc721Asset = IERC721(pool.asset());
 
+        // `msg.sender` is the owner of the NFTs who will receive the pool tokens.
         // Checks: The caller must have allowed this contract to transfer the NFTs.
-        if (!erc721Asset.isApprovedForAll(sender, address(this))) revert PeripheralERC721Pool__UnapprovedOperator();
+        if (!erc721Asset.isApprovedForAll(msg.sender, address(this))) revert PeripheralERC721Pool__UnapprovedOperator();
 
         // Effects: Approve the pool to transfer the NFTs.
         if (!erc721Asset.isApprovedForAll(address(this), address(pool)))
@@ -29,7 +29,7 @@ contract PeripheralERC721Pool is IPeripheralERC721Pool {
 
         for (uint256 i = 0; i < ids.length; ) {
             // Interactions: Transfer the NFTs from caller to this contract.
-            erc721Asset.transferFrom(sender, address(this), ids[i]);
+            erc721Asset.transferFrom(msg.sender, address(this), ids[i]);
 
             // Effects: transfer NFTs from this contract to the pool and mint pool tokens to msg.sender.
             pool.deposit(ids[i], msg.sender);
@@ -38,49 +38,39 @@ contract PeripheralERC721Pool is IPeripheralERC721Pool {
             }
         }
 
-        emit BulkDeposit(address(pool), ids, sender);
+        emit BulkDeposit(address(pool), ids, msg.sender);
     }
 
+    /// @inheritdoc IPeripheralERC721Pool
     function bulkWithdraw(IERC721Pool pool, uint256[] calldata ids) public override {
-        // Checks: ids length must be greater than zero
-        if (ids.length == 0) {
-            revert PeripheralERC721Pool__InsufficientIn();
-        }
+        uint256 idsLength = ids.length;
 
-        // `msg.sender` is the owner of the pool tokens who will receive the NFTs.
-        address sender = msg.sender;
+        withdrawInternal(pool, idsLength);
 
-        // Interactions: Transfer the pool token from caller to this contract.
-        pool.transferFrom(sender, address(this), ids.length * 10**18);
-
-        for (uint256 i = 0; i < ids.length; ) {
+        for (uint256 i = 0; i < idsLength; ) {
+            // `msg.sender` is the owner of the pool tokens who will receive the NFTs.
             // Effects: transfer NFTs from the pool to msg.sender in exchange for pool tokens.
-            pool.withdraw(ids[i], sender);
+            pool.withdraw(ids[i], msg.sender);
             unchecked {
                 ++i;
             }
         }
-        emit BulkWithdraw(address(pool), ids, sender);
+        emit BulkWithdraw(address(pool), ids, msg.sender);
     }
 
+    /// @inheritdoc IPeripheralERC721Pool
     function withdrawAvailable(IERC721Pool pool, uint256[] calldata ids) external override {
-        // Checks: ids length must be greater than zero
-        if (ids.length == 0) {
-            revert PeripheralERC721Pool__InsufficientIn();
-        }
+        uint256 idsLength = ids.length;
 
-        // `msg.sender` is the owner of the pool tokens who will receive the NFTs.
-        address sender = msg.sender;
+        withdrawInternal(pool, idsLength);
 
-        // Interactions: Transfer the pool token from caller to this contract.
-        pool.transferFrom(sender, address(this), ids.length * 10**18);
-
-        uint256[] memory withdrawnIds = new uint256[](ids.length);
+        uint256[] memory withdrawnIds = new uint256[](idsLength);
         uint256 withdrawnCount;
-        for (uint256 i; i < ids.length; ) {
+        for (uint256 i; i < idsLength; ) {
+            // `msg.sender` is the owner of the pool tokens who will receive the NFTs.
             // Effects: transfer available NFTs from the pool to msg.sender in exchange for pool tokens
             if (pool.holdingContains(ids[i])) {
-                pool.withdraw(ids[i], sender);
+                pool.withdraw(ids[i], msg.sender);
                 withdrawnIds[withdrawnCount] = ids[i];
                 withdrawnCount++;
             }
@@ -97,7 +87,22 @@ contract PeripheralERC721Pool is IPeripheralERC721Pool {
         assembly {
             mstore(withdrawnIds, withdrawnCount)
         }
-        pool.transferFrom(address(this), sender, (ids.length - withdrawnCount) * 10**18);
-        emit WithdrawAvailable(withdrawnIds, sender);
+        pool.transfer(msg.sender, (idsLength - withdrawnCount) * 10**18);
+        emit WithdrawAvailable(address(pool), withdrawnIds, msg.sender);
+    }
+
+    /// @dev See the documentation for the public functions that call this internal function.
+    function withdrawInternal(IERC721Pool pool, uint256 idsLength) internal {
+        // Checks: ids length must be greater than zero
+        if (idsLength == 0) {
+            revert PeripheralERC721Pool__InsufficientIn();
+        }
+
+        // Checks: The caller must have allowed this contract to transfer the pool tokens.
+        if (pool.allowance(msg.sender, address(this)) < idsLength * 10**18)
+            revert PeripheralERC721Pool__UnapprovedOperator();
+
+        // Interactions: Transfer the pool token from caller to this contract.
+        pool.transferFrom(msg.sender, address(this), idsLength * 10**18);
     }
 }

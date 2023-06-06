@@ -15,7 +15,7 @@ abstract contract PeripheralERC721Pool_Test is Base_Test {
 
     event BulkDeposit(address pool, uint256[] ids, address caller);
     event BulkWithdraw(address pool, uint256[] ids, address caller);
-    event WithdrawAvailable(uint256[] withdrawnIds, address caller);
+    event WithdrawAvailable(address pool, uint256[] withdrawnIds, address caller);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  TESTING CONTRACTS

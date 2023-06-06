@@ -27,9 +27,10 @@ interface IPeripheralERC721Pool {
     event BulkWithdraw(address pool, uint256[] ids, address caller);
 
     /// @notice Emitted when as many as available NFTs are withdrawn from the pool in exchange for an equal amount of pool tokens.
+    /// @param pool The address of the pool.
     /// @param withdrawnIds The asset token IDs released from the pool.
     /// @param caller The caller of the function equal to msg.sender.
-    event WithdrawAvailable(uint256[] withdrawnIds, address caller);
+    event WithdrawAvailable(address pool, uint256[] withdrawnIds, address caller);
 
     /// CONSTANT FUNCTIONS ///
 
@@ -73,7 +74,7 @@ interface IPeripheralERC721Pool {
     /// @dev Requirements:
     ///
     /// - The length of `ids` must be greater than zero.
-    /// - The caller must have allowed the Pool to transfer the pool tokens.
+    /// - The caller must have allowed the PeripheralERC721Pool to transfer the pool tokens.
     /// - The address `beneficiary` must not be the zero address.
     ///
     /// @param pool The address of the pool.
