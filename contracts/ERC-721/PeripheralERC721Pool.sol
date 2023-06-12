@@ -19,16 +19,14 @@ contract PeripheralERC721Pool is IPeripheralERC721Pool {
 
         IERC721 erc721Asset = IERC721(pool.asset());
 
-        // `msg.sender` is the owner of the NFTs who will receive the pool tokens.
-        // Checks: The caller must have allowed this contract to transfer the NFTs.
-        if (!erc721Asset.isApprovedForAll(msg.sender, address(this))) revert PeripheralERC721Pool__UnapprovedOperator();
-
         // Effects: Approve the pool to transfer the NFTs.
         if (!erc721Asset.isApprovedForAll(address(this), address(pool)))
             erc721Asset.setApprovalForAll(address(pool), true);
 
+        // `msg.sender` is the owner of the NFTs who will receive the pool tokens.
         for (uint256 i = 0; i < ids.length; ) {
             // Interactions: Transfer the NFTs from caller to this contract.
+            // The transfer will revert if this contract is not approved to transfer the NFT.
             erc721Asset.transferFrom(msg.sender, address(this), ids[i]);
 
             // Effects: transfer NFTs from this contract to the pool and mint pool tokens to msg.sender.

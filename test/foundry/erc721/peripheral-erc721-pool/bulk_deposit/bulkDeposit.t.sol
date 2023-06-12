@@ -17,7 +17,8 @@ contract BulkDeposit_Test is PeripheralERC721Pool_Test {
     function test_RevertWhen_UnapprovedOperator(uint256[] memory ids) external {
         vm.assume(ids.length != 0);
         // do not call setApprovalForAll for this test.
-        vm.expectRevert(IPeripheralERC721Pool.PeripheralERC721Pool__UnapprovedOperator.selector);
+        // ERC721 transferFrom will revert
+        vm.expectRevert("ERC721: invalid token ID");
         peripheralERC721Pool.bulkDeposit(erc721Pool, ids);
     }
 
