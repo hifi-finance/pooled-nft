@@ -36,4 +36,12 @@ contract SetENSName_Test is ERC721PoolFactory_Test {
         vm.expectRevert(IERC721PoolFactory.ERC721PoolFactory__RegistrarZeroAddress.selector);
         erc721PoolFactory.setENSName(address(nft), registrar, name);
     }
+
+    /// @dev it should emit ENSNameSet event.
+    function testFuzz_SetENSName_Event(string memory name) external callerIsOwner poolAlreadyExists {
+        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true });
+        address pool = erc721PoolFactory.getPool(address(nft));
+        emit ENSNameSet(pool, name);
+        erc721PoolFactory.setENSName(address(nft), address(reverseRegistrar), name);
+    }
 }

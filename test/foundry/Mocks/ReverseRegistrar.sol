@@ -15,7 +15,7 @@ contract ReverseRegistrar is Ownable {
     // ENS public immutable ens;
     NameResolver public defaultResolver;
 
-    // event ReverseClaimed(address indexed addr, bytes32 indexed node);
+    event ReverseClaimed(address indexed addr, bytes32 indexed node);
     event DefaultResolverChanged(NameResolver indexed resolver);
 
     function setDefaultResolver(address resolver) public onlyOwner {
@@ -28,10 +28,10 @@ contract ReverseRegistrar is Ownable {
         address addr,
         address, /*owner*/
         address /*resolver*/
-    ) public pure returns (bytes32) {
+    ) public returns (bytes32) {
         bytes32 labelHash = sha3HexAddress(addr);
         bytes32 reverseNode = keccak256(abi.encodePacked(ADDR_REVERSE_NODE, labelHash));
-
+        emit ReverseClaimed(addr, reverseNode);
         //ens.setSubnodeRecord(ADDR_REVERSE_NODE, labelHash, owner, resolver, 0);
         return reverseNode;
     }
@@ -43,7 +43,7 @@ contract ReverseRegistrar is Ownable {
      * @param name The name to set for this address.
      * @return The ENS node hash of the reverse record.
      */
-    function setName(string memory name) public view returns (bytes32) {
+    function setName(string memory name) public returns (bytes32) {
         return setNameForAddr(msg.sender, msg.sender, address(defaultResolver), name);
     }
 
@@ -52,7 +52,7 @@ contract ReverseRegistrar is Ownable {
         address owner,
         address resolver,
         string memory /*name*/
-    ) public pure returns (bytes32) {
+    ) public returns (bytes32) {
         bytes32 node = claimForAddr(addr, owner, resolver);
         //NameResolver(resolver).setName(node, name);
         return node;

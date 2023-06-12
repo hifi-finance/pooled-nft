@@ -82,5 +82,6 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
         }
         ERC721Pool pool = ERC721Pool(getPool[asset]);
         pool.setENSName(registrar, name);
+        emit ENSNameSet(address(pool), name);
     }
 }

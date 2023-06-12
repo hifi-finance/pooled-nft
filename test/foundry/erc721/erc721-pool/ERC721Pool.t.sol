@@ -14,7 +14,7 @@ abstract contract ERC721Pool_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     event Deposit(uint256 id, address beneficiary, address caller);
-    event ENSNameSet(address registrar, string name, bytes32 nodeHash);
+    event ReverseClaimed(address indexed addr, bytes32 indexed node);
     event RescueLastNFT(uint256 lastNFT, address to);
     event Withdraw(uint256 id, address beneficiary, address caller);
 

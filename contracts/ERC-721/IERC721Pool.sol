@@ -23,12 +23,6 @@ interface IERC721Pool is IERC20Wnft {
     /// @param caller The caller of the function equal to msg.sender.
     event Deposit(uint256 id, address beneficiary, address caller);
 
-    /// @notice Emitted when the ENS name is set.
-    /// @param registrar The address of the ENS registrar.
-    /// @param name The ENS name.
-    /// @param nodeHash The ENS node hash.
-    event ENSNameSet(address registrar, string name, bytes32 nodeHash);
-
     /// @notice Emitted when the last NFT of a pool is rescued.
     /// @param lastNFT The last NFT of the pool.
     /// @param to The address to which the NFT was sent.

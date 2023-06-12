@@ -109,7 +109,6 @@ contract ERC721Pool is IERC721Pool, ERC20Wnft {
     /// @inheritdoc IERC721Pool
     function setENSName(address registrar, string memory name) external override onlyFactory returns (bytes32) {
         bytes32 nodeHash = IReverseRegistrar(registrar).setName(name);
-        emit ENSNameSet(registrar, name, nodeHash);
         return nodeHash;
     }
 

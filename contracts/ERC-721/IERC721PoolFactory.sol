@@ -23,6 +23,11 @@ interface IERC721PoolFactory {
     /// @param pool The created pool contract address.
     event CreatePool(string name, string symbol, address indexed asset, address indexed pool);
 
+    /// @notice Emitted when the ENS name of a pool is set.
+    /// @param poolAddress The address of the pool.
+    /// @param name The ENS name.
+    event ENSNameSet(address poolAddress, string name);
+
     /// CONSTANT FUNCTIONS ///
 
     /// @notice Returns the pool of the given asset token.
