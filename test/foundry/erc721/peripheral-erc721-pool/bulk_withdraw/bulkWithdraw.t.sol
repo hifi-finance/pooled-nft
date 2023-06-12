@@ -46,7 +46,7 @@ contract BulkWithdraw_Test is PeripheralERC721Pool_Test {
         peripheralERC721Pool.bulkWithdraw(erc721Pool, ids);
         uint256 erc721PoolTokenBalance = erc721Pool.balanceOf(users.alice);
         uint256 erc721AssetBalance = nft.balanceOf(address(erc721Pool));
-        assertEq(erc721PoolTokenBalance, 5 * 10**18, "caller pool tokens balace should remain same");
+        assertEq(erc721PoolTokenBalance, 5 * 10**18, "caller pool tokens balance should remain same");
         assertEq(erc721AssetBalance, 5, "pool nft balance should remain same");
     }
 
