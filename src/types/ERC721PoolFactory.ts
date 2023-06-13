@@ -22,8 +22,14 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   functions: {
     "allPools(uint256)": FunctionFragment;
     "allPoolsLength()": FunctionFragment;
+    "assetNonces(address)": FunctionFragment;
     "createPool(address)": FunctionFragment;
     "getPool(address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "rescueLastNFT(address,address)": FunctionFragment;
+    "setENSName(address,address,string)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -34,22 +40,62 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     functionFragment: "allPoolsLength",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "assetNonces", values: [string]): string;
   encodeFunctionData(functionFragment: "createPool", values: [string]): string;
   encodeFunctionData(functionFragment: "getPool", values: [string]): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rescueLastNFT",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setENSName",
+    values: [string, string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "allPools", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "allPoolsLength",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "assetNonces",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPool", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rescueLastNFT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setENSName", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
+    "ENSNameSet(address,string)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CreatePool"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export type CreatePoolEvent = TypedEvent<
@@ -58,6 +104,21 @@ export type CreatePoolEvent = TypedEvent<
 >;
 
 export type CreatePoolEventFilter = TypedEventFilter<CreatePoolEvent>;
+
+export type ENSNameSetEvent = TypedEvent<
+  [string, string],
+  { poolAddress: string; name: string }
+>;
+
+export type ENSNameSetEventFilter = TypedEventFilter<ENSNameSetEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface ERC721PoolFactory extends BaseContract {
   contractName: "ERC721PoolFactory";
@@ -91,17 +152,45 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<[string]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+  assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   createPool(
     asset: string,
@@ -110,14 +199,62 @@ export interface ERC721PoolFactory extends BaseContract {
 
   getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  rescueLastNFT(
+    asset: string,
+    to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setENSName(
+    asset: string,
+    registrar: string,
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     allPools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     createPool(asset: string, overrides?: CallOverrides): Promise<void>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -133,6 +270,21 @@ export interface ERC721PoolFactory extends BaseContract {
       asset?: string | null,
       pool?: string | null
     ): CreatePoolEventFilter;
+
+    "ENSNameSet(address,string)"(
+      poolAddress?: null,
+      name?: null
+    ): ENSNameSetEventFilter;
+    ENSNameSet(poolAddress?: null, name?: null): ENSNameSetEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
@@ -140,12 +292,38 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -156,6 +334,11 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    assetNonces(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -164,6 +347,30 @@ export interface ERC721PoolFactory extends BaseContract {
     getPool(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rescueLastNFT(
+      asset: string,
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setENSName(
+      asset: string,
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -27,21 +27,24 @@ export interface ERC721PoolInterface extends utils.Interface {
     "asset()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
-    "deposit(uint256[])": FunctionFragment;
+    "deposit(uint256,address)": FunctionFragment;
     "factory()": FunctionFragment;
     "holdingAt(uint256)": FunctionFragment;
+    "holdingContains(uint256)": FunctionFragment;
     "holdingsLength()": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "poolFrozen()": FunctionFragment;
+    "rescueLastNFT(address)": FunctionFragment;
+    "setENSName(address,string)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "version()": FunctionFragment;
-    "withdraw(uint256[])": FunctionFragment;
-    "withdrawWithSignature(uint256[],uint256,bytes)": FunctionFragment;
+    "withdraw(uint256,address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -65,11 +68,15 @@ export interface ERC721PoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish[]]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "holdingAt",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "holdingContains",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -94,6 +101,18 @@ export interface ERC721PoolInterface extends utils.Interface {
       BytesLike
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "poolFrozen",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rescueLastNFT",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setENSName",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -110,11 +129,7 @@ export interface ERC721PoolInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawWithSignature",
-    values: [BigNumberish[], BigNumberish, BytesLike]
+    values: [BigNumberish, string]
   ): string;
 
   decodeFunctionResult(
@@ -134,6 +149,10 @@ export interface ERC721PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "holdingAt", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "holdingContains",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "holdingsLength",
     data: BytesLike
   ): Result;
@@ -141,6 +160,12 @@ export interface ERC721PoolInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "poolFrozen", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "rescueLastNFT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setENSName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -153,22 +178,20 @@ export interface ERC721PoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawWithSignature",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "Deposit(uint256[],address)": EventFragment;
+    "Deposit(uint256,address,address)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
+    "RescueLastNFT(uint256,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "Withdraw(uint256[],address)": EventFragment;
+    "Withdraw(uint256,address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RescueLastNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
@@ -181,8 +204,8 @@ export type ApprovalEvent = TypedEvent<
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
 export type DepositEvent = TypedEvent<
-  [BigNumber[], string],
-  { ids: BigNumber[]; caller: string }
+  [BigNumber, string, string],
+  { id: BigNumber; beneficiary: string; caller: string }
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
@@ -194,6 +217,13 @@ export type InitializeEvent = TypedEvent<
 
 export type InitializeEventFilter = TypedEventFilter<InitializeEvent>;
 
+export type RescueLastNFTEvent = TypedEvent<
+  [BigNumber, string],
+  { lastNFT: BigNumber; to: string }
+>;
+
+export type RescueLastNFTEventFilter = TypedEventFilter<RescueLastNFTEvent>;
+
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
   { from: string; to: string; value: BigNumber }
@@ -202,8 +232,8 @@ export type TransferEvent = TypedEvent<
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export type WithdrawEvent = TypedEvent<
-  [BigNumber[], string],
-  { ids: BigNumber[]; caller: string }
+  [BigNumber, string, string],
+  { id: BigNumber; beneficiary: string; caller: string }
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
@@ -259,7 +289,8 @@ export interface ERC721Pool extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -269,6 +300,11 @@ export interface ERC721Pool extends BaseContract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    holdingContains(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     holdingsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -294,6 +330,19 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<[boolean]>;
+
+    rescueLastNFT(
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -314,14 +363,8 @@ export interface ERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<[string]>;
 
     withdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -349,13 +392,19 @@ export interface ERC721Pool extends BaseContract {
   decimals(overrides?: CallOverrides): Promise<number>;
 
   deposit(
-    ids: BigNumberish[],
+    id: BigNumberish,
+    beneficiary: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
   holdingAt(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  holdingContains(
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -381,6 +430,19 @@ export interface ERC721Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  poolFrozen(overrides?: CallOverrides): Promise<boolean>;
+
+  rescueLastNFT(
+    to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setENSName(
+    registrar: string,
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -401,14 +463,8 @@ export interface ERC721Pool extends BaseContract {
   version(overrides?: CallOverrides): Promise<string>;
 
   withdraw(
-    ids: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawWithSignature(
-    ids: BigNumberish[],
-    deadline: BigNumberish,
-    signature: BytesLike,
+    id: BigNumberish,
+    beneficiary: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -435,7 +491,11 @@ export interface ERC721Pool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
-    deposit(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
+    deposit(
+      id: BigNumberish,
+      beneficiary: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     factory(overrides?: CallOverrides): Promise<string>;
 
@@ -443,6 +503,11 @@ export interface ERC721Pool extends BaseContract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    holdingContains(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     holdingsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -468,6 +533,16 @@ export interface ERC721Pool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<boolean>;
+
+    rescueLastNFT(to: string, overrides?: CallOverrides): Promise<void>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -487,12 +562,9 @@ export interface ERC721Pool extends BaseContract {
 
     version(overrides?: CallOverrides): Promise<string>;
 
-    withdraw(ids: BigNumberish[], overrides?: CallOverrides): Promise<void>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
+    withdraw(
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -509,8 +581,12 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    "Deposit(uint256[],address)"(ids?: null, caller?: null): DepositEventFilter;
-    Deposit(ids?: null, caller?: null): DepositEventFilter;
+    "Deposit(uint256,address,address)"(
+      id?: null,
+      beneficiary?: null,
+      caller?: null
+    ): DepositEventFilter;
+    Deposit(id?: null, beneficiary?: null, caller?: null): DepositEventFilter;
 
     "Initialize(string,string,address)"(
       name?: null,
@@ -523,6 +599,12 @@ export interface ERC721Pool extends BaseContract {
       asset?: string | null
     ): InitializeEventFilter;
 
+    "RescueLastNFT(uint256,address)"(
+      lastNFT?: null,
+      to?: null
+    ): RescueLastNFTEventFilter;
+    RescueLastNFT(lastNFT?: null, to?: null): RescueLastNFTEventFilter;
+
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -534,11 +616,12 @@ export interface ERC721Pool extends BaseContract {
       value?: null
     ): TransferEventFilter;
 
-    "Withdraw(uint256[],address)"(
-      ids?: null,
+    "Withdraw(uint256,address,address)"(
+      id?: null,
+      beneficiary?: null,
       caller?: null
     ): WithdrawEventFilter;
-    Withdraw(ids?: null, caller?: null): WithdrawEventFilter;
+    Withdraw(id?: null, beneficiary?: null, caller?: null): WithdrawEventFilter;
   };
 
   estimateGas: {
@@ -565,7 +648,8 @@ export interface ERC721Pool extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -573,6 +657,11 @@ export interface ERC721Pool extends BaseContract {
 
     holdingAt(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    holdingContains(
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -600,6 +689,19 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rescueLastNFT(
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -620,14 +722,8 @@ export interface ERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -659,7 +755,8 @@ export interface ERC721Pool extends BaseContract {
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deposit(
-      ids: BigNumberish[],
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -667,6 +764,11 @@ export interface ERC721Pool extends BaseContract {
 
     holdingAt(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    holdingContains(
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -697,6 +799,19 @@ export interface ERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    poolFrozen(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rescueLastNFT(
+      to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -717,14 +832,8 @@ export interface ERC721Pool extends BaseContract {
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdraw(
-      ids: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawWithSignature(
-      ids: BigNumberish[],
-      deadline: BigNumberish,
-      signature: BytesLike,
+      id: BigNumberish,
+      beneficiary: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

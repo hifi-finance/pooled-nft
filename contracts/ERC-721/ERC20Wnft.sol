@@ -27,7 +27,7 @@ contract ERC20Wnft is IERC20Wnft {
     uint8 public constant override decimals = 18;
 
     /// @dev version
-    string public constant version = "1";
+    string public constant version = "2";
 
     /// @inheritdoc IERC20Permit
     bytes32 public override DOMAIN_SEPARATOR;

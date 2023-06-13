@@ -4,7 +4,7 @@ pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-// Random Mock nft that is not does not provide any additional metadata information
+// Random mock nft that does not provide any additional metadata information
 contract RandomNFT is IERC721 {
     function supportsInterface(bytes4 interfaceId) external view override returns (bool) {}
 
