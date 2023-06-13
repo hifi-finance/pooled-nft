@@ -20,7 +20,7 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
     address[] public allPools;
 
     /// @inheritdoc IERC721PoolFactory
-    uint256 public nonce = 0;
+    mapping(address => uint256) public override assetNonces;
 
     /// PUBLIC CONSTANT FUNCTIONS ///
 
@@ -36,20 +36,22 @@ contract ERC721PoolFactory is IERC721PoolFactory, Ownable {
         if (!IERC165(asset).supportsInterface(type(IERC721Metadata).interfaceId)) {
             revert ERC721PoolFactory__DoesNotImplementIERC721Metadata();
         }
-        if (getPool[asset] != address(0)) {
+
+        address existingPool = getPool[asset];
+        if (existingPool != address(0)) {
             revert ERC721PoolFactory__PoolAlreadyExists();
         }
 
         string memory name = string.concat(IERC721Metadata(asset).name(), " Pool");
         string memory symbol = string.concat(IERC721Metadata(asset).symbol(), "p");
 
-        bytes32 salt = keccak256(abi.encodePacked(asset, nonce));
-        nonce++;
+        bytes32 salt = keccak256(abi.encodePacked(asset, assetNonces[asset]));
         ERC721Pool pool = new ERC721Pool{ salt: salt }();
         pool.initialize(name, symbol, asset);
 
         getPool[asset] = address(pool);
         allPools.push(address(pool));
+        assetNonces[asset]++;
 
         emit CreatePool(name, symbol, asset, address(pool));
     }

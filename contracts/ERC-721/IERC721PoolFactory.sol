@@ -40,9 +40,10 @@ interface IERC721PoolFactory {
     /// @notice Returns the length of the pools list.
     function allPoolsLength() external view returns (uint256);
 
-    /// @notice Returns the nonce used to calculate the salt for deploying new pools.
+    /// @notice Returns the nonce used to create the pool of the given asset token.
+    /// @param asset The underlying ERC-721 asset contract address.
     /// @dev The nonce ensures that each new pool contract is deployed at a unique address.
-    function nonce() external view returns (uint256);
+    function assetNonces(address asset) external view returns (uint256);
 
     /// NON-CONSTANT FUNCTIONS ///
 

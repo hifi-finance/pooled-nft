@@ -53,4 +53,18 @@ contract RescueLastNFT_Test is ERC721PoolFactory_Test {
         erc721PoolFactory.rescueLastNFT(address(nft), users.admin);
         assertTrue(erc721PoolFactory.getPool(address(nft)) == address(0), "delete pool");
     }
+
+    function testFuzz_RescueLastNFT_testCreatePoolforSameAsset(uint256 id) external callerIsOwner poolAlreadyExists {
+        setUpRescueLastNFT(id);
+        erc721PoolFactory.rescueLastNFT(address(nft), users.admin);
+        erc721PoolFactory.createPool(address(nft));
+
+        uint256 nonce = 1;
+        bytes32 salt = keccak256(abi.encodePacked(address(nft), nonce));
+        bytes memory bytecode = vm.getCode("out/ERC721Pool.sol/ERC721Pool.json");
+        bytes32 hash = keccak256(abi.encodePacked(bytes1(0xff), address(erc721PoolFactory), salt, keccak256(bytecode)));
+        address pool = address(uint160(uint256(hash)));
+
+        assertTrue(erc721PoolFactory.getPool(address(nft)) == pool, "create pool for same asset");
+    }
 }

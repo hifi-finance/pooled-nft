@@ -7,7 +7,7 @@ import { IERC721PoolFactory } from "contracts/ERC-721/IERC721PoolFactory.sol";
 import { ERC721PoolFactory_Test } from "../ERC721PoolFactory.t.sol";
 
 contract CreatePool_Test is ERC721PoolFactory_Test {
-    uint256 public nonce = 0;
+    mapping(address => uint256) public assetNonces;
 
     /// @dev it should revert.
     function test_RevertWhen_DoesNotImplementIERC721Metadata() external {
@@ -36,8 +36,8 @@ contract CreatePool_Test is ERC721PoolFactory_Test {
     function test_CreatePool_Event() external {
         string memory name = string.concat(IERC721Metadata(address(nft)).name(), " Pool");
         string memory symbol = string.concat(IERC721Metadata(address(nft)).symbol(), "p");
-        bytes32 salt = keccak256(abi.encodePacked(address(nft), nonce));
-        nonce++;
+        bytes32 salt = keccak256(abi.encodePacked(address(nft), assetNonces[address(nft)]));
+        assetNonces[address(nft)]++;
         bytes memory bytecode = vm.getCode("out/ERC721Pool.sol/ERC721Pool.json");
         bytes32 hash = keccak256(abi.encodePacked(bytes1(0xff), address(erc721PoolFactory), salt, keccak256(bytecode)));
         address pool = address(uint160(uint256(hash)));

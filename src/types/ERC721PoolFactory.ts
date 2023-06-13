@@ -22,9 +22,9 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
   functions: {
     "allPools(uint256)": FunctionFragment;
     "allPoolsLength()": FunctionFragment;
+    "assetNonces(address)": FunctionFragment;
     "createPool(address)": FunctionFragment;
     "getPool(address)": FunctionFragment;
-    "nonce()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rescueLastNFT(address,address)": FunctionFragment;
@@ -40,9 +40,9 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     functionFragment: "allPoolsLength",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "assetNonces", values: [string]): string;
   encodeFunctionData(functionFragment: "createPool", values: [string]): string;
   encodeFunctionData(functionFragment: "getPool", values: [string]): string;
-  encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -66,9 +66,12 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
     functionFragment: "allPoolsLength",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "assetNonces",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "createPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPool", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -86,10 +89,12 @@ export interface ERC721PoolFactoryInterface extends utils.Interface {
 
   events: {
     "CreatePool(string,string,address,address)": EventFragment;
+    "ENSNameSet(address,string)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CreatePool"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
@@ -99,6 +104,13 @@ export type CreatePoolEvent = TypedEvent<
 >;
 
 export type CreatePoolEventFilter = TypedEventFilter<CreatePoolEvent>;
+
+export type ENSNameSetEvent = TypedEvent<
+  [string, string],
+  { poolAddress: string; name: string }
+>;
+
+export type ENSNameSetEventFilter = TypedEventFilter<ENSNameSetEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -140,14 +152,14 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<[string]>;
-
-    nonce(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -178,14 +190,14 @@ export interface ERC721PoolFactory extends BaseContract {
 
   allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
+  assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   createPool(
     asset: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
-
-  nonce(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -216,11 +228,11 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     createPool(asset: string, overrides?: CallOverrides): Promise<void>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<string>;
-
-    nonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -259,6 +271,12 @@ export interface ERC721PoolFactory extends BaseContract {
       pool?: string | null
     ): CreatePoolEventFilter;
 
+    "ENSNameSet(address,string)"(
+      poolAddress?: null,
+      name?: null
+    ): ENSNameSetEventFilter;
+    ENSNameSet(poolAddress?: null, name?: null): ENSNameSetEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -274,14 +292,14 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
+    assetNonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getPool(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    nonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -316,6 +334,11 @@ export interface ERC721PoolFactory extends BaseContract {
 
     allPoolsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    assetNonces(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     createPool(
       asset: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -325,8 +348,6 @@ export interface ERC721PoolFactory extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    nonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

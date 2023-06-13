@@ -209,7 +209,6 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "Deposit(uint256,address,address)": EventFragment;
-    "ENSNameSet(address,string,bytes32)": EventFragment;
     "Initialize(string,string,address)": EventFragment;
     "RescueLastNFT(uint256,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -218,7 +217,6 @@ export interface GodModeERC721PoolInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ENSNameSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RescueLastNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -238,13 +236,6 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
-
-export type ENSNameSetEvent = TypedEvent<
-  [string, string, string],
-  { registrar: string; name: string; nodeHash: string }
->;
-
-export type ENSNameSetEventFilter = TypedEventFilter<ENSNameSetEvent>;
 
 export type InitializeEvent = TypedEvent<
   [string, string, string],
@@ -671,17 +662,6 @@ export interface GodModeERC721Pool extends BaseContract {
       caller?: null
     ): DepositEventFilter;
     Deposit(id?: null, beneficiary?: null, caller?: null): DepositEventFilter;
-
-    "ENSNameSet(address,string,bytes32)"(
-      registrar?: null,
-      name?: null,
-      nodeHash?: null
-    ): ENSNameSetEventFilter;
-    ENSNameSet(
-      registrar?: null,
-      name?: null,
-      nodeHash?: null
-    ): ENSNameSetEventFilter;
 
     "Initialize(string,string,address)"(
       name?: null,
