@@ -32,11 +32,6 @@ interface IPeripheralERC721Pool {
     /// @param caller The caller of the function equal to msg.sender.
     event WithdrawAvailable(address pool, uint256[] withdrawnIds, address caller);
 
-    /// CONSTANT FUNCTIONS ///
-
-    // /// @notice The address of the pool.
-    // function pool() external view returns (address);
-
     /// NON-CONSTANT FUNCTIONS ///
 
     /// @notice Deposit NFTs in exchange for an equivalent amount of pool tokens.
