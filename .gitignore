@@ -35,6 +35,7 @@ src/types/*
 !src/types/PeripheralERC721Pool.ts
 !src/types/GodModeERC721Pool.ts
 !src/types/GodModeERC20Wnft.ts
+!src/types/V2Migrator.ts
 
 # factories
 !src/types/factories
@@ -43,3 +44,4 @@ src/types/factories/*
 !src/types/factories/ERC721Pool__factory.ts
 !src/types/factories/ERC721PoolFactory__factory.ts
 !src/types/factories/PeripheralERC721Pool__factory.ts
+!src/types/factories/V2Migrator__factory.ts
