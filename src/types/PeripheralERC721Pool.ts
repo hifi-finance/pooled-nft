@@ -22,6 +22,10 @@ export interface PeripheralERC721PoolInterface extends utils.Interface {
   functions: {
     "bulkDeposit(address,uint256[])": FunctionFragment;
     "bulkWithdraw(address,uint256[])": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "setENSName(address,string)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
     "withdrawAvailable(address,uint256[])": FunctionFragment;
   };
 
@@ -33,6 +37,19 @@ export interface PeripheralERC721PoolInterface extends utils.Interface {
     functionFragment: "bulkWithdraw",
     values: [string, BigNumberish[]]
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setENSName",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "withdrawAvailable",
     values: [string, BigNumberish[]]
@@ -46,6 +63,16 @@ export interface PeripheralERC721PoolInterface extends utils.Interface {
     functionFragment: "bulkWithdraw",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setENSName", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawAvailable",
     data: BytesLike
@@ -54,11 +81,13 @@ export interface PeripheralERC721PoolInterface extends utils.Interface {
   events: {
     "BulkDeposit(address,uint256[],address)": EventFragment;
     "BulkWithdraw(address,uint256[],address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
     "WithdrawAvailable(address,uint256[],address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BulkDeposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "BulkWithdraw"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawAvailable"): EventFragment;
 }
 
@@ -75,6 +104,14 @@ export type BulkWithdrawEvent = TypedEvent<
 >;
 
 export type BulkWithdrawEventFilter = TypedEventFilter<BulkWithdrawEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export type WithdrawAvailableEvent = TypedEvent<
   [string, BigNumber[], string],
@@ -124,6 +161,23 @@ export interface PeripheralERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     withdrawAvailable(
       pool: string,
       ids: BigNumberish[],
@@ -143,6 +197,23 @@ export interface PeripheralERC721Pool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setENSName(
+    registrar: string,
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   withdrawAvailable(
     pool: string,
     ids: BigNumberish[],
@@ -159,6 +230,21 @@ export interface PeripheralERC721Pool extends BaseContract {
     bulkWithdraw(
       pool: string,
       ids: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -188,6 +274,15 @@ export interface PeripheralERC721Pool extends BaseContract {
       caller?: null
     ): BulkWithdrawEventFilter;
 
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+
     "WithdrawAvailable(address,uint256[],address)"(
       pool?: null,
       withdrawnIds?: null,
@@ -213,6 +308,23 @@ export interface PeripheralERC721Pool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     withdrawAvailable(
       pool: string,
       ids: BigNumberish[],
@@ -230,6 +342,23 @@ export interface PeripheralERC721Pool extends BaseContract {
     bulkWithdraw(
       pool: string,
       ids: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setENSName(
+      registrar: string,
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

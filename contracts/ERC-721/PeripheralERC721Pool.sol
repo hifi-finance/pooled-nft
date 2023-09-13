@@ -2,12 +2,14 @@
 pragma solidity >=0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@ensdomains/ens-contracts/contracts/registry/IReverseRegistrar.sol";
 import "./IPeripheralERC721Pool.sol";
 import "./IERC721Pool.sol";
 
 /// @title PeripheralERC721Pool
 /// @author Hifi
-contract PeripheralERC721Pool is IPeripheralERC721Pool {
+contract PeripheralERC721Pool is IPeripheralERC721Pool, Ownable {
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
     /// @inheritdoc IPeripheralERC721Pool
@@ -87,6 +89,12 @@ contract PeripheralERC721Pool is IPeripheralERC721Pool {
         }
         pool.transfer(msg.sender, (idsLength - withdrawnCount) * 10**18);
         emit WithdrawAvailable(address(pool), withdrawnIds, msg.sender);
+    }
+
+    /// @inheritdoc IPeripheralERC721Pool
+    function setENSName(address registrar, string memory name) external override onlyOwner returns (bytes32) {
+        bytes32 nodeHash = IReverseRegistrar(registrar).setName(name);
+        return nodeHash;
     }
 
     /// @dev See the documentation for the public functions that call this internal function.

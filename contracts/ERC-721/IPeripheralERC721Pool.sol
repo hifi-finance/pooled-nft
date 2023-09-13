@@ -62,6 +62,16 @@ interface IPeripheralERC721Pool {
     /// @param ids The asset token IDs to be released from the pool.
     function bulkWithdraw(IERC721Pool pool, uint256[] calldata ids) external;
 
+    /// @notice Allows the factory to set the ENS name for the pool.
+    ///
+    /// @dev Requirements:
+    /// - The caller must be the owner.
+    ///
+    /// @param registrar The address of the ENS registrar.
+    /// @param name The name to set.
+    /// @return The ENS node hash.
+    function setENSName(address registrar, string memory name) external returns (bytes32);
+
     /// @notice Withdraw specified available non-overlapping NFTs in exchange for an equivalent amount of pool tokens.
     ///
     /// @dev Emits a {WithdrawAvailable} event.
